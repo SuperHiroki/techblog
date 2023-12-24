@@ -14,5 +14,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    Log::info('CCCCCCCCCCCCCCCCCCCCCCCCCC Your debug message');
+    return view('test');
+});
+
+Route::get('/test', function () {
+    Log::info('AAAAAAAAAAAAAAAAAAAAAAAAA Your debug message');
+    return view('test');
+});
+Route::get('/test2', function () {
+    Log::info('FFFFFFFFFFFFFFFFFF Your debug message');
+    return view('test2');
+});
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/log-test', function () {
+    Log::info('Log test from web route.');
+    return 'Log test complete, check the logs!';
 });

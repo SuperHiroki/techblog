@@ -1,0 +1,60 @@
+私はテックブログを管理できるウェブサイトを作りたいと思っている。
+(1)
+ページは下記のようにする。
+
+基本的なページ（上部に三つのボタンがある）：
+1. あなたのページ
+2. おすすめ企業
+3. 最近のおすすめ記事
+
+あなたのページ（上部に五つのボタンがある）：
+1. 登録した企業
+2. 登録した企業の最近の記事
+3. いいね
+4. ブックマーク
+5. アーカイブ
+
+(2)
+いいね、ブックマーク、アーカイブをつけることや、会社登録については、拡張機能を別に作って行うことにする。
+
+(3)
+DBの設計は下記である。userとauthorは多対多、userとarticleは多対多の関係である。authorとarticleは一対多の関係性である。
+articleテーブルにレコードを追加する際には、そのレコードのlinkが、authorテーブルのいずれかのレコードのlinkの文字列から開始している必要がある。
+
+・User テーブル
+name (string, Not NULL, UNIQUE)
+email (string, Not NULL, UNIQUE)
+password (string, Not NULL)
+
+・Author テーブル
+name (string, Not NULL, UNIQUE)
+link (string, Not NULL, UNIQUE)
+rss_link (string, Allow NULL, UNIQUE)
+
+・Article テーブル
+title (string, Not NULL)
+description (string, Not NULL)
+link (string, Not NULL, UNIQUE)
+good (bool, Not NULL)
+bookmark (bool, Not NULL)
+archive (bool, Not NULL)
+published_date (date, Not NULL)
+updated_date (date, Not NULL)
+author_id (外部キー、Author テーブルを参照)
+
+・CommentToAuthor テーブル
+user_id (外部キー、User テーブルを参照)
+author_id (外部キー、Author テーブルを参照)
+comment (string, Allow NULL)
+
+・CommentToArticle テーブル
+user_id (外部キー、User テーブルを参照)
+article_id (外部キー、Article テーブルを参照)
+comment (string, Allow NULL)
+
+多対多関係の中間テーブル
+・UserとAuthorの多対多関係
+中間テーブル（例: user_author）を作成し、user_id と author_id を外部キーとして含める。
+
+・UserとArticleの多対多関係
+中間テーブル（例: user_article）を作成し、user_id と article_id を外部キーとして含める。

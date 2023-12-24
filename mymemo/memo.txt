@@ -18,18 +18,18 @@
 いいね、ブックマーク、アーカイブをつけることや、会社登録については、拡張機能を別に作って行うことにする。
 
 (3)
-DBの設計は下記である。userとcompanyは多対多、userとarticleは多対多の関係である。companyとarticleに関係性はないとする。
+DBの設計は下記である。userとauthorは多対多、userとarticleは多対多の関係である。authorとarticleは一対多の関係性である。
+articleテーブルにレコードを追加する際には、そのレコードのlinkが、authorテーブルのいずれかのレコードのlinkの文字列から開始している必要がある。
 
 ・user
 name(string, Not NULL, UNIQUE)
 email(string, Not NULL, UNIQUE)
 password(string, Not NULL)
 
-・company
+・author
 name(string, Not NULL, UNIQUE)
 link(string, Not NULL, UNIQUE)
 rss_link(string, Allow NULL, UNIQUE)
-comment(string, Allow NULL)
 
 ・article
 title(string, Not NULL)
@@ -38,7 +38,15 @@ link(string, Not NULL, UNIQUE)
 good(bool, Not NULL)
 bookmark(bool, Not NULL)
 archive(bool, Not NULL)
-comment(string, Allow NULL)
 published_date(date, Not NULL)
 updated_date(date, Not NULL)
 
+・comment_to_author
+user
+author
+comment(string, Allow NULL)
+
+・comment_to_article
+user
+article
+comment(string, Allow NULL)
