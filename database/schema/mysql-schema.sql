@@ -15,8 +15,6 @@ CREATE TABLE `articles` (
   `good` tinyint(1) NOT NULL DEFAULT '0',
   `bookmark` tinyint(1) NOT NULL DEFAULT '0',
   `archive` tinyint(1) NOT NULL DEFAULT '0',
-  `published_date` date NOT NULL,
-  `updated_date` date NOT NULL,
   `author_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -111,6 +109,16 @@ CREATE TABLE `password_reset_tokens` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `personal_access_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -187,3 +195,5 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2023_12_24_0326
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2023_12_24_032710_create_comment_to_article_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2023_12_24_032726_create_user_author_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2023_12_24_032811_create_user_article_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2014_10_12_100000_create_password_resets_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2023_12_24_111107_remove_dates_from_articles_table',2);
