@@ -27,9 +27,11 @@ class OgImageHelper
 
         $metaData = [];
         $metaData['name'] = self::getContent($xpath, '//meta[@property="og:title"]') ?: self::getContent($xpath, '//title');
+        $metaData['title'] = self::getContent($xpath, '//meta[@property="og:title"]') ?: self::getContent($xpath, '//title');
         $metaData['thumbnail_url'] = self::getContent($xpath, '//meta[@property="og:image"]/@content');
         $metaData['favicon_url'] = self::getContent($xpath, '//link[@rel="icon"]/@href') ?: self::getContent($xpath, '//link[@rel="shortcut icon"]/@href');
         $metaData['rss_link'] = self::getContent($xpath, '//link[@type="application/rss+xml"]/@href');
+        $metaData['description'] = self::getContent($xpath, '//meta[@property="og:description"]/@content') ?: self::getContent($xpath, '//meta[@name="description"]/@content');
 
         return $metaData;
     }
