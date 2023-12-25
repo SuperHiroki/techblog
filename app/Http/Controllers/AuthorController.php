@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\OgImageHelper;
+use Illuminate\Support\Facades\Log;
 
 class AuthorController extends Controller
 {
@@ -12,7 +14,7 @@ class AuthorController extends Controller
     {
         $this->middleware(function ($request, $next) {
             if (!Auth::check() || !Auth::user()->is_admin) {
-                return response('You are not allowed. Please login as admin.', 403);
+                return response('This is author edit page. Please login as admin.', 403);
             }
 
             return $next($request);
@@ -33,13 +35,19 @@ class AuthorController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'link' => 'required|url',
-            'rss_link' => 'nullable|url'
+            'link' => 'required|url'
         ]);
+    
+        // リンクからメタデータを取得
+        $metaData = OgImageHelper::getMetaData($validatedData['link']);
+        if ($metaData) {
+            $validatedData = array_merge($validatedData, $metaData);
+        }
 
+        Log::info('WWWWWWWWWWWWWWWWWWWWWWWW Author Data: ' . json_encode($validatedData));
+    
         Author::create($validatedData);
-
+    
         return redirect()->route('authors.index');
     }
 

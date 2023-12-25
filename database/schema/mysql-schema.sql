@@ -18,6 +18,7 @@ CREATE TABLE `articles` (
   `author_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `articles_link_unique` (`link`),
   KEY `articles_author_id_foreign` (`author_id`),
@@ -34,6 +35,7 @@ CREATE TABLE `authors` (
   `rss_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `authors_name_unique` (`name`),
   UNIQUE KEY `authors_link_unique` (`link`),
@@ -169,6 +171,7 @@ CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -197,3 +200,6 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2023_12_24_0327
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2023_12_24_032811_create_user_article_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2014_10_12_100000_create_password_resets_table',2);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2023_12_24_111107_remove_dates_from_articles_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2023_12_24_115715_add_is_admin_to_users_table',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2023_12_25_114610_add_thumbnail_url_to_authors_table',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2023_12_25_114616_add_thumbnail_url_to_articles_table',4);

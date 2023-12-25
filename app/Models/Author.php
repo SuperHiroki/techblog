@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
 {
-    protected $fillable = ['name', 'link', 'rss_link'];
+    protected $fillable = ['name', 'link', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
     public function articles()
     {

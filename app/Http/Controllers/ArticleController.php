@@ -6,9 +6,21 @@ use App\Models\Article;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!Auth::check() || !Auth::user()->is_admin) {
+                return response('This is article edit page. Please login as admin.', 403);
+            }
+
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $articles = Article::all();
