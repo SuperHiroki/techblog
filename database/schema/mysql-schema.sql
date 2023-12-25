@@ -4,6 +4,54 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `article_user_archive`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `article_user_archive` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `article_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `article_user_archive_article_id_foreign` (`article_id`),
+  KEY `article_user_archive_user_id_foreign` (`user_id`),
+  CONSTRAINT `article_user_archive_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_user_archive_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `article_user_bookmark`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `article_user_bookmark` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `article_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `article_user_bookmark_article_id_foreign` (`article_id`),
+  KEY `article_user_bookmark_user_id_foreign` (`user_id`),
+  CONSTRAINT `article_user_bookmark_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_user_bookmark_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `article_user_good`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `article_user_good` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `article_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `article_user_good_article_id_foreign` (`article_id`),
+  KEY `article_user_good_user_id_foreign` (`user_id`),
+  CONSTRAINT `article_user_good_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_user_good_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -12,13 +60,13 @@ CREATE TABLE `articles` (
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `good` tinyint(1) NOT NULL DEFAULT '0',
-  `bookmark` tinyint(1) NOT NULL DEFAULT '0',
-  `archive` tinyint(1) NOT NULL DEFAULT '0',
   `author_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `favicon_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_date` date DEFAULT NULL,
+  `updated_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `articles_link_unique` (`link`),
   KEY `articles_author_id_foreign` (`author_id`),
@@ -36,6 +84,7 @@ CREATE TABLE `authors` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `favicon_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `authors_name_unique` (`name`),
   UNIQUE KEY `authors_link_unique` (`link`),
@@ -164,6 +213,22 @@ CREATE TABLE `user_author` (
   CONSTRAINT `user_author_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_author_follows`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_author_follows` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `author_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_author_follows_user_id_foreign` (`user_id`),
+  KEY `user_author_follows_author_id_foreign` (`author_id`),
+  CONSTRAINT `user_author_follows_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_author_follows_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -203,3 +268,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2023_12_24_111
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2023_12_24_115715_add_is_admin_to_users_table',3);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2023_12_25_114610_add_thumbnail_url_to_authors_table',4);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2023_12_25_114616_add_thumbnail_url_to_articles_table',4);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2023_12_25_122823_add_favicon_url_to_authors_table',5);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2023_12_25_122831_add_favicon_url_to_articles_table',5);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2023_12_25_151522_add_created_updated_dates_to_articles_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2023_12_25_151628_create_article_user_good_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2023_12_25_152021_create_article_user_bookmark_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2023_12_25_152029_create_article_user_archive_table',6);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2023_12_25_152723_remove_good_bookmark_archive_from_articles_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2023_12_25_152727_create_user_author_follows_table',7);

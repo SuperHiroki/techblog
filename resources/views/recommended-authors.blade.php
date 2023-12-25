@@ -7,7 +7,7 @@
             @foreach ($authors as $author)
                 <div class="col-md-12 mb-3">
                     <div class="card shadow d-flex flex-row align-items-center">
-                        <img src="{{ $author->thumbnail_url ?: asset('images/author-icons/default-author-icon.jpg') }}" class="img-fluid mx-2" style="width: 60px; height: auto;" alt="{{ $author->name }}">
+                        <img src="{{ $author->thumbnail_url ?: asset('images/author-icons/default-author-icon.jpg') }}" class="img-fluid mx-2" style="width: 60px; height: auto;" alt="No Image">
                         <div class="card-body">
                             <h4 class="card-title">{{ $author->name }}</h4>
                             <div class="d-flex align-items-center">

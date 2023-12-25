@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use DOMDocument;
 use DOMXPath;
 
+
 class OgImageHelper
 {
     public static function getMetaData($url)
