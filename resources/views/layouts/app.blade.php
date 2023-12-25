@@ -30,7 +30,7 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item"><a class="nav-link" href="#">あなたのマイページ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">他のユーザのマイページ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">おすすめ企業</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">おすすめ著者</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">おすすめ記事</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">おすすめ企業の最新の記事</a></li>
                     </ul>
