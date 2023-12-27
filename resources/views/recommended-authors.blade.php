@@ -2,29 +2,70 @@
 
 @section('content')
     <div class="container">
-        <h1 class="mb-4">おすすめ著者</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card text-white bg-secondary mb-4 shadow">
+                    <div class="card-body">
+                        <h1 class="card-title text-center">おすすめ著者</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
+                    <option value="followers">フォロワー数</option>
+                    <option value="trending">急上昇</option>
+                    <option value="alphabetical">ABC順</option>
+                </select>
+
+                <select id="trendingOption" style="display: none;" onchange="sortTrending()" class="form-select form-select-lg mb-3 border border-dark">
+                    <option value="week">一週間</option>
+                    <option value="month">一か月</option>
+                    <option value="year">一年</option>
+                </select>
+            </div>
+        </div>
+
         <div class="row">
             @foreach ($authors as $author)
                 <div class="col-md-12 mb-3">
                     <div class="card shadow">
                         <div class="row g-0">
-                            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                            <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;">
                                 @if($author->thumbnail_url)
                                     <img src="{{ $author->thumbnail_url }}" class="img-fluid" alt="No Image">
                                 @else
                                     <span class="text-center">No Image!</span>
                                 @endif
                             </div>
-                            <div class="col-md-8 d-flex align-items-center">
-                                <div class="card-body align-center">
+                            <div class="col-md-8 d-flex align-items-center justify-content-center">
+                                <div class="card-body text-center">
                                     <h4 class="card-title">{{ $author->name }}</h4>
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex justify-content-center mb-2">
                                         <img src="{{ $author->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
                                         <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
                                     </div>
+                                    <div>
+                                        @if(request()->query('sort') == "followers")
+                                                全期間でのフォロワー増加：
+                                        @elseif(request()->query('sort') == "trending")
+                                            @if(request()->query('period') == "week")
+                                                一週間でのフォロワー増加：
+                                            @elseif(request()->query('period') == "month")
+                                                一か月でのフォロワー増加：
+                                            @elseif(request()->query('period') == "year")
+                                                一年でのフォロワー増加：
+                                            @endif
+                                        @endif
+                                        @if(request()->query('sort') == "followers" || request()->query('sort') == "trending")
+                                            {{ $author->followers }}
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2 d-flex align-items-end justify-content-end p-3">
+                            <div class="col-md-2 d-flex align-items-center justify-content-center mb-2">
                                 @if($followedAuthors->contains('id', $author->id))
                                     <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
                                         @csrf
@@ -44,4 +85,44 @@
             @endforeach
         </div>
     </div>
+
+<script>
+    // ページ読み込み時に適切なオプションを選択
+    function initializeSortOptions() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sort = urlParams.get('sort');
+        const period = urlParams.get('period');
+
+        if (sort === 'trending') {
+            document.getElementById("trendingOption").style.display = "block";
+            document.getElementById("trendingOption").value = period || 'week';
+        } else {
+            document.getElementById("trendingOption").style.display = "none";
+        }
+
+        if (sort) {
+            document.getElementById("sortOption").value = sort;
+        }
+    }
+
+    function updateSort() {
+        const sort = document.getElementById("sortOption").value;
+        if (sort === "trending") {
+            document.getElementById("trendingOption").style.display = "block";
+            sortTrending();
+        } else {
+            document.getElementById("trendingOption").style.display = "none";
+            location = "{{ route('recommended-authors') }}?sort=" + sort;
+        }
+    }
+
+    function sortTrending() {
+        const period = document.getElementById("trendingOption").value;
+        location = "{{ route('recommended-authors') }}?sort=trending&period=" + period;
+    }
+
+    // ページ読み込み時に初期化
+    window.onload = initializeSortOptions;
+</script>
+
 @endsection
