@@ -1,8 +1,8 @@
 <!-- resources/views/layouts/partials/auth-dropdown.blade.php -->
 
-<!-- 右側の認証リンク -->
+<!-- Right side authentication links -->
 <ul class="navbar-nav ml-auto">
-    <!-- 認証チェック -->
+    <!-- Authentication check -->
     @guest
         <li class="nav-item dropdown">
             <a id="navbarDropdown_guest" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -23,9 +23,20 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <!-- Add My Page link -->
+                <a class="dropdown-item" href="{{ route('my-page.public-profile') }}">
+                    {{ __('My Page') }}
+                </a>
+
+                <!-- Add Profile link -->
+                <a class="dropdown-item" href="{{ route('settings.account') }}">
+                    {{ __('Settings') }}
+                </a>
+
+                <!-- Existing Logout link -->
                 <a class="dropdown-item" href="{{ route('logout') }}"
                    onclick="event.preventDefault();
-                                 document.getElementById('logout-form').submit();">
+                             document.getElementById('logout-form').submit();">
                     {{ __('Logout') }}
                 </a>
 

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +45,19 @@ Route::resource('authors', AuthorController::class);
 
 #おすすめ著者
 Route::get('/recommended-authors', [App\Http\Controllers\RecommendedAuthorsController::class, 'index'])->name('recommended-authors');
+
+#マイページ
+Route::prefix('my-page')->middleware('auth')->group(function () {
+    Route::get('/public-profile', 'App\Http\Controllers\MyPageController@publicProfile')->name('my-page.public-profile');
+    Route::get('/followed-authors', 'App\Http\Controllers\MyPageController@followedAuthors')->name('my-page.followed-authors');
+    Route::get('/recent-articles', 'App\Http\Controllers\MyPageController@recentArticles')->name('my-page.recent-articles');
+    Route::get('/likes', 'App\Http\Controllers\MyPageController@likes')->name('my-page.likes');
+    Route::get('/bookmarks', 'App\Http\Controllers\MyPageController@bookmarks')->name('my-page.bookmarks');
+    Route::get('/archive', 'App\Http\Controllers\MyPageController@archive')->name('my-page.archive');
+});
+
+#設定
+Route::prefix('settings')->middleware('auth')->group(function () {
+    Route::get('/account', 'App\Http\Controllers\SettingsController@account')->name('settings.account');
+    Route::get('/public-profile', 'App\Http\Controllers\SettingsController@publicProfile')->name('settings.public-profile');;
+});

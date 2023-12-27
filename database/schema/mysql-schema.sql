@@ -57,8 +57,8 @@ DROP TABLE IF EXISTS `articles`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `articles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `author_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -276,3 +276,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2023_12_25_152
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2023_12_25_152029_create_article_user_archive_table',6);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2023_12_25_152723_remove_good_bookmark_archive_from_articles_table',7);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2023_12_25_152727_create_user_author_follows_table',7);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2023_12_25_155332_make_title_and_description_nullable_in_articles_table',8);

@@ -28,11 +28,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- 左側のナビゲーションバー -->
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link" href="#">あなたのマイページ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">他のユーザのマイページ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">おすすめ著者</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">ホーム</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/recommended-authors">おすすめ著者</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">おすすめ記事</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">おすすめ企業の最新の記事</a></li>
                     </ul>
 
                     <!-- 右側の認証リンク -->
@@ -40,9 +38,6 @@
                 </div>
             </div>
         </nav>
-
-        <!-- ページ固有の追加ヘッダー -->
-        @yield('page-specific-header')
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -53,6 +48,9 @@
                 </ul>
             </div>
         @endif
+
+        <!-- ページ固有の追加ヘッダー -->
+        @yield('page-specific-header')
 
         <main class="py-4">
             @yield('content')
