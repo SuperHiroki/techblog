@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RecommendedAuthorsController;
 
 /*
 |--------------------------------------------------------------------------

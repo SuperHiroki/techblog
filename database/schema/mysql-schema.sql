@@ -189,30 +189,6 @@ CREATE TABLE `personal_access_tokens` (
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `user_article`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_article` (
-  `user_id` bigint unsigned NOT NULL,
-  `article_id` bigint unsigned NOT NULL,
-  PRIMARY KEY (`user_id`,`article_id`),
-  KEY `user_article_article_id_foreign` (`article_id`),
-  CONSTRAINT `user_article_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`),
-  CONSTRAINT `user_article_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `user_author`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_author` (
-  `user_id` bigint unsigned NOT NULL,
-  `author_id` bigint unsigned NOT NULL,
-  PRIMARY KEY (`user_id`,`author_id`),
-  KEY `user_author_author_id_foreign` (`author_id`),
-  CONSTRAINT `user_author_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`),
-  CONSTRAINT `user_author_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_author_follows`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -277,3 +253,5 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2023_12_25_152
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2023_12_25_152723_remove_good_bookmark_archive_from_articles_table',7);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2023_12_25_152727_create_user_author_follows_table',7);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2023_12_25_155332_make_title_and_description_nullable_in_articles_table',8);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2023_12_27_035502_drop_user_author_table',9);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2023_12_27_040013_drop_user_article_table',9);
