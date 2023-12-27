@@ -18,7 +18,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-lg">
             <div class="container">
                 <!-- 通常のナビゲーションバー -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -28,9 +28,15 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- 左側のナビゲーションバー -->
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link" href="#">ホーム</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/recommended-authors">おすすめ著者</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">おすすめ記事</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('home') ? 'bg-light border border-primary rounded' : '' }}" href="/home">ホーム</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('recommended-authors') ? 'bg-light border border-primary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('recommended-articles') ? 'bg-light border border-primary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
+                        </li>
                     </ul>
 
                     <!-- 右側の認証リンク -->

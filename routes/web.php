@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecommendedAuthorsController;
+use App\Http\Controllers\RecommendedArticlesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,6 @@ use App\Http\Controllers\RecommendedAuthorsController;
 */
 
 #テストページ
-Route::get('/', function () {
-    return view('test');
-});
 Route::get('/test', function () {
     Log::info('AAAAAAAAAAAAAAAAAAAAAAAAA Your debug message');
     return view('test');
@@ -32,6 +30,9 @@ Route::get('/test2', function () {
 Route::get('/log-test', function () {
     return 'Log test complete, check the logs!';
 });
+
+#ホーム
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 #ログインなど
@@ -46,6 +47,18 @@ Route::get('/recommended-authors', [App\Http\Controllers\RecommendedAuthorsContr
 // フォローとフォロー解除のルート
 Route::post('/follow-author/{author}', [RecommendedAuthorsController::class, 'followAuthor'])->name('follow-author');
 Route::delete('/unfollow-author/{author}', [RecommendedAuthorsController::class, 'unfollowAuthor'])->name('unfollow-author');
+
+#おすすめ記事
+Route::get('/recommended-articles', [App\Http\Controllers\RecommendedArticlesController::class, 'index'])->name('recommended-articles');
+//いいね
+Route::post('/like-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'like'])->name('like-article');
+Route::delete('/unlike-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unlike'])->name('unlike-article');
+//ブックマーク
+Route::post('/bookmark-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'bookmark'])->name('bookmark-article');
+Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unbookmark'])->name('unbookmark-article');
+//アーカイブ
+Route::post('/archive-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'archive'])->name('archive-article');
+Route::delete('/unarchive-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unarchive'])->name('unarchive-article');
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {

@@ -13,11 +13,13 @@ class RecommendedAuthorsController extends Controller
     public function index(Request $request)
     {
         $sort = $request->input('sort', 'followers');
-        $period = $request->input('period', 'week'); // 'week', 'month', 'year'
+        $period = $request->input('period', 'week');
 
         switch ($sort) {
             case 'followers':
-                $authors = Author::withFollowerCount()->orderBy('followers', 'desc')->get();
+                //下記二つは同じ処理である
+                $authors->withCount('followers')->orderBy('followers_count', 'desc');
+                //$authors = Author::withFollowerCount()->orderBy('followers', 'desc')->get();
                 break;
             case 'trending':
                 $authors = Author::withFollowerCount($period)->orderBy('followers', 'desc')->get();

@@ -14,6 +14,13 @@ class Author extends Model
         return $this->hasMany(Article::class);
     }
 
+    //withFollowerCount()と同じ処理になる。
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'user_author_follows');
+    }
+
+    //引数がなければfollowers()と同じ処理になる。
     public static function withFollowerCount($period = 'all')
     {
         $dateFrom = now();

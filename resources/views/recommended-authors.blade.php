@@ -30,7 +30,7 @@
 
         <div class="row">
             @foreach ($authors as $author)
-                <div class="col-md-12 mb-3">
+                <div class="col-md-12 mb-3" onclick="location.href='{{ $author->link }}'" style="cursor: pointer;">
                     <div class="card shadow">
                         <div class="row g-0">
                             <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;">

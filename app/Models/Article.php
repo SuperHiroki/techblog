@@ -6,12 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
-    protected $fillable = ['title', 'description', 'link', 'good', 'bookmark', 'archive', 'author_id', 'thumbnail_url', 'favicon_url'];
+    protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url'];
 
     public function author()
     {
         return $this->belongsTo(Author::class);
     }
 
-    // Add other necessary methods and properties
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'article_user_good');
+    }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(User::class, 'article_user_bookmark');
+    }
+
+    public function archives()
+    {
+        return $this->belongsToMany(User::class, 'article_user_archive');
+    }
 }

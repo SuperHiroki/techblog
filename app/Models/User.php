@@ -44,9 +44,26 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    //今のユーザがフォローしている著者一覧
     public function followedAuthors(): BelongsToMany
     {
         return $this->belongsToMany(Author::class, 'user_author_follows', 'user_id', 'author_id')
                     ->withTimestamps();
+    }
+
+    //今のユーザがいいね、ブックマーク、アーカイブしている記事一覧
+    public function goodArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_user_good');
+    }
+
+    public function bookmarkArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_user_bookmark');
+    }
+
+    public function archiveArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_user_archive');
     }
 }
