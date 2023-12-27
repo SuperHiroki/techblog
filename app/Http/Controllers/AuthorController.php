@@ -43,8 +43,6 @@ class AuthorController extends Controller
         if ($metaData) {
             $validatedData = array_merge($validatedData, $metaData);
         }
-
-        Log::info('WWWWWWWWWWWWWWWWWWWWWWWW Author Data: ' . json_encode($validatedData));
     
         Author::create($validatedData);
     

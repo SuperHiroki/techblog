@@ -20,7 +20,6 @@ use App\Http\Controllers\RecommendedAuthorsController;
 
 #テストページ
 Route::get('/', function () {
-    Log::info('CCCCCCCCCCCCCCCCCCCCCCCCCC Your debug message');
     return view('test');
 });
 Route::get('/test', function () {
@@ -28,11 +27,9 @@ Route::get('/test', function () {
     return view('test');
 });
 Route::get('/test2', function () {
-    Log::info('FFFFFFFFFFFFFFFFFF Your debug message');
     return view('test2');
 });
 Route::get('/log-test', function () {
-    Log::info('Log test from web route.');
     return 'Log test complete, check the logs!';
 });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -46,6 +43,9 @@ Route::resource('authors', AuthorController::class);
 
 #おすすめ著者
 Route::get('/recommended-authors', [App\Http\Controllers\RecommendedAuthorsController::class, 'index'])->name('recommended-authors');
+// フォローとフォロー解除のルート
+Route::post('/follow-author/{author}', [RecommendedAuthorsController::class, 'followAuthor'])->name('follow-author');
+Route::delete('/unfollow-author/{author}', [RecommendedAuthorsController::class, 'unfollowAuthor'])->name('unfollow-author');
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {

@@ -199,7 +199,7 @@ CREATE TABLE `user_author_follows` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_author_follows_user_id_foreign` (`user_id`),
+  UNIQUE KEY `user_author_follows_user_id_author_id_unique` (`user_id`,`author_id`),
   KEY `user_author_follows_author_id_foreign` (`author_id`),
   CONSTRAINT `user_author_follows_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_author_follows_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -255,3 +255,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2023_12_25_152
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2023_12_25_155332_make_title_and_description_nullable_in_articles_table',8);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2023_12_27_035502_drop_user_author_table',9);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2023_12_27_040013_drop_user_article_table',9);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2023_12_27_063505_add_unique_constraint_to_user_author_follows',10);

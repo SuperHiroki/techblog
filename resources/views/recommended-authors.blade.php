@@ -25,10 +25,17 @@
                                 </div>
                             </div>
                             <div class="col-md-2 d-flex align-items-end justify-content-end p-3">
-                                @if($followedAuthors->contains('author_id', $author->id))
-                                    <button class="btn btn-danger">登録解除</button>
+                                @if($followedAuthors->contains('id', $author->id))
+                                    <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">登録解除</button>
+                                    </form>
                                 @else
-                                    <button class="btn btn-success">登録</button>
+                                    <form action="{{ route('follow-author', $author->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">登録</button>
+                                    </form>
                                 @endif
                             </div>
                         </div>
