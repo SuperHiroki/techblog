@@ -8,22 +8,24 @@ class Article extends Model
 {
     protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url'];
 
+    //この記事を書いた著者
     public function author()
     {
         return $this->belongsTo(Author::class);
     }
 
-    public function likes()
+    //この記事にいいね、ブックマーク、アーカイブをつけたユーザ一覧
+    public function likeUsers()
     {
-        return $this->belongsToMany(User::class, 'article_user_good');
+        return $this->belongsToMany(User::class, 'article_user_like');
     }
 
-    public function bookmarks()
+    public function bookmarkUsers()
     {
         return $this->belongsToMany(User::class, 'article_user_bookmark');
     }
 
-    public function archives()
+    public function archiveUsers()
     {
         return $this->belongsToMany(User::class, 'article_user_archive');
     }

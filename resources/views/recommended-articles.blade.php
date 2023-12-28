@@ -34,17 +34,17 @@
 
         <div class="row">
             @foreach ($articles as $article)
-                <div class="col-md-12 mb-3" onclick="location.href='{{ $article->link }}'" style="cursor: pointer;">
+                <div class="col-md-12 mb-3">
                     <div class="card shadow">
                         <div class="row g-0">
-                            <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;">
+                            <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;"  onclick="location.href='{{ $article->link }}'" style="cursor: pointer;">
                                 @if($article->thumbnail_url)
-                                    <img src="{{ $article->thumbnail_url }}" class="img-fluid" alt="Article Image">
+                                    <img src="{{ $article->thumbnail_url }}" class="img-fluid" alt="Article Image" style="cursor: pointer;">
                                 @else
                                     <span class="text-center">No Image</span>
                                 @endif
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-8"  onclick="location.href='{{ $article->link }}'" style="cursor: pointer;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $article->title }}</h5>
                                     <p class="card-text">{{ $article->description }}</p>
@@ -54,42 +54,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2 d-flex align-items-center justify-content-center mb-2">
-                                @if($goodArticles->contains('id', $article->id))
-                                    <form action="{{ route('unlike-article', $article->id) }}" method="POST">
+                            <div class="col-md-2 gap-2 d-flex align-items-center justify-content-center mb-2">
+                                @if($likeArticles->contains('id', $article->id))
+                                    <form id="unlike-form-{{ $article->id }}" action="{{ route('unlike-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">いいね解除</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $article->id }}').submit();" alt="like" style="cursor: pointer; width: 30px; height: auto;">
                                 @else
-                                    <form action="{{ route('like-article', $article->id) }}" method="POST">
+                                    <form id="like-form-{{ $article->id }}" action="{{ route('like-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">いいね</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $article->id }}').submit();" alt="unlike" style="cursor: pointer; width: 30px; height: auto;">
                                 @endif
                                 @if($bookmarkArticles->contains('id', $article->id))
-                                    <form action="{{ route('unbookmark-article', $article->id) }}" method="POST">
+                                    <form id="unbookmark-form-{{ $article->id }}" action="{{ route('unbookmark-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">ブックマーク解除</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/bookmark.png') }}" onclick="document.getElementById('unbookmark-form-{{ $article->id }}').submit();" alt="bookmark" style="cursor: pointer; width: 30px; height: auto;">
                                 @else
-                                    <form action="{{ route('bookmark-article', $article->id) }}" method="POST">
+                                    <form id="bookmark-form-{{ $article->id }}" action="{{ route('bookmark-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">ブックマーク</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unbookmark.png') }}" onclick="document.getElementById('bookmark-form-{{ $article->id }}').submit();" alt="unbookmark" style="cursor: pointer; width: 30px; height: auto;">
                                 @endif
                                 @if($archiveArticles->contains('id', $article->id))
-                                    <form action="{{ route('unarchive-article', $article->id) }}" method="POST">
+                                    <form id="unarchive-form-{{ $article->id }}" action="{{ route('unarchive-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">アーカイブ解除</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/archive.png') }}" onclick="document.getElementById('unarchive-form-{{ $article->id }}').submit();" alt="archive" style="cursor: pointer; width: 30px; height: auto;">
                                 @else
-                                    <form action="{{ route('archive-article', $article->id) }}" method="POST">
+                                    <form id="archive-form-{{ $article->id }}" action="{{ route('archive-article', $article->id) }}" method="POST" style="display: none;">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">アーカイブ</button>
                                     </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unarchive.png') }}" onclick="document.getElementById('archive-form-{{ $article->id }}').submit();" alt="unarchive" style="cursor: pointer; width: 30px; height: auto;">
                                 @endif
                             </div>
                         </div>

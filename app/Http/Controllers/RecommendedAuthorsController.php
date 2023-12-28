@@ -18,8 +18,8 @@ class RecommendedAuthorsController extends Controller
         switch ($sort) {
             case 'followers':
                 //下記二つは同じ処理である
-                $authors->withCount('followers')->orderBy('followers_count', 'desc');
-                //$authors = Author::withFollowerCount()->orderBy('followers', 'desc')->get();
+                //$authors = Author::query()->withCount('followers')->orderBy('followers_count', 'desc')->get(); //{{ $author->followers_count }}を使う必要があるかな。
+                $authors = Author::withFollowerCount()->orderBy('followers', 'desc')->get();
                 break;
             case 'trending':
                 $authors = Author::withFollowerCount($period)->orderBy('followers', 'desc')->get();
@@ -27,17 +27,18 @@ class RecommendedAuthorsController extends Controller
             case 'alphabetical':
                 $authors = Author::orderBy('name')->get();
                 break;
-            default:
-                $authors = Author::orderBy('name')->get();
-                break;
         }
 
-        $followedAuthors = Auth::user()->followedAuthors;
+        $user = Auth::user();
+        $followedAuthors = $user ? $user->followedAuthors : collect([]);
         return view('recommended-authors', compact('authors', 'followedAuthors'));
     }
 
     public function followAuthor(Author $author)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
         $user = Auth::user();
         $user->followedAuthors()->attach($author);
         return back();
@@ -45,6 +46,9 @@ class RecommendedAuthorsController extends Controller
 
     public function unfollowAuthor(Author $author)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
         $user = Auth::user();
         $user->followedAuthors()->detach($author);
         return back();

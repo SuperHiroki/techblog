@@ -9,12 +9,13 @@ class Author extends Model
 {
     protected $fillable = ['name', 'link', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
+    //著者が書いた記事
     public function articles()
     {
         return $this->hasMany(Article::class);
     }
 
-    //withFollowerCount()と同じ処理になる。
+    //withFollowerCount()（引数なし）と同じ処理になる。
     public function followers()
     {
         return $this->belongsToMany(User::class, 'user_author_follows');

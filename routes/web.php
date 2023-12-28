@@ -51,14 +51,14 @@ Route::delete('/unfollow-author/{author}', [RecommendedAuthorsController::class,
 #おすすめ記事
 Route::get('/recommended-articles', [App\Http\Controllers\RecommendedArticlesController::class, 'index'])->name('recommended-articles');
 //いいね
-Route::post('/like-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'like'])->name('like-article');
-Route::delete('/unlike-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unlike'])->name('unlike-article');
+Route::post('/like-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'like'])->name('like-article');
+Route::delete('/unlike-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unlike'])->name('unlike-article');
 //ブックマーク
-Route::post('/bookmark-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'bookmark'])->name('bookmark-article');
-Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unbookmark'])->name('unbookmark-article');
+Route::post('/bookmark-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'bookmark'])->name('bookmark-article');
+Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unbookmark'])->name('unbookmark-article');
 //アーカイブ
-Route::post('/archive-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'archive'])->name('archive-article');
-Route::delete('/unarchive-article/{article}', [App\Http\Controllers\ArticleActionController::class, 'unarchive'])->name('unarchive-article');
+Route::post('/archive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'archive'])->name('archive-article');
+Route::delete('/unarchive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unarchive'])->name('unarchive-article');
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {

@@ -14,8 +14,8 @@ CREATE TABLE `article_user_archive` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `article_user_archive_user_id_article_id_unique` (`user_id`,`article_id`),
   KEY `article_user_archive_article_id_foreign` (`article_id`),
-  KEY `article_user_archive_user_id_foreign` (`user_id`),
   CONSTRAINT `article_user_archive_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
   CONSTRAINT `article_user_archive_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -30,24 +30,24 @@ CREATE TABLE `article_user_bookmark` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `article_user_bookmark_user_id_article_id_unique` (`user_id`,`article_id`),
   KEY `article_user_bookmark_article_id_foreign` (`article_id`),
-  KEY `article_user_bookmark_user_id_foreign` (`user_id`),
   CONSTRAINT `article_user_bookmark_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
   CONSTRAINT `article_user_bookmark_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `article_user_good`;
+DROP TABLE IF EXISTS `article_user_like`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `article_user_good` (
+CREATE TABLE `article_user_like` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `article_id` bigint unsigned NOT NULL,
   `user_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `article_user_good_user_id_article_id_unique` (`user_id`,`article_id`),
   KEY `article_user_good_article_id_foreign` (`article_id`),
-  KEY `article_user_good_user_id_foreign` (`user_id`),
   CONSTRAINT `article_user_good_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
   CONSTRAINT `article_user_good_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -256,3 +256,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2023_12_25_155
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2023_12_27_035502_drop_user_author_table',9);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2023_12_27_040013_drop_user_article_table',9);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2023_12_27_063505_add_unique_constraint_to_user_author_follows',10);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2023_12_27_063913_add_unique_constraint_to_article_user_archive',11);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2023_12_27_063919_add_unique_constraint_to_article_user_bookmark',11);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2023_12_27_063925_add_unique_constraint_to_article_user_good',11);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2023_12_28_025735_rename_article_user_good_to_article_user_like',12);
