@@ -18,7 +18,8 @@ class Author extends Model
     //withFollowerCount()（引数なし）と同じ処理になる。
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'user_author_follows');
+        return $this->belongsToMany(User::class, 'user_author_follows')
+                    ->withTimestamps();
     }
 
     //引数がなければfollowers()と同じ処理になる。

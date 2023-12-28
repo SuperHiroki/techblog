@@ -39,10 +39,18 @@
                              document.getElementById('logout-form').submit();">
                     {{ __('Logout') }}
                 </a>
-
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>
+
+                @if (Auth::user()->is_admin)
+                    <a class="dropdown-item" href="{{ route('authors.index') }}">
+                        {{ __('Authors ~ Admin Panel') }}
+                    </a>
+                    <a class="dropdown-item" href="{{ route('articles.index') }}">
+                        {{ __('Articles ~ Admin Panel') }}
+                    </a>
+                @endif
             </div>
         </li>
     @endguest

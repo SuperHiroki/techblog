@@ -38,8 +38,6 @@ class RecommendedArticlesController extends Controller
                     $relation = $baseRelation . 'Users'; // likeUsers, bookmarkUsers, archiveUsers
                     $pivotTable = 'article_user_' . $baseRelation; // article_user_like, article_user_bookmark, article_user_archive
                     $countColumn = $baseRelation . "_users_count"; // like_users_count, bookmark_users_count, archive_users_count
-
-                    Log::info('RRRRRRRRRRRRRRRRRRRRRRRRRR Your debug message' . $baseRelation);
             
                     $articles->withCount([$relation => function ($query) use ($period, $pivotTable) {
                         if ($period === 'week') $query->where($pivotTable . '.created_at', '>=', now()->subWeek());

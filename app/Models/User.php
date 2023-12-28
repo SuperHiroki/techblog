@@ -29,16 +29,19 @@ class User extends Authenticatable
     //今のユーザがいいね、ブックマーク、アーカイブしている記事一覧
     public function likeArticles()
     {
-        return $this->belongsToMany(Article::class, 'article_user_like');
+        return $this->belongsToMany(Article::class, 'article_user_like')
+                    ->withTimestamps();
     }
 
     public function bookmarkArticles()
     {
-        return $this->belongsToMany(Article::class, 'article_user_bookmark');
+        return $this->belongsToMany(Article::class, 'article_user_bookmark')
+                    ->withTimestamps();
     }
 
     public function archiveArticles()
     {
-        return $this->belongsToMany(Article::class, 'article_user_archive');
+        return $this->belongsToMany(Article::class, 'article_user_archive')
+                    ->withTimestamps();
     }
 }

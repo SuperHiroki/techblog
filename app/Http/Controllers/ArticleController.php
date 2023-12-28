@@ -24,7 +24,8 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = Article::all();
+        // 著者、いいね数、ブックマーク数、アーカイブ数を含めて記事を取得
+        $articles = Article::with(['author', 'likeUsers', 'bookmarkUsers', 'archiveUsers'])->get();
         return view('articles.index', compact('articles'));
     }
 

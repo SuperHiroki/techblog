@@ -23,9 +23,15 @@ class AuthorController extends Controller
 
     public function index()
     {
-        $authors = Author::all();
+        $authors = Author::withFollowerCount()
+                         ->withCount('articles')
+                         ->get();
+        foreach ($authors as $author) {
+            $author->latestArticle = $author->articles()->latest()->first(); // 最新の記事を取得
+        }
         return view('authors.index', compact('authors'));
     }
+    
 
     public function create()
     {

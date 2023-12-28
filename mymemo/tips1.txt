@@ -1,0 +1,1 @@
+関連付けの方法: belongsToMany 関連付けを使用して多対多の関係を操作する場合（例えば、likeUsers() 関数を使っている場合）、attach(), detach(), sync() などの関数は、中間テーブル（この場合は article_user_like）の created_at と updated_at カラムを自動的に更新しません。これらの関数は関連付けを管理するためのものであり、自動タイムスタンプ更新は行われません。

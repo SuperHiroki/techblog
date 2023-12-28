@@ -46,10 +46,10 @@ CREATE TABLE `article_user_like` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `article_user_good_user_id_article_id_unique` (`user_id`,`article_id`),
-  KEY `article_user_good_article_id_foreign` (`article_id`),
-  CONSTRAINT `article_user_good_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `article_user_good_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `article_user_like_user_id_article_id_unique` (`user_id`,`article_id`),
+  KEY `article_user_like_article_id_foreign` (`article_id`),
+  CONSTRAINT `article_user_like_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_user_like_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
@@ -260,3 +260,5 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2023_12_27_063
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2023_12_27_063919_add_unique_constraint_to_article_user_bookmark',11);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2023_12_27_063925_add_unique_constraint_to_article_user_good',11);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2023_12_28_025735_rename_article_user_good_to_article_user_like',12);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2023_12_28_034552_rename_foreign_keys_in_article_user_like',13);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2023_12_28_040816_add_constraints_to_article_user_like',14);

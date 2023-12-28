@@ -17,16 +17,19 @@ class Article extends Model
     //この記事にいいね、ブックマーク、アーカイブをつけたユーザ一覧
     public function likeUsers()
     {
-        return $this->belongsToMany(User::class, 'article_user_like');
+        return $this->belongsToMany(User::class, 'article_user_like')
+                    ->withTimestamps();
     }
 
     public function bookmarkUsers()
     {
-        return $this->belongsToMany(User::class, 'article_user_bookmark');
+        return $this->belongsToMany(User::class, 'article_user_bookmark')
+                    ->withTimestamps();
     }
 
     public function archiveUsers()
     {
-        return $this->belongsToMany(User::class, 'article_user_archive');
+        return $this->belongsToMany(User::class, 'article_user_archive')
+                    ->withTimestamps();
     }
 }

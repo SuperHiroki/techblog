@@ -20,7 +20,7 @@
                     <option value="alphabetical">ABC順</option>
                 </select>
 
-                <select id="trendingOption" style="display: none;" onchange="sortTrending()" class="form-select form-select-lg mb-3 border border-dark">
+                <select id="trendingOption" style="display: none;" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
                     <option value="week">一週間</option>
                     <option value="month">一か月</option>
                     <option value="year">一年</option>
@@ -48,7 +48,7 @@
                                         <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
                                     </div>
                                     <div>
-                                        @if(request()->query('sort') == "followers")
+                                        @if(request()->query('sort') == null || request()->query('sort') == "followers")
                                                 全期間でのフォロワー増加：
                                         @elseif(request()->query('sort') == "trending")
                                             @if(request()->query('period') == "week")
@@ -59,7 +59,7 @@
                                                 一年でのフォロワー増加：
                                             @endif
                                         @endif
-                                        @if(request()->query('sort') == "followers" || request()->query('sort') == "trending")
+                                        @if(request()->query('sort') == null || request()->query('sort') == "followers" || request()->query('sort') == "trending")
                                             {{ $author->followers }}
                                         @endif
                                     </div>
@@ -93,7 +93,7 @@
         const sort = urlParams.get('sort');
         const period = urlParams.get('period');
 
-        if (sort === 'trending') {
+        if (sort=='trending'){
             document.getElementById("trendingOption").style.display = "block";
             document.getElementById("trendingOption").value = period || 'week';
         } else {
@@ -107,18 +107,14 @@
 
     function updateSort() {
         const sort = document.getElementById("sortOption").value;
-        if (sort === "trending") {
+        const period = document.getElementById("trendingOption").value;
+        if (sort=='trending') {
             document.getElementById("trendingOption").style.display = "block";
-            sortTrending();
+            location = "{{ route('recommended-authors') }}?sort=" + sort + "&period=" + period;
         } else {
             document.getElementById("trendingOption").style.display = "none";
             location = "{{ route('recommended-authors') }}?sort=" + sort;
         }
-    }
-
-    function sortTrending() {
-        const period = document.getElementById("trendingOption").value;
-        location = "{{ route('recommended-authors') }}?sort=trending&period=" + period;
     }
 
     // ページ読み込み時に初期化

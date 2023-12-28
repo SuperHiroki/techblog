@@ -39,8 +39,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes();
 
 #adminページ
-Route::resource('articles', ArticleController::class);
-Route::resource('authors', AuthorController::class);
+Route::resource('/authors', AuthorController::class);
+Route::resource('/articles', ArticleController::class);
 
 #おすすめ著者
 Route::get('/recommended-authors', [App\Http\Controllers\RecommendedAuthorsController::class, 'index'])->name('recommended-authors');

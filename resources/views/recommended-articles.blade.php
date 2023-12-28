@@ -24,7 +24,7 @@
                     <option value="trending_archives">急上昇（アーカイブ数）</option>
                 </select>
 
-                <select id="trendingOption" style="display: none;" onchange="sortTrending()" class="form-select form-select-lg mb-3 border border-dark">
+                <select id="trendingOption" style="display: none;" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
                     <option value="week">一週間</option>
                     <option value="month">一か月</option>
                     <option value="year">一年</option>
@@ -51,6 +51,41 @@
                                     <div class="d-flex justify-content-center mb-2">
                                         <img src="{{ $article->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
                                         <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
+                                    </div>
+                                    <div>
+                                        @if(request()->query('sort') == null || request()->query('sort') == "likes")
+                                                いいね数： {{ $article->like_users_count }}
+                                        @elseif(request()->query('sort') == "bookmarks")
+                                                ブックマーク数： {{ $article->bookmark_users_count }}
+                                        @elseif(request()->query('sort') == "archives")
+                                                アーカイブ数： {{ $article->archive_users_count }}
+                                        @elseif(request()->query('sort') == "newest")
+                                                作成日： {{ $article->created_at }}
+                                        @elseif(request()->query('sort') == "trending_likes")
+                                            @if(request()->query('period') == "week")
+                                                一週間でのいいね増加： {{ $article->like_users_count }}
+                                            @elseif(request()->query('period') == "month")
+                                                一か月でのいいね増加： {{ $article->like_users_count }}
+                                            @elseif(request()->query('period') == "year")
+                                                一年でのいいね増加： {{ $article->like_users_count }}
+                                            @endif
+                                        @elseif(request()->query('sort') == "trending_bookmarks")
+                                            @if(request()->query('period') == "week")
+                                                一週間でのブックマーク増加： {{ $article->bookmark_users_count }}
+                                            @elseif(request()->query('period') == "month")
+                                                一か月でのブックマーク増加： {{ $article->bookmark_users_count }}
+                                            @elseif(request()->query('period') == "year")
+                                                一年でのブックマーク増加： {{ $article->bookmark_users_count }}
+                                            @endif
+                                        @elseif(request()->query('sort') == "trending_archives")
+                                            @if(request()->query('period') == "week")
+                                                一週間でのアーカイブ増加： {{ $article->archive_users_count }}
+                                            @elseif(request()->query('period') == "month")
+                                                一か月でのアーカイブ増加： {{ $article->archive_users_count }}
+                                            @elseif(request()->query('period') == "year")
+                                                一年でのアーカイブ増加： {{ $article->archive_users_count }}
+                                            @endif
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +141,7 @@
         const sort = urlParams.get('sort');
         const period = urlParams.get('period');
 
-        if (sort === 'trending') {
+        if (sort.startsWith('trending')){
             document.getElementById("trendingOption").style.display = "block";
             document.getElementById("trendingOption").value = period || 'week';
         } else {
@@ -120,18 +155,14 @@
 
     function updateSort() {
         const sort = document.getElementById("sortOption").value;
-        if (sort === "trending") {
+        const period = document.getElementById("trendingOption").value;
+        if (sort.startsWith('trending')) {
             document.getElementById("trendingOption").style.display = "block";
-            sortTrending();
+            location = "{{ route('recommended-articles') }}?sort=" + sort + "&period=" + period;
         } else {
             document.getElementById("trendingOption").style.display = "none";
             location = "{{ route('recommended-articles') }}?sort=" + sort;
         }
-    }
-
-    function sortTrending() {
-        const period = document.getElementById("trendingOption").value;
-        location = "{{ route('recommended-articles') }}?sort=trending&period=" + period;
     }
 
     // ページ読み込み時に初期化
