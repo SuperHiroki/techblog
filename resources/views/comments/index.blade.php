@@ -30,7 +30,7 @@
                 <form action="{{ route('comments.add') }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="commentBody">Your Comment :</label>
+                        <label for="commentBody" class="my-2">Your Comment :</label>
                         <textarea name="body" id="commentBody" class="form-control" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary m-2">コメント追加</button>

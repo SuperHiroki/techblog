@@ -31,16 +31,16 @@
                     <!-- 左側のナビゲーションバー -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('home') ? 'bg-light border border-primary rounded' : '' }}" href="/home">ホーム</a>
+                            <a class="nav-link {{ request()->is('home') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/home">ホーム</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('recommended-authors') ? 'bg-light border border-primary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
+                            <a class="nav-link {{ request()->is('recommended-authors') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('recommended-articles') ? 'bg-light border border-primary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
+                            <a class="nav-link {{ request()->is('recommended-articles') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('comments') ? 'bg-light border border-primary rounded' : '' }}" href="/comments">コメント</a>
+                            <a class="nav-link {{ request()->is('comments') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/comments">コメント</a>
                         </li>
                     </ul>
 
