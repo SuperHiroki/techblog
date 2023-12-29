@@ -91,38 +91,37 @@ CREATE TABLE `authors` (
   UNIQUE KEY `authors_rss_link_unique` (`rss_link`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `comment_to_article`;
+DROP TABLE IF EXISTS `comment_likes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `comment_to_article` (
+CREATE TABLE `comment_likes` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `comment_id` bigint unsigned NOT NULL,
   `user_id` bigint unsigned NOT NULL,
-  `article_id` bigint unsigned NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `comment_to_article_user_id_foreign` (`user_id`),
-  KEY `comment_to_article_article_id_foreign` (`article_id`),
-  CONSTRAINT `comment_to_article_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`),
-  CONSTRAINT `comment_to_article_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `comment_likes_comment_id_foreign` (`comment_id`),
+  KEY `comment_likes_user_id_foreign` (`user_id`),
+  CONSTRAINT `comment_likes_comment_id_foreign` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `comment_likes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `comment_to_author`;
+DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `comment_to_author` (
+CREATE TABLE `comments` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
-  `author_id` bigint unsigned NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
+  `parent_id` bigint unsigned DEFAULT NULL,
+  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `comment_to_author_user_id_foreign` (`user_id`),
-  KEY `comment_to_author_author_id_foreign` (`author_id`),
-  CONSTRAINT `comment_to_author_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`),
-  CONSTRAINT `comment_to_author_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `comments_user_id_foreign` (`user_id`),
+  KEY `comments_parent_id_foreign` (`parent_id`),
+  CONSTRAINT `comments_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
@@ -262,3 +261,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2023_12_27_063
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2023_12_28_025735_rename_article_user_good_to_article_user_like',12);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2023_12_28_034552_rename_foreign_keys_in_article_user_like',13);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2023_12_28_040816_add_constraints_to_article_user_like',14);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2023_12_29_005231_drop_comment_to_article_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2023_12_29_005237_drop_comment_to_author_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2023_12_29_011911_create_comments_table',16);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2023_12_29_011955_create_comment_likes_table',16);

@@ -2,8 +2,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <a href="{{ route('authors.create') }}">Add a New Author</a>
-    <h1>Authors List</h1>
+    <a class="m-4" href="{{ route('authors.create') }}">Add a New Author</a>
+    <h1 class="mx-4 mt-4 mb-2">Authors List</h1>
     @foreach ($authors as $author)
         <div class="author card shadow m-4 p-4">
             <h2>{{ $author->name }}</h2>
@@ -38,13 +38,13 @@
                     <a href="{{ $author->favicon_url }}">{{ $author->favicon_url }}</a>
                 </p>
             @endif
-        </div>
-        <div class="m-4">
-            <form action="{{ route('authors.destroy', $author) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete Author</button>
-            </form>
+            <div class="m-4">
+                <form action="{{ route('authors.destroy', $author) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete Author</button>
+                </form>
+            </div>
         </div>
     @endforeach
 @endsection

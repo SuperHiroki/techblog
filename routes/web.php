@@ -7,6 +7,7 @@ use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecommendedAuthorsController;
 use App\Http\Controllers\RecommendedArticlesController;
+use App\Http\Controllers\CommentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,13 @@ Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\Recommended
 //アーカイブ
 Route::post('/archive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'archive'])->name('archive-article');
 Route::delete('/unarchive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unarchive'])->name('unarchive-article');
+
+#コメント
+Route::get('/comments', [App\Http\Controllers\CommentsController::class, 'index'])->name('comments');
+#追加、削除、編集
+Route::post('/comments/add', [App\Http\Controllers\CommentsController::class, 'add'])->name('comments.add');
+Route::patch('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'update'])->name('comments.update');
+Route::delete('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'destroy'])->name('comments.destroy');
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {

@@ -37,6 +37,9 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('recommended-articles') ? 'bg-light border border-primary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('comments') ? 'bg-light border border-primary rounded' : '' }}" href="/comments">コメント</a>
+                        </li>
                     </ul>
 
                     <!-- 右側の認証リンク -->
@@ -45,6 +48,7 @@
             </div>
         </nav>
 
+        <!--フラッシュメッセージ-->
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -54,10 +58,17 @@
                 </ul>
             </div>
         @endif
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
 
         <!-- ページ固有の追加ヘッダー -->
         @yield('page-specific-header')
 
+        <!--ページそれぞれの中身-->
         <main class="py-4">
             @yield('content')
         </main>
