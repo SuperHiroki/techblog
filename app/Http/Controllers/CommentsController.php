@@ -11,7 +11,7 @@ class CommentsController extends Controller
     public function index()
     {
         $comments = Comment::with('replies')->whereNull('parent_id')->get();
-        return view('comments', compact('comments'));
+        return view('comments.index', compact('comments'));
     }
 
     public function add(Request $request)
@@ -58,6 +58,14 @@ class CommentsController extends Controller
     
         $comment->delete();
         return redirect()->back()->with('success', 'コメントが削除されました。');
+    }
+
+    public function report(Comment $comment)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        return redirect()->back()->with('success', 'コメントが報告されました。');
     }
     
 }

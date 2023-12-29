@@ -1,0 +1,8 @@
+.custom-link:hover {
+    color: #007bff;
+    background-color: lightblue;
+}
+
+.custom-three-point:hover {
+    background-color: lightgray;
+}

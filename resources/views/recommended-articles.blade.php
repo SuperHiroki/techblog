@@ -52,7 +52,7 @@
                                         <img src="{{ $article->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
                                         <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
                                     </div>
-                                    <div>
+                                    <div class="d-flex justify-content-center">
                                         @if(request()->query('sort') == null || request()->query('sort') == "likes")
                                                 いいね数： {{ $article->like_users_count }}
                                         @elseif(request()->query('sort') == "bookmarks")
