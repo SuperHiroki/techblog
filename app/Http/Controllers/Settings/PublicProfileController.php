@@ -16,8 +16,6 @@ class PublicProfileController extends Controller
     {
         $profile = $user->profile()->first() ?? new UserProfile(['user_id' => $user->id]);
 
-        Log::info('WWWWWWWWWWWWWWWWWWWWWWWWWW' . json_encode($profile));
-
         return view('settings.public-profile', compact('user', 'profile'));
     }
 
@@ -26,12 +24,12 @@ class PublicProfileController extends Controller
         $profile = $user->profile()->first() ?? new UserProfile(['user_id' => $user->id]);
     
         $validateData = $request->validate([
-            "public_email" => 'nullable|email|max:255', // email バリデーションを追加
+            "public_email" => 'nullable|email|max:255',
             "github" => 'nullable|max:255',
-            "website" => 'nullable|url|max:255', // URL バリデーションを追加
+            "website" => 'nullable|url|max:255',
             "organization" => 'nullable|max:255',
             "location" => 'nullable|max:255',
-            "bio" => 'nullable|max:1000', // テキストエリア用に最大1000文字
+            "bio" => 'nullable|max:1000',
             "sns1" => 'nullable|max:255',
             "sns2" => 'nullable|max:255',
             "sns3" => 'nullable|max:255',
@@ -39,9 +37,6 @@ class PublicProfileController extends Controller
             "sns5" => 'nullable|max:255',
             "sns6" => 'nullable|max:255'
         ]);
-
-        Log::info('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' . json_encode($profile));
-        Log::info('GGGGGGGGGGGGGGGGGGGGGGGGGGG' . json_encode($validateData));
         
         $profile->update($validateData);
         
