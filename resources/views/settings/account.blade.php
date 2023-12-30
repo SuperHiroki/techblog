@@ -15,25 +15,25 @@
         <!-- 名前 -->
         <div class="mb-3">
             <label for="name" class="form-label">名前</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
+            <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" style="border-width: 6px;">
         </div>
 
         <!-- メール -->
         <div class="mb-3">
             <label for="email" class="form-label">メール</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}">
+            <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" style="border-width: 6px;">
         </div>
 
         <!-- パスワード -->
         <div class="mb-3">
             <label for="password" class="form-label">パスワード</label>
-            <input type="password" class="form-control" id="password" name="password" value="">
+            <input type="password" class="form-control" id="password" name="password" value="" style="border-width: 6px;">
         </div>
 
         <!-- パスワード確認 -->
         <div class="mb-3">
             <label for="passwordConfirmation" class="form-label">パスワード確認</label>
-            <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation" value="">
+            <input type="password" class="form-control" id="passwordConfirmation" name="password_confirmation" value="" style="border-width: 6px;">
         </div>
 
         <!-- 現在のアイコン画像 -->

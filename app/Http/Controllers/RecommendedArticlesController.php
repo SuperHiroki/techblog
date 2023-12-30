@@ -29,7 +29,7 @@ class RecommendedArticlesController extends Controller
                 $articles->withCount('archiveUsers')->orderBy('archive_users_count', 'desc');
                 break;
             case 'newest':
-                $articles->orderBy('created_at', 'desc');
+                $articles->orderBy('created_date', 'desc');
                 break;
             // いいね数、ブックマーク数、アーカイブ数の急上昇ソート
             default:
@@ -48,7 +48,8 @@ class RecommendedArticlesController extends Controller
                 break;
         }
 
-        $articles = $articles->get();
+        //$articles = $articles->get();
+        $articles = $articles->paginate(5);
 
         // ユーザーが行ったアクションの状態を取得
         $user = Auth::user();

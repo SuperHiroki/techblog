@@ -5,7 +5,7 @@
     <div class="col-lg-6">
         <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
             <option value="followers">フォロワー数</option>
-            <option value="trending">急上昇</option>
+            <option value="trending">急上昇（フォロワー数）</option>
             <option value="alphabetical">ABC順</option>
         </select>
 
@@ -19,7 +19,7 @@
 
 <div class="row">
     @foreach ($authors as $author)
-        <div class="col-md-12 mb-3" onclick="location.href='{{ $author->link }}'" style="cursor: pointer;">
+        <div class="col-md-12 mb-3" onclick="window.open('{{ $author->link }}', '_blank')" style="cursor: pointer;">
             <div class="card shadow">
                 <div class="row g-0">
                     <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;">

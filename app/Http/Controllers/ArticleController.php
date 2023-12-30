@@ -51,7 +51,6 @@ class ArticleController extends Controller
     
         // Find the author by matching the domain
         $author = Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
-    
         if (!$author) {
             return back()->withErrors(['link' => 'The provided link domain does not match any author domain.']);
         }

@@ -21,22 +21,22 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" id="articles-container">
     @foreach ($articles as $article)
         <div class="col-md-12 mb-3">
             <div class="card shadow">
                 <div class="row g-0">
-                    <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;"  onclick="location.href='{{ $article->link }}'" style="cursor: pointer;">
+                    <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
                         @if($article->thumbnail_url)
                             <img src="{{ $article->thumbnail_url }}" class="img-fluid" alt="Article Image" style="cursor: pointer;">
                         @else
                             <span class="text-center">No Image</span>
                         @endif
                     </div>
-                    <div class="col-md-8"  onclick="location.href='{{ $article->link }}'" style="cursor: pointer;">
+                    <div class="col-md-8" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
                         <div class="card-body">
                             <h5 class="card-title">{{ $article->title }}</h5>
-                            <p class="card-text">{{ $article->description }}</p>
+                            <small class="card-text">{{ Str::limit($article->description, 100, '...') }}</small>
                             <div class="d-flex justify-content-center mb-2">
                                 <img src="{{ $article->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
                                 <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
@@ -49,7 +49,7 @@
                                 @elseif(request()->query('sort') == "archives")
                                         アーカイブ数： {{ $article->archive_users_count }}
                                 @elseif(request()->query('sort') == "newest")
-                                        作成日： {{ $article->created_at }}
+                                        作成日： {{ $article->created_date ?? "不明" }}
                                 @elseif(request()->query('sort') == "trending_likes")
                                     @if(request()->query('period') == "week")
                                         一週間でのいいね増加： {{ $article->like_users_count }}
@@ -122,12 +122,52 @@
     @endforeach
 </div>
 
+<!-- ページネーション用のリンク（隠し） -->
+<div id="pagination-links" class="d-none">
+    {{ $articles->links() }}
+</div>
+
+<script>
+//ページネーション用
+document.addEventListener('DOMContentLoaded', function () {
+    let currentPage = 1;
+    const lastPage = {{ $articles->lastPage() }};
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+            loadMoreArticles();
+        }
+    });
+
+    function loadMoreArticles() {
+        if (currentPage >= lastPage) {
+            return; // 全てのページが読み込まれた場合は何もしない
+        }
+
+        console.log('YYYYYYYYYYYYYYYY 無限スクロール');
+
+        currentPage++;
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', currentPage);
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(data, "text/html");
+                const newArticles = htmlDocument.getElementById("articles-container").innerHTML;
+                document.getElementById("articles-container").innerHTML += newArticles;
+            });
+    }
+});
+</script>
+
 <script>
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
     const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort');
-    const period = urlParams.get('period');
+    const sort = urlParams.get('sort') || 'likes';
+    const period = urlParams.get('period') || 'weeks';
 
     if (sort.startsWith('trending')){
         document.getElementById("trendingOption").style.display = "block";
@@ -141,6 +181,7 @@ function initializeSortOptions() {
     }
 }
 
+//ドロップダウンの選択の変更をするたびに発火する
 function updateSort() {
     const sort = document.getElementById("sortOption").value;
     const period = document.getElementById("trendingOption").value;

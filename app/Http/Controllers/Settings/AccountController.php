@@ -23,8 +23,6 @@ class AccountController extends Controller
         if ($request["password"] !== $request["password_confirmation"]){
             return back()->with('error', 'パスワードが一致しません。');
         }
-
-        Log::info('EEEEEEEEEEEEEEEE');
     
         // バリデーションルールを定義
         $validateData = $request->validate([
@@ -33,8 +31,6 @@ class AccountController extends Controller
             'password' => 'nullable|string|min:4',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
-
-        Log::info('TTTTTTTTTTTTTTTTTTTTTTTTT');
     
         // アイコンの画像をディスクに保存
         if ($request->hasFile('icon_image')) {

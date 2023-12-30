@@ -19,12 +19,12 @@
             </div>
         </li>
     @else
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown m-1 p-1">
             <a id="navbarDropdown" class="nav-link dropdown-toggle p-1 custom-header-link rounded" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                 {{ Auth::user()->name }}
             </a>
 
-            <div class="dropdown-menu dropdown-menu-end p-1" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu dropdown-menu-end m-1 py-1 px-2" aria-labelledby="navbarDropdown">
                 <!-- マイページ -->
                 <a class="dropdown-item m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('my-page.profile', Auth::user()->id) }}">
                     {{ __('My Page') }}
