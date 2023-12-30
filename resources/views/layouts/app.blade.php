@@ -28,18 +28,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- 左側の要素 -->
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('home') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/home">ホーム</a>
+                <ul class="navbar-nav me-auto p-1 pt-2">
+                    <li class="nav-item p-1">
+                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('recommended-authors') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
+                    <li class="nav-item p-1">
+                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('recommended-articles') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
+                    <li class="nav-item p-1">
+                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-articles') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('comments') ? 'text-light bg-secondary border border-black rounded' : '' }}" href="/comments">コメント</a>
+                    <li class="nav-item p-1">
+                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
                     </li>
                 </ul>
                 <!-- 右側の認証などの要素 -->

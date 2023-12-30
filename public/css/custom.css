@@ -6,3 +6,7 @@
 .custom-three-point:hover {
     background-color: lightgray;
 }
+
+.custom-header-link:hover {
+    background-color: lightblue;
+}
