@@ -1,39 +1,38 @@
 {{-- comments/comment_form.blade.php --}}
-<div class="container">
-    <div class="row">
-        <div class="col-9 col-md-11">
-            <p class="small">&#64;{{ $item->user->name }}</p>
-            <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
-        </div>
-        <div class="col-3 col-md-1">
-            <!-- 三点リーダーメニュー -->
-            <div>
-                <button class="btn btn-lg custom-three-point rounded lg" type="button" id="dropdownMenuButton{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                    &#8942;
-                </button>
-                @if (Auth::id() === $item->user_id)
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                        <li><a class="dropdown-item" href="#" onclick="showEditForm({{ $item->id }}); return false;">編集</a></li>
-                        <li>
-                            <form action="{{ route('comments.destroy', $item) }}" method="post" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="dropdown-item">削除</button>
-                            </form>
-                        </li>
-                    </ul>
-                @else
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                        <li>
-                            <form action="{{ route('comments.report', $item) }}" method="post" class="d-inline">
-                                @csrf
-                                @method('POST')
-                                <button type="submit" class="dropdown-item">報告</button>
-                            </form>
-                        </li>
-                    </ul>
-                @endif
-            </div>
+
+<div class="row">
+    <div class="col-9 col-md-11">
+        <p class="small">&#64;{{ $item->user->name }}</p>
+        <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
+    </div>
+    <div class="col-3 col-md-1">
+        <!-- 三点リーダーメニュー -->
+        <div>
+            <button class="btn btn-lg custom-three-point rounded lg" type="button" id="dropdownMenuButton{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                &#8942;
+            </button>
+            @if (Auth::id() === $item->user_id)
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                    <li><a class="dropdown-item" href="#" onclick="showEditForm({{ $item->id }}); return false;">編集</a></li>
+                    <li>
+                        <form action="{{ route('comments.destroy', $item) }}" method="post" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="dropdown-item">削除</button>
+                        </form>
+                    </li>
+                </ul>
+            @else
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                    <li>
+                        <form action="{{ route('comments.report', $item) }}" method="post" class="d-inline">
+                            @csrf
+                            @method('POST')
+                            <button type="submit" class="dropdown-item">報告</button>
+                        </form>
+                    </li>
+                </ul>
+            @endif
         </div>
     </div>
 </div>

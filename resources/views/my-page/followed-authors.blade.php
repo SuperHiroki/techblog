@@ -6,8 +6,5 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>フォローした著者</h1>
-    <!-- 中身 -->
-</div>
+
 @endsection

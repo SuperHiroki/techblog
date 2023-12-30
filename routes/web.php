@@ -76,7 +76,7 @@ Route::prefix('my-page')->middleware('auth')->group(function () {
     Route::get('/recent-articles', 'App\Http\Controllers\MyPageController@recentArticles')->name('my-page.recent-articles');
     Route::get('/likes', 'App\Http\Controllers\MyPageController@likes')->name('my-page.likes');
     Route::get('/bookmarks', 'App\Http\Controllers\MyPageController@bookmarks')->name('my-page.bookmarks');
-    Route::get('/archive', 'App\Http\Controllers\MyPageController@archive')->name('my-page.archive');
+    Route::get('/archives', 'App\Http\Controllers\MyPageController@archives')->name('my-page.archives');
 });
 
 #設定

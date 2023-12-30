@@ -6,8 +6,5 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>アカウント設定</h1>
-    <!-- アカウント設定のフォームなど -->
-</div>
+
 @endsection

@@ -1,6 +1,8 @@
 <!-- resources/views/my-page/partials/header.blade.php -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <div class="container">
+
+<!-- ヘッダー -->
+<div class="m-2">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light bg-white shadow-lg rounded">
         <!-- ハンバーガーメニュー -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -20,5 +22,22 @@
                 </li>
             </ul>
         </div>
+    </nav>
+</div>
+
+<!-- タイトル -->
+<div class="row justify-content-center m-2">
+    <div class="col-lg-8">
+        <div class="card text-white bg-secondary shadow">
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <h3 class="card-title text-center m-0">
+                    @if(request()->is("settings/account"))
+                        アカウント設定
+                    @elseif(request()->is("settings/public-profile"))
+                        公開プロフィール設定
+                    @endif
+                </h3>
+            </div>
+        </div>
     </div>
-</nav>
+</div>

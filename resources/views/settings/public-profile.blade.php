@@ -6,8 +6,5 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>公開プロフィール設定</h1>
-    <!-- 公開プロフィール設定のフォームなど -->
-</div>
+
 @endsection

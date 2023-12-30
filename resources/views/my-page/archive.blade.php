@@ -6,8 +6,5 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>アーカイブ</h1>
-    <!-- 中身 -->
-</div>
+
 @endsection

@@ -34,7 +34,7 @@ class MyPageController extends Controller
         return view('my-page.bookmarks');
     }
 
-    public function archive()
+    public function archives()
     {
         // アーカイブに関する処理
         return view('my-page.archive');

@@ -6,9 +6,6 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>公開プロフィール</h1>
-    <!-- 中身 -->
-</div>
+
 @endsection
 
