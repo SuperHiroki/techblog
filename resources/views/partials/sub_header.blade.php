@@ -15,29 +15,29 @@
         <ul class="navbar-nav p-1 pt-2">
             @if(request()->is("my-page/*"))
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/public-profile') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.public-profile') }}">公開プロフィール</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/profile/*') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.profile', Auth::user()->id) }}">公開プロフィール</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/followed-authors') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.followed-authors') }}">フォローした著者</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/followed-authors/*') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.followed-authors', Auth::user()->id) }}">フォローした著者</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/recent-articles') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.recent-articles') }}">最近の記事</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/recent-articles/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.recent-articles', Auth::user()->id) }}">最近の記事</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/likes') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.likes') }}">いいね</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/likes/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.likes', Auth::user()->id) }}">いいね</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/bookmarks') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.bookmarks') }}">ブックマーク</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/bookmarks/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.bookmarks', Auth::user()->id) }}">ブックマーク</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/archives') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.archives') }}">アーカイブ</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/archives/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.archives', Auth::user()->id) }}">アーカイブ</a>
                 </li>
             @elseif(request()->is("settings/*"))
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/account') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('settings.account') }}">アカウント設定</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/account/*') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('settings.account', Auth::user()->id) }}">アカウント設定</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/public-profile') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('settings.public-profile') }}">公開プロフィール設定</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/public-profile/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('settings.public-profile', Auth::user()->id) }}">公開プロフィール設定</a>
                 </li>
             @endif
         </ul>
@@ -51,23 +51,23 @@
             <div class="card-body d-flex align-items-center justify-content-center">
                 <h3 class="card-title text-center m-0">
                     @if(request()->is("my-page/*"))
-                        @if(request()->is("my-page/public-profile"))
+                        @if(request()->is("my-page/profile/*"))
                             公開プロフィール
-                        @elseif(request()->is("my-page/followed-authors"))
+                        @elseif(request()->is("my-page/followed-authors/*"))
                             フォローした著者
-                        @elseif(request()->is("my-page/recent-articles"))
+                        @elseif(request()->is("my-page/recent-articles/*"))
                             最近の記事
-                        @elseif(request()->is("my-page/likes"))
+                        @elseif(request()->is("my-page/likes/*"))
                             いいね
-                        @elseif(request()->is("my-page/bookmarks"))
+                        @elseif(request()->is("my-page/bookmarks/*"))
                             ブックマーク
-                        @elseif(request()->is("my-page/archives"))
+                        @elseif(request()->is("my-page/archives/*"))
                             アーカイブ
                         @endif
                     @elseif(request()->is("settings/*"))
-                        @if(request()->is("settings/account"))
+                        @if(request()->is("settings/account/*"))
                             アカウント設定
-                        @elseif(request()->is("settings/public-profile"))
+                        @elseif(request()->is("settings/public-profile/*"))
                             公開プロフィール設定
                         @endif
                     @endif

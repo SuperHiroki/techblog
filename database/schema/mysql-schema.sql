@@ -204,6 +204,31 @@ CREATE TABLE `user_author_follows` (
   CONSTRAINT `user_author_follows_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_profiles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `public_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `github` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `organization` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bio` text COLLATE utf8mb4_unicode_ci,
+  `sns1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sns2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sns3` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sns4` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sns5` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sns6` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_profiles_user_id_foreign` (`user_id`),
+  CONSTRAINT `user_profiles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -217,6 +242,7 @@ CREATE TABLE `users` (
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `icon_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -265,3 +291,5 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2023_12_29_005
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2023_12_29_005237_drop_comment_to_author_table',15);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2023_12_29_011911_create_comments_table',16);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2023_12_29_011955_create_comment_likes_table',16);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2023_12_30_051337_add_icon_column_to_users_table',17);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2023_12_30_051421_create_user_profiles_table',18);

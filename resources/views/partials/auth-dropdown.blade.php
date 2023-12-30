@@ -26,12 +26,12 @@
 
             <div class="dropdown-menu dropdown-menu-end p-1" aria-labelledby="navbarDropdown">
                 <!-- マイページ -->
-                <a class="dropdown-item m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('my-page.public-profile') }}">
+                <a class="dropdown-item m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('my-page.profile', Auth::user()->id) }}">
                     {{ __('My Page') }}
                 </a>
 
                 <!-- 設定 -->
-                <a class="dropdown-item m-1 p-1 custom-header-link rounded {{ request()->is('settings/*') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('settings.account') }}">
+                <a class="dropdown-item m-1 p-1 custom-header-link rounded {{ request()->is('settings/*') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('settings.account', Auth::user()->id) }}">
                     {{ __('Settings') }}
                 </a>
 

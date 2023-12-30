@@ -19,6 +19,12 @@ class User extends Authenticatable
 
     protected $casts = ['email_verified_at' => 'datetime', 'password' => 'hashed',];
 
+    //今のユーザに対応するプロフィール（1対1）
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
     //今のユーザがフォローしている著者一覧
     public function followedAuthors(): BelongsToMany
     {

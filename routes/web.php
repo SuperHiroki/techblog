@@ -1,10 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\MyPageController;
-use App\Http\Controllers\SettingsController;
+
+use App\Http\Controllers\MyPage\ProfileController;
+use App\Http\Controllers\MyPage\FollowedAuthorsController;
+use App\Http\Controllers\MyPage\LikesController;
+use App\Http\Controllers\MyPage\BookmarksController;
+use App\Http\Controllers\MyPage\ArchivesController;
+use App\Http\Controllers\MyPage\RecentArticlesController;
+
+use App\Http\Controllers\Settings\AccountController;
+use App\Http\Controllers\Settings\PublicProfileController;
+
 use App\Http\Controllers\RecommendedAuthorsController;
 use App\Http\Controllers\RecommendedArticlesController;
 use App\Http\Controllers\CommentsController;
@@ -71,16 +81,26 @@ Route::post('/comments/report/{comment}', [App\Http\Controllers\CommentsControll
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {
-    Route::get('/public-profile', 'App\Http\Controllers\MyPageController@publicProfile')->name('my-page.public-profile');
-    Route::get('/followed-authors', 'App\Http\Controllers\MyPageController@followedAuthors')->name('my-page.followed-authors');
-    Route::get('/recent-articles', 'App\Http\Controllers\MyPageController@recentArticles')->name('my-page.recent-articles');
-    Route::get('/likes', 'App\Http\Controllers\MyPageController@likes')->name('my-page.likes');
-    Route::get('/bookmarks', 'App\Http\Controllers\MyPageController@bookmarks')->name('my-page.bookmarks');
-    Route::get('/archives', 'App\Http\Controllers\MyPageController@archives')->name('my-page.archives');
+    //プロフィール
+    Route::get('/profile/{user}', 'App\Http\Controllers\MyPage\ProfileController@index')->name('my-page.profile');
+    //フォロー中の著者一覧
+    Route::get('/followed-authors/{user}', 'App\Http\Controllers\MyPage\FollowedAuthorsController@index')->name('my-page.followed-authors');
+    //最近の記事
+    Route::get('/recent-articles/{user}', 'App\Http\Controllers\MyPage\RecentArticlesController@index')->name('my-page.recent-articles');
+    //いいねした記事
+    Route::get('/likes/{user}', 'App\Http\Controllers\MyPage\LikesController@index')->name('my-page.likes');
+    //ブックマークした記事
+    Route::get('/bookmarks/{user}', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarks');
+    //アーカイブした記事
+    Route::get('/archives/{user}', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archives');
 });
 
 #設定
 Route::prefix('settings')->middleware('auth')->group(function () {
-    Route::get('/account', 'App\Http\Controllers\SettingsController@account')->name('settings.account');
-    Route::get('/public-profile', 'App\Http\Controllers\SettingsController@publicProfile')->name('settings.public-profile');;
+    //アカウント設定
+    Route::get('/account/{user}', 'App\Http\Controllers\Settings\AccountController@index')->name('settings.account');
+    Route::patch('/account/{user}', 'App\Http\Controllers\Settings\AccountController@update')->name('settings.account');
+    //公開プロフィール設定
+    Route::get('/public-profile/{user}', 'App\Http\Controllers\Settings\PublicProfileController@index')->name('settings.public-profile');
+    Route::patch('/public-profile/{user}', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
 });
