@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\MyPage;
 
+use Illuminate\Http\Request;
+
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\Article;
 
 use App\Http\Controllers\Controller;
 

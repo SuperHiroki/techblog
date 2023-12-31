@@ -82,17 +82,17 @@ Route::post('/comments/report/{comment}', [App\Http\Controllers\CommentsControll
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {
     //プロフィール
-    Route::get('/profile/{user}', 'App\Http\Controllers\MyPage\ProfileController@index')->name('my-page.profile');
+    Route::get('/{user}/profile', 'App\Http\Controllers\MyPage\ProfileController@index')->name('my-page.profile');
     //フォロー中の著者一覧
-    Route::get('/followed-authors/{user}', 'App\Http\Controllers\MyPage\FollowedAuthorsController@index')->name('my-page.followed-authors');
+    Route::get('/{user}/followed-authors', 'App\Http\Controllers\MyPage\FollowedAuthorsController@index')->name('my-page.followed-authors');
     //最近の記事
-    Route::get('/recent-articles/{user}', 'App\Http\Controllers\MyPage\RecentArticlesController@index')->name('my-page.recent-articles');
+    Route::get('/{user}/recent-articles/days/{days}', 'App\Http\Controllers\MyPage\RecentArticlesController@index')->name('my-page.recent-articles');
     //いいねした記事
-    Route::get('/likes/{user}', 'App\Http\Controllers\MyPage\LikesController@index')->name('my-page.likes');
+    Route::get('/{user}/likes', 'App\Http\Controllers\MyPage\LikesController@index')->name('my-page.likes');
     //ブックマークした記事
-    Route::get('/bookmarks/{user}', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarks');
+    Route::get('/{user}/bookmarks', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarks');
     //アーカイブした記事
-    Route::get('/archives/{user}', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archives');
+    Route::get('/{user}/archives', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archives');
 });
 
 #設定

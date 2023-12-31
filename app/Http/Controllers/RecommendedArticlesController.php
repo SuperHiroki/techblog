@@ -15,39 +15,12 @@ class RecommendedArticlesController extends Controller
     {
         $sort = $request->input('sort', 'likes');
         $period = $request->input('period', 'week');
-
-        $articles = Article::query();
-
-        switch ($sort) {
-            case 'likes':
-                $articles->withCount('likeUsers')->orderBy('like_users_count', 'desc');
-                break;
-            case 'bookmarks':
-                $articles->withCount('bookmarkUsers')->orderBy('bookmark_users_count', 'desc');
-                break;
-            case 'archives':
-                $articles->withCount('archiveUsers')->orderBy('archive_users_count', 'desc');
-                break;
-            case 'newest':
-                $articles->orderBy('created_date', 'desc');
-                break;
-            // いいね数、ブックマーク数、アーカイブ数の急上昇ソート
-            default:
-                $articles->applyTrendingSort($sort, $period);
-                break;
-        }
-
-        //$articles = $articles->get();
-        $articles = $articles->paginate(5);
-
-        // ユーザーが行ったアクションの状態を取得
-        $user = Auth::user();
-        $likeArticles = $user ? $user->likeArticles : collect([]);
-        $bookmarkArticles = $user ? $user->bookmarkArticles : collect([]);
-        $archiveArticles = $user ? $user->archiveArticles : collect([]);
-
-        return view('recommended-articles', compact('articles', 'likeArticles', 'bookmarkArticles', 'archiveArticles'));
-    }
+    
+        // モデルのスコープを使用してソート
+        $articles = Article::sortBy($sort, $period)->paginate(5);
+    
+        return view('recommended-articles', compact('articles'));
+    }    
 
     //いいね、ブックマーク、アーカイブをつける処理
     public function like(Article $article)
