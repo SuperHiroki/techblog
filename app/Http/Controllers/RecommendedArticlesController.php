@@ -33,18 +33,7 @@ class RecommendedArticlesController extends Controller
                 break;
             // いいね数、ブックマーク数、アーカイブ数の急上昇ソート
             default:
-                if (str_starts_with($sort, 'trending_')) {
-                    $baseRelation = Str::singular(str_replace('trending_', '', $sort)); // like, bookmark, archive
-                    $relation = $baseRelation . 'Users'; // likeUsers, bookmarkUsers, archiveUsers
-                    $pivotTable = 'article_user_' . $baseRelation; // article_user_like, article_user_bookmark, article_user_archive
-                    $countColumn = $baseRelation . "_users_count"; // like_users_count, bookmark_users_count, archive_users_count
-            
-                    $articles->withCount([$relation => function ($query) use ($period, $pivotTable) {
-                        if ($period === 'week') $query->where($pivotTable . '.created_at', '>=', now()->subWeek());
-                        elseif ($period === 'month') $query->where($pivotTable . '.created_at', '>=', now()->subMonth());
-                        elseif ($period === 'year') $query->where($pivotTable . '.created_at', '>=', now()->subYear());
-                    }])->orderBy($countColumn, 'desc');
-                }
+                $articles->applyTrendingSort($sort, $period);
                 break;
         }
 
@@ -115,3 +104,4 @@ class RecommendedArticlesController extends Controller
         return back();
     }
 }
+
