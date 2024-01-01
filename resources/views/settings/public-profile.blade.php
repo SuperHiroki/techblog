@@ -11,6 +11,12 @@
         @csrf
         @method('PATCH')
 
+        <!-- 名前 -->
+        <div class="mb-3">
+            <label for="name" class="form-label">名前</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ $profile->name ?? '' }}" style="border-width: 6px;">
+        </div>
+
         <!-- 公開メール -->
         <div class="mb-3">
             <label for="publicEmail" class="form-label">公開メール</label>

@@ -12,6 +12,7 @@ class UserProfile extends Model
     // 変更可能なカラム（マスアサインメント）
     protected $fillable = [
         'user_id',
+        'name',
         'public_email',
         'github',
         'website',

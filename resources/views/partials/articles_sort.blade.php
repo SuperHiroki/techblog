@@ -1,13 +1,17 @@
+@if($articles->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
+        <label for="sortOption" class="m-1">ソートの方法を選択:</label>
         <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
             <option value="likes">いいね数順</option>
             <option value="bookmarks">ブックマーク数順</option>
             <option value="archives">アーカイブ数順</option>
             <option value="newest">新しい順</option>
-            <option value="trending_likes">急上昇（いいね数）</option>
-            <option value="trending_bookmarks">急上昇（ブックマーク数）</option>
-            <option value="trending_archives">急上昇（アーカイブ数）</option>
+            @if(!request()->is('my-page/*/recent-articles/*'))
+                <option value="trending_likes">急上昇（いいね数）</option>
+                <option value="trending_bookmarks">急上昇（ブックマーク数）</option>
+                <option value="trending_archives">急上昇（アーカイブ数）</option>
+            @endif
         </select>
 
         <select id="trendingOption" style="display: none;" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
@@ -123,6 +127,12 @@
 <div id="pagination-links" class="d-none">
     {{ $articles->links() }}
 </div>
+@else
+<div class="text-center">
+    <p>記事がありません</p>
+</div>
+@endif
+
 
 <script>
 //ページネーション用

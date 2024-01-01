@@ -13,7 +13,7 @@
             <label for="days-dropdown" class="m-1">日数を選択:</label>
             <select id="days-dropdown" class="form-control mb-4" onchange="goToRecentArticles()" style="border: 3px solid;">
                 @for ($i = 1; $i <= 14; $i++)
-                    <option value="{{ $i }}">{{ $i }} 日</option>
+                    <option value="{{ $i }}">直近{{ $i }} 日間</option>
                 @endfor
             </select>
         </div>

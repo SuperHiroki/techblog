@@ -3,6 +3,7 @@
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-6">
+        <label for="sortOption" class="m-1">ソートの方法を選択:</label>
         <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
             <option value="followers">フォロワー数</option>
             <option value="trending">急上昇（フォロワー数）</option>

@@ -98,9 +98,9 @@ Route::prefix('my-page')->middleware('auth')->group(function () {
 #設定
 Route::prefix('settings')->middleware('auth')->group(function () {
     //アカウント設定
-    Route::get('/account/{user}', 'App\Http\Controllers\Settings\AccountController@index')->name('settings.account');
-    Route::patch('/account/{user}', 'App\Http\Controllers\Settings\AccountController@update')->name('settings.account');
+    Route::get('/{user}/account', 'App\Http\Controllers\Settings\AccountController@index')->name('settings.account');
+    Route::patch('/{user}/account', 'App\Http\Controllers\Settings\AccountController@update')->name('settings.account');
     //公開プロフィール設定
-    Route::get('/public-profile/{user}', 'App\Http\Controllers\Settings\PublicProfileController@index')->name('settings.public-profile');
-    Route::patch('/public-profile/{user}', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
+    Route::get('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@index')->name('settings.public-profile');
+    Route::patch('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
 });

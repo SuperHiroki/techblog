@@ -24,6 +24,7 @@ class PublicProfileController extends Controller
         $profile = $user->profile()->first() ?? new UserProfile(['user_id' => $user->id]);
     
         $validateData = $request->validate([
+            "name" => 'nullable|max:255',
             "public_email" => 'nullable|email|max:255',
             "github" => 'nullable|max:255',
             "website" => 'nullable|url|max:255',

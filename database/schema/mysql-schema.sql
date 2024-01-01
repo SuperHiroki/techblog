@@ -210,6 +210,7 @@ DROP TABLE IF EXISTS `user_profiles`;
 CREATE TABLE `user_profiles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `public_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `github` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -293,3 +294,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2023_12_29_011
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2023_12_29_011955_create_comment_likes_table',16);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2023_12_30_051337_add_icon_column_to_users_table',17);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2023_12_30_051421_create_user_profiles_table',18);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2024_01_01_010611_add_name_to_user_profiles_table',19);

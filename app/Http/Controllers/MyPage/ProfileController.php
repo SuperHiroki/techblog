@@ -17,6 +17,7 @@ class ProfileController extends Controller
         $profile = UserProfile::firstOrCreate(
             ['user_id' => $user->id],
             [
+                'name' => null,
                 'public_email' => null,
                 'github' => null,
                 'website' => null,

@@ -34,10 +34,10 @@
                 </li>
             @elseif(request()->is("settings/*"))
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/account/*') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('settings.account', Auth::user()->id) }}">アカウント設定</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/*/account') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('settings.account', Auth::user()->id) }}">アカウント設定</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/public-profile/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('settings.public-profile', Auth::user()->id) }}">公開プロフィール設定</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('settings/*/public-profile') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('settings.public-profile', Auth::user()->id) }}">公開プロフィール設定</a>
                 </li>
             @endif
         </ul>
@@ -50,24 +50,25 @@
         <div class="card text-white bg-secondary shadow">
             <div class="card-body d-flex align-items-center justify-content-center">
                 <h3 class="card-title text-center m-0">
+                    <strong>{{ $user->name }} </strong>の
                     @if(request()->is("my-page/*"))
                         @if(request()->is("my-page/*/profile"))
-                            公開プロフィール
+                        公開プロフィール
                         @elseif(request()->is("my-page/*/followed-authors"))
-                            フォローした著者
+                            フォローしている著者
                         @elseif(request()->is("my-page/*/recent-articles/*"))
                             新着記事
                         @elseif(request()->is("my-page/*/likes"))
-                            いいね
+                            いいねした記事
                         @elseif(request()->is("my-page/*/bookmarks"))
-                            ブックマーク
+                            ブックマークした記事
                         @elseif(request()->is("my-page/*/archives"))
-                            アーカイブ
+                            アーカイブした記事
                         @endif
                     @elseif(request()->is("settings/*"))
-                        @if(request()->is("settings/account/*"))
+                        @if(request()->is("settings/*/account"))
                             アカウント設定
-                        @elseif(request()->is("settings/public-profile/*"))
+                        @elseif(request()->is("settings/*/public-profile"))
                             公開プロフィール設定
                         @endif
                     @endif
