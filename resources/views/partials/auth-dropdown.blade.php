@@ -22,6 +22,7 @@
         <li class="nav-item dropdown m-1 p-1">
             <a id="navbarDropdown" class="nav-link dropdown-toggle p-1 custom-header-link rounded" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                 {{ Auth::user()->name }}
+                <img src="{{ asset('storage/' . Auth::user()->icon_image) }}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
             </a>
 
             <div class="dropdown-menu dropdown-menu-end m-1 py-1 px-2" aria-labelledby="navbarDropdown">

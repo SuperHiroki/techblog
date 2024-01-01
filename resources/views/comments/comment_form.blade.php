@@ -1,8 +1,14 @@
 {{-- comments/comment_form.blade.php --}}
+<head>
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+</head>
 
 <div class="row">
     <div class="col-9 col-md-11">
-        <p class="small">&#64;{{ $item->user->name }}</p>
+        <a href="{{route('my-page.profile', $item->user_id)}}" class="d-flex">
+            <img src="{{ asset('storage/' . $item->user->icon_image) }}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
+            <div class="small custom-user-link rounded">&#64;{{ $item->user->name }}</div>
+        </a>
         <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
     </div>
     <div class="col-3 col-md-1">

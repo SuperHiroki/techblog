@@ -10,3 +10,13 @@
 .custom-header-link:hover {
     background-color: lightblue;
 }
+
+.custom-user-link {
+    color: black; /* テキストの色を黒に設定 */
+    text-decoration: none; /* アンダーラインを消す場合 */
+}
+
+.custom-user-link:hover {
+    background-color: lightblue;
+    color: black; /* ホバー時もテキストの色を黒に保持 */
+}

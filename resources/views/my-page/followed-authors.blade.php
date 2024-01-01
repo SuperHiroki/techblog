@@ -6,5 +6,5 @@
 @endsection
 
 @section('content')
-
+    @include('partials.authors_sort')
 @endsection
