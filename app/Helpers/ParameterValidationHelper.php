@@ -26,4 +26,22 @@ class ParameterValidationHelper
             throw new InvalidArgumentException('Period parameter is required for trending sort.');
         }
     }
+
+    public static function validateParametersSortArticles(Request $request)
+    {
+        $params = $request->all();
+
+        //バリデーションチェック
+        if (empty($params['sort'])) {
+            throw new InvalidArgumentException('Sort parameter is required.');
+        }
+
+        if (($params['sort'] == 'likes' || $params['sort'] == 'bookmarks' || $params['sort'] == 'archives' || $params['sort'] == 'newest') && !empty($params['period'])) {
+            throw new InvalidArgumentException('Period parameter should not be provided for this sort type.');
+        }
+
+        if (($params['sort'] == 'trending_likes' || $params['sort'] == 'trending_bookmarks' || $params['sort'] == 'trending_archives') && empty($params['period'])) {
+            throw new InvalidArgumentException('Period parameter is required for trending sort.');
+        }
+    }
 }

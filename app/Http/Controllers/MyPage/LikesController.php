@@ -3,20 +3,32 @@
 namespace App\Http\Controllers\MyPage;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 use App\Models\User;
 use App\Models\Article;
 
 use App\Http\Controllers\Controller;
 
+use App\Helpers\ParameterValidationHelper;
+
 class LikesController extends Controller
 {
     public function index(Request $request, User $user)
     {
-        $sort = $request->input('sort', 'likes');
-        $period = $request->input('period', 'week');
+        //パラメタがない場合、デフォルトのパラメタにリダイレクト
+        if (!$request->has('sort')) {
+            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'likes']);
+        }
 
-        $articles = Article::sortBy($sort, $period, $user, 'likes')->paginate(5);
+        try {
+            //バリデーションチェック
+            ParameterValidationHelper::validateParametersSortArticles($request);
+            //ソート
+            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'likes')->paginate(5);
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
         
         return view('my-page.likes', compact('user', 'articles'));
     }

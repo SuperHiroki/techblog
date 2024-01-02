@@ -43,7 +43,7 @@
                                 <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
                             </div>
                             <div class="d-flex justify-content-center">
-                                @if(request()->query('sort') == null || request()->query('sort') == "likes")
+                                @if(request()->query('sort') == "likes")
                                         いいね数： {{ $article->like_users_count }}
                                 @elseif(request()->query('sort') == "bookmarks")
                                         ブックマーク数： {{ $article->bookmark_users_count }}
@@ -173,18 +173,16 @@ document.addEventListener('DOMContentLoaded', function () {
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
     const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort') || 'likes';
-    const period = urlParams.get('period') || 'week';
+    const sort = urlParams.get('sort');
+    const period = urlParams.get('period');
+
+    document.getElementById("sortOption").value = sort;
 
     if (sort.startsWith('trending')){
         document.getElementById("trendingOption").style.display = "block";
-        document.getElementById("trendingOption").value = period || 'week';
+        document.getElementById("trendingOption").value = period;
     } else {
         document.getElementById("trendingOption").style.display = "none";
-    }
-
-    if (sort) {
-        document.getElementById("sortOption").value = sort;
     }
 }
 

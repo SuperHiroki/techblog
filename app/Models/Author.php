@@ -52,18 +52,17 @@ class Author extends Model
         }elseif($sort=='followers' || $sort=='articles' || $sort=='alphabetical'){
             $dateFrom = null;
         }
-        
-        // 条件がnullの場合は常に真を返す
-        $dateCondition = $dateFrom ? "created_at >= '{$dateFrom->toDateTimeString()}'" : "1=1"; 
 
         // フォロワー数のサブクエリ
+        $dateCondition = $dateFrom ? "created_at >= '{$dateFrom->toDateTimeString()}'" : "1=1";// 期間がnullの場合は常に真を返す
         $followersCountSubQuery = DB::table('user_author_follows')
-            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateCondition} THEN 1 ELSE 0 END), 0) as followers_count"))
+            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateCondition} THEN 1 ELSE NULL END), 0) as followers_count"))
             ->groupBy('author_id');
 
-        // 記事数のサブクエリ
+        //記事数のサブクエリ
+        $dateConditionArticleCreatedDate = $dateFrom ? "created_date >= '{$dateFrom->toDateTimeString()}' AND created_date IS NOT NULL" : "1=1";// 期間がnullの場合は常に真を返す
         $articlesCountSubQuery = DB::table('articles')
-            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateCondition} THEN 1 ELSE 0 END), 0) as articles_count"))
+            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateConditionArticleCreatedDate} THEN 1 ELSE NULL END), 0) as articles_count"))
             ->groupBy('author_id');
 
         // サブクエリをメインクエリに結合
@@ -85,6 +84,8 @@ class Author extends Model
             $loggedInUserId = Auth::id();
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
         }
+
+        Log::info('DDDDDDDDD' . $query->get());
     
         return $query->get();
     }

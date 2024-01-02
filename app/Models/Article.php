@@ -98,7 +98,7 @@ class Article extends Model
                 $query->withCount('archiveUsers')->orderBy('archive_users_count', 'desc');
                 break;
             case 'newest':
-                $query->orderBy('created_at', 'desc');
+                $query->orderBy('created_date', 'desc');
                 break;
             default:
                 if (str_starts_with($sort, 'trending_')) {

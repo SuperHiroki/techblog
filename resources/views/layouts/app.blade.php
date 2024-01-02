@@ -32,7 +32,7 @@
                 <!-- 左側の要素 -->
                 <ul class="navbar-nav me-auto p-1 pt-2">
                     <li class="nav-item p-1">
-                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
+                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home' , '/') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
                     </li>
                     <li class="nav-item p-1">
                         <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
@@ -66,13 +66,13 @@
         @endif
 
         <!-- タイトル -->
-        @if(request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments"))
+        @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments"))
         <div class="row justify-content-center m-4">
             <div class="col-lg-8">
                 <div class="card text-white bg-secondary shadow">
                     <div class="card-body d-flex align-items-center justify-content-center">
                         <h3 class="card-title text-center m-0">
-                            @if(request()->is("home"))
+                            @if(request()->is('/') || request()->is('home'))
                                 ホーム
                             @elseif(request()->is("recommended-authors"))
                                 おすすめ著者

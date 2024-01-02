@@ -1,3 +1,4 @@
+@if($authors->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <label for="sortOption" class="m-1">ソートの方法を選択:</label>
@@ -19,17 +20,17 @@
 
 <div class="row">
     @foreach ($authors as $author)
-        <div class="col-md-12 mb-3" style="cursor: pointer;">
+        <div class="col-md-12 mb-3">
             <div class="card shadow">
                 <div class="row g-0">
-                    <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" onclick="window.open('{{ $author->link }}', '_blank')" style="max-width: 300px;">
+                    <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" onclick="window.open('{{ $author->link }}', '_blank')" style="max-width: 300px; cursor: pointer;">
                         @if($author->thumbnail_url)
                             <img src="{{ $author->thumbnail_url }}" class="img-fluid" alt="No Image">
                         @else
                             <span class="text-center">No Image!</span>
                         @endif
                     </div>
-                    <div class="col-md-8 d-flex align-items-center justify-content-center" onclick="window.open('{{ $author->link }}', '_blank')">
+                    <div class="col-md-8 d-flex align-items-center justify-content-center" onclick="window.open('{{ $author->link }}', '_blank')" style="cursor: pointer;">
                         <div class="card-body text-center">
                             <h4 class="card-title">{{ $author->name }}</h4>
                             <div class="d-flex justify-content-center mb-2">
@@ -69,12 +70,12 @@
                             <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger">登録解除</button>
+                                <button type="submit" class="btn btn-danger">フォロー解除</button>
                             </form>
                         @else
                             <form action="{{ route('follow-author', $author->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-success">登録</button>
+                                <button type="submit" class="btn btn-success">フォロー</button>
                             </form>
                         @endif
                     </div>
@@ -83,6 +84,11 @@
         </div>
     @endforeach
 </div>
+@else
+<div class="text-center">
+    <p>記事がありません</p>
+</div>
+@endif
 
 <script>
 // ページ読み込み時に適切なオプションを選択

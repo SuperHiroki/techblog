@@ -43,7 +43,7 @@ Route::get('/log-test', function () {
 });
 
 #ホーム
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('root');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 #ログインなど

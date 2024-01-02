@@ -27,19 +27,10 @@ class AuthorController extends Controller
 
     public function index(Request $request)
     {
-        //パラメタがない場合、デフォルトのパラメタにリダイレクト
-        if (!$request->has('sort')) {
-            return redirect()->route(Route::currentRouteName(), ['sort' => 'followers']);
-        }
-
-        try {
-            //バリデーションチェック
-            ParameterValidationHelper::validateParametersSortAuthors($request);
-            //ソート
-            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null));
-        } catch (InvalidArgumentException $e) {
-            return redirect()->back()->withErrors($e->getMessage());
-        }
+        // followersとarticlesの件数を集計しつつ、著者一覧を取得する
+        $authors = Author::with(['articles', 'followers'])
+                        ->withCount(['articles', 'followers'])
+                        ->get();
 
         // 最新の記事を取得
         foreach ($authors as $author) {
