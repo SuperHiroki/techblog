@@ -5,8 +5,12 @@
 
 <div class="row">
     <div class="col-9 col-md-11">
-        <a href="{{route('my-page.profile', $item->user_id)}}" class="d-flex">
-            <img src="{{ asset('storage/' . $item->user->icon_image) }}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
+        <a href="{{route('my-page.profile', $item->user_id)}}" class="d-flex align-items-center">
+            @if($item->user->icon_image)
+                <img src="{{ asset('storage/' . $item->user->icon_image) }}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
+            @else
+                <img src="{{ asset('images/default-icons/avatar.png')}}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
+            @endif
             <div class="small custom-user-link rounded">&#64;{{ $item->user->name }}</div>
         </a>
         <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
