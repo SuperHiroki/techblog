@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\OgImageHelper;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
+
+use App\Models\Author;
+
+use App\Helpers\OgImageHelper;
+use App\Helpers\ParameterValidationHelper;
 
 class AuthorController extends Controller
 {
@@ -21,14 +25,27 @@ class AuthorController extends Controller
         });
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $authors = Author::withFollowerCount()
-                         ->withCount('articles')
-                         ->get();
-        foreach ($authors as $author) {
-            $author->latestArticle = $author->articles()->latest()->first(); // 最新の記事を取得
+        //パラメタがない場合、デフォルトのパラメタにリダイレクト
+        if (!$request->has('sort')) {
+            return redirect()->route(Route::currentRouteName(), ['sort' => 'followers']);
         }
+
+        try {
+            //バリデーションチェック
+            ParameterValidationHelper::validateParametersSortAuthors($request);
+            //ソート
+            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null));
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+
+        // 最新の記事を取得
+        foreach ($authors as $author) {
+            $author->latestArticle = $author->articles()->latest()->first();
+        }
+
         return view('authors.index', compact('authors'));
     }
     

@@ -4,23 +4,37 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Models\Author;
 use App\Models\UserAuthorFollow;
 
+use App\Helpers\ParameterValidationHelper;
+
 class RecommendedAuthorsController extends Controller
 {
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'followers');
-        $period = $request->input('period', 'week');
+        //パラメタがない場合、デフォルトのパラメタにリダイレクト
+        if (!$request->has('sort')) {
+            return redirect()->route(Route::currentRouteName(), ['sort' => 'followers']);
+        }
 
-        $authors = Author::getSortedAuthors($sort, $period);
+        try {
+            //バリデーションチェック
+            ParameterValidationHelper::validateParametersSortAuthors($request);
+
+            //ソート
+            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null));
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
 
         return view('recommended-authors', compact('authors'));
     }
 
+    //フォロー
     public function followAuthor(Author $author)
     {
         if (!Auth::check()) {
@@ -31,6 +45,7 @@ class RecommendedAuthorsController extends Controller
         return back();
     }
 
+    //フォロー解除
     public function unfollowAuthor(Author $author)
     {
         if (!Auth::check()) {

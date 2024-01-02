@@ -3,7 +3,9 @@
         <label for="sortOption" class="m-1">ソートの方法を選択:</label>
         <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
             <option value="followers">フォロワー数</option>
-            <option value="trending">急上昇（フォロワー数）</option>
+            <option value="trending_followers">急上昇（フォロワー数）</option>
+            <option value="articles">記事数</option>
+            <option value="trending_articles">急上昇（記事数）</option>
             <option value="alphabetical">ABC順</option>
         </select>
 
@@ -35,20 +37,30 @@
                                 <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
                             </div>
                             <div>
-                                @if(request()->query('sort') == null || request()->query('sort') == "followers")
-                                        全期間でのフォロワー増加：
-                                @elseif(request()->query('sort') == "trending")
+                                <div>
                                     @if(request()->query('period') == "week")
-                                        一週間でのフォロワー増加：
+                                        一週間での
                                     @elseif(request()->query('period') == "month")
-                                        一か月でのフォロワー増加：
+                                        一か月での
                                     @elseif(request()->query('period') == "year")
-                                        一年でのフォロワー増加：
+                                        一年での
+                                    @else
+                                        全期間での
                                     @endif
-                                @endif
-                                @if(request()->query('sort') == null || request()->query('sort') == "followers" || request()->query('sort') == "trending")
-                                    {{ $author->followers }}
-                                @endif
+                                        フォロワー増加数: {{ $author->followers_count ?? 0 }}
+                                </div>
+                                <div>
+                                    @if(request()->query('period') == "week")
+                                        一週間での
+                                    @elseif(request()->query('period') == "month")
+                                        一か月での
+                                    @elseif(request()->query('period') == "year")
+                                        一年での
+                                    @else
+                                        全期間での
+                                    @endif
+                                        記事作成数: {{ $author->articles_count ?? 0 }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,28 +88,28 @@
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
     const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort');
-    const period = urlParams.get('period');
+    const sort = urlParams.get('sort');//絶対に必要
+    const period = urlParams.get('period');//trendingの時は絶対に必要
 
-    if (sort=='trending'){
+    document.getElementById("sortOption").value = sort;
+
+    if (sort=='trending_followers' || sort=='trending_articles'){
         document.getElementById("trendingOption").style.display = "block";
-        document.getElementById("trendingOption").value = period || 'week';
-    } else {
+        document.getElementById("trendingOption").value = period;
+    } else if(sort=='followers' || sort=='articles' || sort=='alphabetical') {
         document.getElementById("trendingOption").style.display = "none";
-    }
-
-    if (sort) {
-        document.getElementById("sortOption").value = sort;
     }
 }
 
+//選択肢を切り替えたとき
 function updateSort() {
     const sort = document.getElementById("sortOption").value;
     const period = document.getElementById("trendingOption").value;
-    if (sort=='trending') {
+
+    if (sort=='trending_followers' || sort=='trending_articles') {
         document.getElementById("trendingOption").style.display = "block";
         location = "{{ route('recommended-authors') }}?sort=" + sort + "&period=" + period;
-    } else {
+    } else if(sort=='followers' || sort=='articles' || sort=='alphabetical') {
         document.getElementById("trendingOption").style.display = "none";
         location = "{{ route('recommended-authors') }}?sort=" + sort;
     }

@@ -4,6 +4,7 @@
 @section('content')
     <a class="m-4" href="{{ route('authors.create') }}">Add a New Author</a>
     <h1 class="mx-4 mt-4 mb-2">Authors List</h1>
+    <p>フォロワー数によって並び替えている。フォロワー数と記事数は全期間である。</p>
     @foreach ($authors as $author)
         <div class="author card shadow m-4 p-4">
             <h2>{{ $author->name }}</h2>
@@ -18,8 +19,8 @@
                 </p>
             @endif
             <hr>
-            <p>Articles: {{ $author->articles_count }}</p>
-            <p>Followers: {{ $author->followers }}</p>
+            <p>フォロワー数: {{ $author->followers_count ?? 0 }}</p>
+            <p>記事数: {{ $author->articles_count ?? 0 }}</p>
             @if ($author->latestArticle)
                 <p>Latest Article: {{ $author->latestArticle->title }}</p>
             @endif

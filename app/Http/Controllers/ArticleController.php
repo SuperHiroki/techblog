@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
-use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Article;
+use App\Models\Author;
+
 use App\Helpers\OgImageHelper;
 
 class ArticleController extends Controller

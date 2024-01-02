@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Author extends Model
 {
@@ -24,49 +25,62 @@ class Author extends Model
     }
 
     //ソート
-    public static function getSortedAuthors($sort, $period = 'week', $user = null)
+    public static function getSortedAuthors($sort, $period = null, $user = null)
     {
+        //クエリの生成
         $query = self::query();
     
         //ユーザが渡されたらそのユーザがフォローしている著者に絞る（マイページに表示するもの）。
         if ($user) {
             $query->whereIn('authors.id', $user->followedAuthors->pluck('id'));
         }
-    
+
+        //期間の取得
+        $dateFrom = now();
+        if ($sort=='trending_followers' || $sort=='trending_articles') {
+            switch ($period) {
+                case 'week':
+                    $dateFrom->subWeek();
+                    break;
+                case 'month':
+                    $dateFrom->subMonth();
+                    break;
+                case 'year':
+                    $dateFrom->subYear();
+                    break;
+            }
+        }elseif($sort=='followers' || $sort=='articles' || $sort=='alphabetical'){
+            $dateFrom = null;
+        }
+        
+        // 条件がnullの場合は常に真を返す
+        $dateCondition = $dateFrom ? "created_at >= '{$dateFrom->toDateTimeString()}'" : "1=1"; 
+
+        // フォロワー数のサブクエリ
+        $followersCountSubQuery = DB::table('user_author_follows')
+            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateCondition} THEN 1 ELSE 0 END), 0) as followers_count"))
+            ->groupBy('author_id');
+
+        // 記事数のサブクエリ
+        $articlesCountSubQuery = DB::table('articles')
+            ->select('author_id', DB::raw("COALESCE(COUNT(CASE WHEN {$dateCondition} THEN 1 ELSE 0 END), 0) as articles_count"))
+            ->groupBy('author_id');
+
+        // サブクエリをメインクエリに結合
+        $query->select('authors.*', 'fc.followers_count', 'ac.articles_count')
+            ->leftJoinSub($followersCountSubQuery, 'fc', 'authors.id', '=', 'fc.author_id')
+            ->leftJoinSub($articlesCountSubQuery, 'ac', 'authors.id', '=', 'ac.author_id');
+
+        // 並び替え
         if ($sort === 'alphabetical') {
             $query->orderBy('name');
-        } else {
-            $dateFrom = now();
-    
-            if ($sort === 'trending') {
-                switch ($period) {
-                    case 'week':
-                        $dateFrom->subWeek();
-                        break;
-                    case 'month':
-                        $dateFrom->subMonth();
-                        break;
-                    case 'year':
-                        $dateFrom->subYear();
-                        break;
-                    default:
-                        $dateFrom = null;
-                        break;
-                }
-            } else {
-                $dateFrom = null;
-            }
-    
-            $rawCountQuery = $dateFrom 
-                ? "COALESCE(COUNT(CASE WHEN user_author_follows.created_at >= '{$dateFrom->toDateTimeString()}' THEN 1 END), 0) as followers"
-                : "COALESCE(COUNT(user_author_follows.author_id), 0) as followers";
-    
-            $query->select('authors.*', DB::raw($rawCountQuery))
-                  ->leftJoin('user_author_follows', 'authors.id', '=', 'user_author_follows.author_id')
-                  ->groupBy('authors.id')
-                  ->orderBy('followers', 'desc');
+        } elseif ($sort=='followers' || $sort=='trending_followers'){
+            $query->orderBy('fc.followers_count', 'desc');
+        } elseif ($sort=='articles' || $sort=='trending_articles'){
+            $query->orderBy('ac.articles_count', 'desc');
         }
     
+        //現在ログイン中のユーザが、それぞれの著者に対してフォローしているかどうかを追加。
         if (Auth::check()) {
             $loggedInUserId = Auth::id();
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
@@ -74,5 +88,4 @@ class Author extends Model
     
         return $query->get();
     }
-    
 }
