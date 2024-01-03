@@ -1,4 +1,3 @@
-@if($articles->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <label for="sortOption" class="m-1">ソートの方法を選択:</label>
@@ -22,6 +21,7 @@
     </div>
 </div>
 
+@if($articles->count() > 0)
 <div class="row" id="articles-container">
     @foreach ($articles as $article)
         <div class="col-md-12 mb-3">

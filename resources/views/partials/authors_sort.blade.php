@@ -1,4 +1,3 @@
-@if($authors->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <label for="sortOption" class="m-1">ソートの方法を選択:</label>
@@ -18,6 +17,7 @@
     </div>
 </div>
 
+@if($authors->count() > 0)
 <div class="row">
     @foreach ($authors as $author)
         <div class="col-md-12 mb-3">
@@ -65,19 +65,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2 d-flex align-items-center justify-content-center mb-2">
-                        @if($author->is_followed)
-                            <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">フォロー解除</button>
-                            </form>
-                        @else
-                            <form action="{{ route('follow-author', $author->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-success">フォロー</button>
-                            </form>
-                        @endif
+                    <div class="col-md-2 d-flex align-items-center justify-content-center">
+                        <div class="m-1">
+                            @if($author->is_followed)
+                                <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">フォロー解除</button>
+                                </form>
+                            @else
+                                <form action="{{ route('follow-author', $author->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success btn-sm">フォロー</button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
