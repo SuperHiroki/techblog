@@ -9,13 +9,13 @@ class Article extends Model
 {
     protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url'];
 
-    //この記事を書いた著者
+    //この記事を書いた著者。Authorインスタンス。
     public function author()
     {
         return $this->belongsTo(Author::class);
     }
 
-    //この記事にいいね、ブックマーク、アーカイブをつけたユーザ一覧
+    //この記事にいいね（ブックマーク、アーカイブ）をつけたユーザ一覧。Userインスタンスのリスト。
     public function likeUsers()
     {
         return $this->belongsToMany(User::class, 'article_user_like')
@@ -41,12 +41,15 @@ class Article extends Model
         $currentUser = auth()->user();
         if ($currentUser) {
             $query->with([
+                //likeUsersは、ログイン中のユーザがいいねをつけている場合はそのユーザのインスタンスが取得できるが、いいねをつけていない場合はnullが取得できるはず。
                 'likeUsers' => function ($q) use ($currentUser) {
                     $q->where('users.id', $currentUser->id)->select('users.id');
                 },
+                //likeUsersの時と考え方は同じ。
                 'bookmarkUsers' => function ($q) use ($currentUser) {
                     $q->where('users.id', $currentUser->id)->select('users.id');
                 },
+                //likeUsersの時と考え方は同じ。
                 'archiveUsers' => function ($q) use ($currentUser) {
                     $q->where('users.id', $currentUser->id)->select('users.id');
                 }
@@ -77,10 +80,12 @@ class Article extends Model
     
                         // マイページのユーザーがフォローしている著者の記事のみを取得。フォロー中の著者で絞らないとおすすめ記事一覧と変わらない。
                         $query->whereHas('author', function ($q) use ($user, $dateFrom) {
-                            $q->whereHas('followers', function ($q) use ($user) {
-                                $q->where('users.id', $user->id);
-                            })->where('articles.created_date', '>=', $dateFrom);
-                        });
+                                $q->whereHas('followers', function ($q) use ($user) {
+                                    $q->where('users.id', $user->id);
+                                });
+                            })
+                        //記事の作成日が直近?日間で絞る。
+                              ->where('articles.created_date', '>=', $dateFrom);
                     }
                     break;
             }
@@ -102,21 +107,21 @@ class Article extends Model
                 break;
             default:
                 if (str_starts_with($sort, 'trending_')) {
-                    $baseRelation = Str::singular(str_replace('trending_', '', $sort));
+                    $baseRelation = Str::singular(str_replace('trending_', '', $sort));//like, bookmark, archive
                     $relation = $baseRelation . 'Users';
                     $pivotTable = 'article_user_' . $baseRelation;
                     $countColumn = $baseRelation . "_users_count";
     
-                    $query->withCount([$relation => function ($query) use ($period, $pivotTable) {
-                                if ($period === 'week') $query->where($pivotTable . '.created_at', '>=', now()->subWeek());
-                                elseif ($period === 'month') $query->where($pivotTable . '.created_at', '>=', now()->subMonth());
-                                elseif ($period === 'year') $query->where($pivotTable . '.created_at', '>=', now()->subYear());
+                    $query->withCount([$relation => function ($q) use ($period, $pivotTable) {
+                                if ($period === 'week') $q->where($pivotTable . '.created_at', '>=', now()->subWeek());
+                                elseif ($period === 'month') $q->where($pivotTable . '.created_at', '>=', now()->subMonth());
+                                elseif ($period === 'year') $q->where($pivotTable . '.created_at', '>=', now()->subYear());
                             }])
                             ->orderBy($countColumn, 'desc');
                 }
                 break;
         }
-    
+
         return $query;
     }
     

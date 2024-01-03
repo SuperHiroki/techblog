@@ -53,11 +53,11 @@
                     <strong>{{ $user->name }} </strong>の
                     @if(request()->is("my-page/*"))
                         @if(request()->is("my-page/*/profile"))
-                        公開プロフィール
+                            公開プロフィール
                         @elseif(request()->is("my-page/*/followed-authors"))
                             フォローしている著者
                         @elseif(request()->is("my-page/*/recent-articles/*"))
-                            新着記事
+                            フォロー著者の新着記事
                         @elseif(request()->is("my-page/*/likes"))
                             いいねした記事
                         @elseif(request()->is("my-page/*/bookmarks"))
