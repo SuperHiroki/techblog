@@ -4,7 +4,7 @@
 </head>
 
 <div class="row">
-    <div class="col-9 col-md-11">
+    <div class="col-8 col-md-10">
         <a href="{{route('my-page.profile', $item->user_id)}}" class="d-flex align-items-center">
             @if($item->user->icon_image)
                 <img src="{{ asset('storage/' . $item->user->icon_image) }}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
@@ -15,7 +15,26 @@
         </a>
         <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
     </div>
-    <div class="col-3 col-md-1">
+    <div class="col-2 col-md-1 d-flex align-items-center justify-content-center">
+        <!-- いいねボタン -->
+        <div class="custom-three-point rounded">
+            @if ($item->likedByAuthUser)
+                <form id="unlike-form-{{ $item->id }}" action="{{ route('unlike-comment', $item->id) }}" method="POST" style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
+                <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $item->id }}').submit();" alt="like" style="cursor: pointer; width: 15px; height: auto;">
+            @else
+                <form id="like-form-{{ $item->id }}" action="{{ route('like-comment', $item->id) }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $item->id }}').submit();" alt="unlike" style="cursor: pointer; width: 15px; height: auto;">
+            @endif
+        </div>
+        <!-- いいね数 -->
+        <div class="px-1">
+            {{$item->likesCount}}
+        </div>
         <!-- 三点リーダーメニュー -->
         <div>
             <button class="btn btn-lg custom-three-point rounded lg" type="button" id="dropdownMenuButton{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false">

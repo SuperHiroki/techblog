@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Comment extends Model
 {
@@ -18,5 +19,24 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_id');
     }
 
-    // 他のメソッド（編集、削除など）はここに追加
+    //このメソッドは、特定のコメントに対するすべての「いいね」のコレクションを返します。
+    public function likes()
+    {
+        return $this->hasMany(CommentLike::class);
+    }
+
+    /*
+    //このメソッドは、特定のコメントに「いいね」をしたすべてのユーザーのコレクションを返します。
+    public function likedUsers()
+    {
+        return $this->belongsToMany(User::class, 'comment_likes')
+                    ->withTimestamps();
+    }
+    */
+    
+    //現在ログイン中のユーザがいいねをつけているかどうかのカラムを追加する。
+    public function isLikedByAuthUser()
+    {
+        return $this->hasMany(CommentLike::class)->where('user_id', Auth::id())->exists();
+    }
 }

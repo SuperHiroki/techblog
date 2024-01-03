@@ -101,7 +101,7 @@ CREATE TABLE `comment_likes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `comment_likes_comment_id_foreign` (`comment_id`),
+  UNIQUE KEY `comment_likes_comment_id_user_id_unique` (`comment_id`,`user_id`),
   KEY `comment_likes_user_id_foreign` (`user_id`),
   CONSTRAINT `comment_likes_comment_id_foreign` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comment_likes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -295,3 +295,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2023_12_29_011
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2023_12_30_051337_add_icon_column_to_users_table',17);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2023_12_30_051421_create_user_profiles_table',18);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2024_01_01_010611_add_name_to_user_profiles_table',19);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2024_01_03_011824_add_unique_constraint_to_comment_likes',20);

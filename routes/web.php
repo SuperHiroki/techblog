@@ -78,6 +78,9 @@ Route::post('/comments/add', [App\Http\Controllers\CommentsController::class, 'a
 Route::patch('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'update'])->name('comments.update');
 Route::delete('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'destroy'])->name('comments.destroy');
 Route::post('/comments/report/{comment}', [App\Http\Controllers\CommentsController::class, 'report'])->name('comments.report');
+#いいね
+Route::post('/like-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'like'])->name('like-comment');
+Route::delete('/unlike-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'unlike'])->name('unlike-comment');
 
 #マイページ
 Route::prefix('my-page')->middleware('auth')->group(function () {
