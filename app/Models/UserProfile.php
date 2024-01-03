@@ -27,7 +27,7 @@ class UserProfile extends Model
         'sns6'
     ];
 
-    // Userモデルとのリレーション（1対1）
+    // Userモデルとのリレーション（1対1）。Userインスタンス。
     public function user()
     {
         return $this->belongsTo(User::class);

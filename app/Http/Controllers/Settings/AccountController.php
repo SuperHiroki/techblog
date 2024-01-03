@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
-    // アカウント設定ページを表示
+    // アカウント設定を表示
     public function index(User $user)
     {
         return view('settings.account', compact('user'));
