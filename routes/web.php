@@ -17,7 +17,10 @@ use App\Http\Controllers\Settings\PublicProfileController;
 
 use App\Http\Controllers\RecommendedAuthorsController;
 use App\Http\Controllers\RecommendedArticlesController;
+
 use App\Http\Controllers\CommentsController;
+
+use App\Http\Controllers\Api\ArticleActionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +73,17 @@ Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\Recommended
 //アーカイブ
 Route::post('/archive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'archive'])->name('archive-article');
 Route::delete('/unarchive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unarchive'])->name('unarchive-article');
+
+#ブラウザ拡張期用のAPIエンドポイント
+// いいね関連のAPI
+Route::post('/like-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'like'])->name('api-like-article');
+Route::delete('/unlike-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unlike'])->name('api-unlike-article');
+// ブックマーク関連のAPI
+Route::post('/bookmark-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'bookmark'])->name('api-bookmark-article');
+Route::delete('/unbookmark-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unbookmark'])->name('api-unbookmark-article');
+// アーカイブ関連のAPI
+Route::post('/archive-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'archive'])->name('api-archive-article');
+Route::delete('/unarchive-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unarchive'])->name('api-unarchive-article');
 
 #コメント
 Route::get('/comments', [App\Http\Controllers\CommentsController::class, 'index'])->name('comments');

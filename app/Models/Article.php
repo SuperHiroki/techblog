@@ -9,6 +9,26 @@ class Article extends Model
 {
     protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url'];
 
+    // 記事を作成するメソッド（ドメインチェック含む）
+    public static function createWithDomainCheck($link, $metaData)
+    {
+        $articleDomain = parse_url($link, PHP_URL_HOST);
+        $author = Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
+
+        if (!$author) {
+            throw new \Exception('The provided link domain does not match any author domain.');
+        }
+
+        return self::create([
+            'title' => $metaData['title'],
+            'description' => $metaData['description'],
+            'thumbnail_url' => $metaData['thumbnail_url'],
+            'favicon_url' => $metaData['favicon_url'],
+            'link' => $link,
+            'author_id' => $author->id,
+        ]);
+    }
+
     //この記事を書いた著者。Authorインスタンス。
     public function author()
     {

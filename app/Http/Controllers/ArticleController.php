@@ -38,34 +38,22 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'link' => 'required|url'
-        ]);
+        //記事のリンクを取得
+        $validatedData = $request->validate(['link' => 'required|url']);
     
-        // Fetch HTML content and metadata
-        $metaData = OgImageHelper::getMetaData($validatedData['link']);
-        if (!$metaData) {
-            return back()->withErrors(['link' => 'Unable to fetch metadata from the link.']);
+        //記事のリンクからその他の記事の情報をフェッチ
+        try {
+            $metaData = OgImageHelper::getMetaData($validatedData['link']);
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
         }
-    
-        // Extract the domain from the article link
-        $articleDomain = parse_url($validatedData['link'], PHP_URL_HOST);
-    
-        // Find the author by matching the domain
-        $author = Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
-        if (!$author) {
-            return back()->withErrors(['link' => 'The provided link domain does not match any author domain.']);
+
+        //ドメインチェックと同時にDBに記事を追加する。
+        try {
+            Article::createWithDomainCheck($validatedData['link'], $metaData);
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
         }
-    
-        // Create the article with the fetched and validated data
-        Article::create([
-            'title' => $metaData['title'],
-            'description' => $metaData['description'],
-            'thumbnail_url' => $metaData['thumbnail_url'],
-            'favicon_url' => $metaData['favicon_url'],
-            'link' => $validatedData['link'],
-            'author_id' => $author->id,
-        ]);
     
         return redirect()->route('articles.index');
     } 
