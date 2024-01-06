@@ -12,13 +12,25 @@ class Article extends Model
     // 記事を作成するメソッド（ドメインチェック含む）
     public static function createWithDomainCheck($link, $metaData)
     {
-        $articleDomain = parse_url($link, PHP_URL_HOST);
-        $author = Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
+        $author = self::domainCheck($link);
 
         if (!$author) {
-            throw new \Exception('KKKKKKKKKKKKKKKKKKK The provided link domain does not match any author domain.');
+            throw new \Exception('The provided link domain does not match any author domain.');
         }
 
+        return self::createArticle($link, $metaData, $author);
+    }
+
+    //ドメインチェック
+    public static function domainCheck($link)
+    {
+        $articleDomain = parse_url($link, PHP_URL_HOST);
+        return Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
+    }
+
+    //記事レコードを作成する
+    public static function createArticle($link, $metaData, $author)
+    {
         return self::create([
             'title' => $metaData['title'],
             'description' => $metaData['description'],
@@ -29,6 +41,7 @@ class Article extends Model
         ]);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
     //この記事を書いた著者。Authorインスタンス。
     public function author()
     {

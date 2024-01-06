@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unbookmark-article', [ArticleActionController::class, 'unbookmark'])->name('api-unbookmark-article');
     Route::post('/archive-article', [ArticleActionController::class, 'archive'])->name('api-archive-article');
     Route::delete('/unarchive-article', [ArticleActionController::class, 'unarchive'])->name('api-unarchive-article');
+
+    Route::get('/get-state', [ArticleActionController::class, 'getState'])->name('api-get-state');
 });
 
 // トークンベースの認証が不要なルート
