@@ -20,18 +20,7 @@ use App\Http\Controllers\RecommendedArticlesController;
 
 use App\Http\Controllers\CommentsController;
 
-use App\Http\Controllers\Api\ArticleActionController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\ApiTokenGetRedirectController;
 
 #テストページ
 Route::get('/test', function () {
@@ -74,17 +63,6 @@ Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\Recommended
 Route::post('/archive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'archive'])->name('archive-article');
 Route::delete('/unarchive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unarchive'])->name('unarchive-article');
 
-#ブラウザ拡張期用のAPIエンドポイント
-// いいね関連のAPI
-Route::post('/like-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'like'])->name('api-like-article');
-Route::delete('/unlike-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unlike'])->name('api-unlike-article');
-// ブックマーク関連のAPI
-Route::post('/bookmark-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'bookmark'])->name('api-bookmark-article');
-Route::delete('/unbookmark-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unbookmark'])->name('api-unbookmark-article');
-// アーカイブ関連のAPI
-Route::post('/archive-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'archive'])->name('api-archive-article');
-Route::delete('/unarchive-article/url/{articleUrl}', [App\Http\Controllers\Api\ArticleActionController::class, 'unarchive'])->name('api-unarchive-article');
-
 #コメント
 Route::get('/comments', [App\Http\Controllers\CommentsController::class, 'index'])->name('comments');
 #追加、削除、編集
@@ -121,3 +99,7 @@ Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@index')->name('settings.public-profile');
     Route::patch('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
 });
+
+#APIトークンを取得するためのページ
+Route::get('/api-token-get-redirect', [App\Http\Controllers\ApiTokenGetRedirectController::class, 'index'])->name('api-token-get-redirect');
+

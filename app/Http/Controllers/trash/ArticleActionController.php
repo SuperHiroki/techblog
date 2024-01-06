@@ -2,16 +2,34 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-
 use App\Models\Article;
-
-use App\Http\Controllers\Controller;
 
 class ArticleActionController extends Controller
 {
+    /*
+    public function __construct()
+    {
+        // APIの認証を要求する
+        //$this->middleware('auth:api');
+    }
+    */
+
+    /*
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!Auth::check() || !Auth::user()->is_admin) {
+                return response('This is article edit page. Please login as admin.', 403);
+            }
+
+            return $next($request);
+        });
+    }
+    */
+
     //記事がまだ登録されていない場合、記事を追加する。
     public function addArticle($articleUrl) {
         $decodedUrl = urldecode($articleUrl);
@@ -30,8 +48,6 @@ class ArticleActionController extends Controller
     ////////////////////////////////////////////////////////////////////////////////
     //記事にいいねを付ける
     public function like($articleUrl) {
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
         $article = $this->addArticle($articleUrl);
         if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Already liked'], 409);
