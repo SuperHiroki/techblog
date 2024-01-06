@@ -16,7 +16,8 @@ class ArticleActionController extends Controller
 {
     //記事がまだ登録されていない場合、記事を追加する。
     public function addArticle($articleUrl) {
-        $decodedUrl = urldecode($articleUrl);
+        $decodedUrl = urldecode($articleUrl);//エンコードしてなければ変化なし。
+        Log::info('FFFFFFFFFFFFFFFFFFFFFFFF decodedUrl: ' . $decodedUrl);
         $article = Article::where('link', $decodedUrl)->first();
         if (!$article) {
             try {
@@ -35,12 +36,10 @@ class ArticleActionController extends Controller
         try {
             $articleUrl = $request->query('articleUrl');
             Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
-    
             $article = $this->addArticle($articleUrl);
             if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
                 return response()->json(['message' => 'SSSSSSSSS Already liked.'], 409);
             }
-    
             $article->likeUsers()->attach(Auth::id());
             return response()->json(['message' => 'SSSSSSSSS Liked successfully.']);
         } catch (\Exception $e) {
@@ -50,79 +49,85 @@ class ArticleActionController extends Controller
 
     //記事のいいねを外す。
     public function unlike(Request $request) {
-
-        $articleUrl = $request->query('articleUrl');
-
-        Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if (!$article->likeUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Not liked'], 409);
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+            $article = $this->addArticle($articleUrl);
+            if (!$article->likeUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Not liked.'], 409);
+            }
+            $article->likeUsers()->detach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Unliked successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
         }
-        $article->likeUsers()->detach(Auth::id());
-        return response()->json(['message' => 'Unliked successfully']);
     }
+    
     
     //記事にブックマークを付ける
     public function bookmark(Request $request) {
-
-        $articleUrl = $request->query('articleUrl');
-
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if ($article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Already bookmarked'], 409);
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+            $article = $this->addArticle($articleUrl);
+            if ($article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Already bookmarked.'], 409);
+            }
+            $article->bookmarkUsers()->attach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Bookmarked successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
         }
-        $article->bookmarkUsers()->attach(Auth::id());
-        return response()->json(['message' => 'Bookmarked successfully']);
     }
+    
     
     //記事のブックマークを外す
     public function unbookmark(Request $request) {
-
-        $articleUrl = $request->query('articleUrl');
-
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if (!$article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Not bookmarked'], 409);
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+            $article = $this->addArticle($articleUrl);
+            if (!$article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Not bookmarked.'], 409);
+            }
+            $article->bookmarkUsers()->detach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Unbookmarked successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
         }
-        $article->bookmarkUsers()->detach(Auth::id());
-        return response()->json(['message' => 'Unbookmarked successfully']);
     }
 
     //記事にアーカイブをつける
     public function archive(Request $request) {
-
-        $articleUrl = $request->query('articleUrl');
-
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Already archived'], 409);
-        }
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
     
-        $article->archiveUsers()->attach(Auth::id());
-        return response()->json(['message' => 'Archived successfully']);
-    }
+            $article = $this->addArticle($articleUrl);
+            if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Already archived.'], 409);
+            }
+            $article->archiveUsers()->attach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Archived successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
+        }
+    }    
     
     //記事のアーカイブを外す
     public function unarchive(Request $request) {
-
-        $articleUrl = $request->query('articleUrl');
-
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if (!$article->archiveUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Not archived'], 409);
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->addArticle($articleUrl);
+            if (!$article->archiveUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Not archived.'], 409);
+            }
+            $article->archiveUsers()->detach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Unarchived successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
         }
-    
-        $article->archiveUsers()->detach(Auth::id());
-        return response()->json(['message' => 'Unarchived successfully']);
     }
-    
 }

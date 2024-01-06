@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/test', function (Request $request) {
-        Log::info('RRRRRRRRRRRRRRRRRRRRRRRR This is test in api route.');
+        Log::info('RRRRRRRRRRRRRRRRRRRRRRRR This is api test route.');
         return response()->json(["message" => "you did it well."]);
     });
 
