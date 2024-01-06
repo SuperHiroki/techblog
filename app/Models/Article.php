@@ -16,7 +16,7 @@ class Article extends Model
         $author = Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
 
         if (!$author) {
-            throw new \Exception('The provided link domain does not match any author domain.');
+            throw new \Exception('KKKKKKKKKKKKKKKKKKK The provided link domain does not match any author domain.');
         }
 
         return self::create([

@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/test', function (Request $request) {
-        Log::info('RRRRRRRRRRRRRRRRRRRRRRRR');
+        Log::info('RRRRRRRRRRRRRRRRRRRRRRRR This is test in api route.');
         return response()->json(["message" => "you did it well."]);
     });
 
@@ -19,12 +19,12 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::post('/like-article/url/{articleUrl}', [ArticleActionController::class, 'like'])->name('api-like-article');
-    Route::delete('/unlike-article/url/{articleUrl}', [ArticleActionController::class, 'unlike'])->name('api-unlike-article');
-    Route::post('/bookmark-article/url/{articleUrl}', [ArticleActionController::class, 'bookmark'])->name('api-bookmark-article');
-    Route::delete('/unbookmark-article/url/{articleUrl}', [ArticleActionController::class, 'unbookmark'])->name('api-unbookmark-article');
-    Route::post('/archive-article/url/{articleUrl}', [ArticleActionController::class, 'archive'])->name('api-archive-article');
-    Route::delete('/unarchive-article/url/{articleUrl}', [ArticleActionController::class, 'unarchive'])->name('api-unarchive-article');
+    Route::post('/like-article', [ArticleActionController::class, 'like'])->name('api-like-article');
+    Route::delete('/unlike-article', [ArticleActionController::class, 'unlike'])->name('api-unlike-article');
+    Route::post('/bookmark-article', [ArticleActionController::class, 'bookmark'])->name('api-bookmark-article');
+    Route::delete('/unbookmark-article', [ArticleActionController::class, 'unbookmark'])->name('api-unbookmark-article');
+    Route::post('/archive-article', [ArticleActionController::class, 'archive'])->name('api-archive-article');
+    Route::delete('/unarchive-article', [ArticleActionController::class, 'unarchive'])->name('api-unarchive-article');
 });
 
 // トークンベースの認証が不要なルート

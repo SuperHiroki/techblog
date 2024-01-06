@@ -10,6 +10,8 @@ use App\Models\Article;
 
 use App\Http\Controllers\Controller;
 
+use App\Helpers\OgImageHelper;
+
 class ArticleActionController extends Controller
 {
     //記事がまだ登録されていない場合、記事を追加する。
@@ -21,7 +23,7 @@ class ArticleActionController extends Controller
                 $metaData = OgImageHelper::getMetaData($decodedUrl);
                 $article = Article::createWithDomainCheck($decodedUrl, $metaData);
             } catch (\Exception $e) {
-                return response()->json(['message' => $e->getMessage()], 400);
+                throw $e;
             }
         }
         return $article;
@@ -29,20 +31,30 @@ class ArticleActionController extends Controller
 
     ////////////////////////////////////////////////////////////////////////////////
     //記事にいいねを付ける
-    public function like($articleUrl) {
-        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
-
-        $article = $this->addArticle($articleUrl);
-        if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
-            return response()->json(['message' => 'Already liked'], 409);
+    public function like(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->addArticle($articleUrl);
+            if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'SSSSSSSSS Already liked.'], 409);
+            }
+    
+            $article->likeUsers()->attach(Auth::id());
+            return response()->json(['message' => 'SSSSSSSSS Liked successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "SSSSSSSSS Error in processing request: {$e->getMessage()}"], 500);
         }
-
-        $article->likeUsers()->attach(Auth::id());
-        return response()->json(['message' => 'Liked successfully']);
     }
 
     //記事のいいねを外す。
-    public function unlike($articleUrl) {
+    public function unlike(Request $request) {
+
+        $articleUrl = $request->query('articleUrl');
+
+        Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+
         $article = $this->addArticle($articleUrl);
         if (!$article->likeUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Not liked'], 409);
@@ -52,7 +64,12 @@ class ArticleActionController extends Controller
     }
     
     //記事にブックマークを付ける
-    public function bookmark($articleUrl) {
+    public function bookmark(Request $request) {
+
+        $articleUrl = $request->query('articleUrl');
+
+        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
+
         $article = $this->addArticle($articleUrl);
         if ($article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Already bookmarked'], 409);
@@ -62,7 +79,12 @@ class ArticleActionController extends Controller
     }
     
     //記事のブックマークを外す
-    public function unbookmark($articleUrl) {
+    public function unbookmark(Request $request) {
+
+        $articleUrl = $request->query('articleUrl');
+
+        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
+
         $article = $this->addArticle($articleUrl);
         if (!$article->bookmarkUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Not bookmarked'], 409);
@@ -72,7 +94,12 @@ class ArticleActionController extends Controller
     }
 
     //記事にアーカイブをつける
-    public function archive($articleUrl) {
+    public function archive(Request $request) {
+
+        $articleUrl = $request->query('articleUrl');
+
+        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
+
         $article = $this->addArticle($articleUrl);
         if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Already archived'], 409);
@@ -83,7 +110,12 @@ class ArticleActionController extends Controller
     }
     
     //記事のアーカイブを外す
-    public function unarchive($articleUrl) {
+    public function unarchive(Request $request) {
+
+        $articleUrl = $request->query('articleUrl');
+
+        Log::info('UUUUUUUUUUUUUUUUUUUUU' . $articleUrl);
+
         $article = $this->addArticle($articleUrl);
         if (!$article->archiveUsers()->where('user_id', Auth::id())->exists()) {
             return response()->json(['message' => 'Not archived'], 409);
