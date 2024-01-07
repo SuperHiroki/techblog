@@ -52,7 +52,7 @@ class CommentsController extends Controller
         $comment->parent_id = $validatedData['parent_id'] ?? null;
         $comment->save();
 
-        return redirect()->back()->with('success', "以下のコメントが追加されました。\n{$comment->user->name}さんのコメント\n{$comment->body}");;
+        return redirect()->back()->with('success', "次のコメントが追加されました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");;
     }
 
     //コメントを編集する。
@@ -69,7 +69,7 @@ class CommentsController extends Controller
         $comment->body = $validatedData['body'];
         $comment->save();
     
-        return redirect()->back()->with('success', "以下のようにコメントが編集されました。\n{$comment->user->name}さんのコメント\n{$comment->body}");
+        return redirect()->back()->with('success', "次のようにコメントが編集されました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");
     }    
 
     //コメントを削除する。
@@ -80,7 +80,7 @@ class CommentsController extends Controller
         }
     
         $comment->delete();
-        return redirect()->back()->with('success', "以下のコメントが削除されました。\n{$comment->user->name}さんのコメント\n{$comment->body}");
+        return redirect()->back()->with('success', "次のコメントが削除されました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");
     }
 
     //コメントを報告する。
@@ -89,7 +89,7 @@ class CommentsController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-        return redirect()->back()->with('success', "以下のコメントが報告されました。\n{$comment->user->name}さんのコメント\n{$comment->body}");
+        return redirect()->back()->with('success', "次のコメントが報告されました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");
     }
     
     //コメントにいいねする。
@@ -107,7 +107,7 @@ class CommentsController extends Controller
             $like->save();
         }
 
-        return redirect()->back()->with('success', "以下のコメントにいいねしました。\n{$comment->user->name}さんのコメント\n{$comment->body}");
+        return redirect()->back()->with('success', "次のコメントにいいねしました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");
     }
 
     //コメントのいいねを外す。
@@ -120,6 +120,6 @@ class CommentsController extends Controller
         // いいねを取り消す
         $comment->likes()->where('user_id', Auth::id())->delete();
 
-        return redirect()->back()->with('success', "以下のコメントへのいいねを削除しました。\n{$comment->user->name}さんのコメント\n{$comment->body}");
+        return redirect()->back()->with('success', "次のコメントへのいいねを削除しました。\n{$comment->user->name}さんのコメント: \n{$comment->body}");
     }
 }
