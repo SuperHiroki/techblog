@@ -25,12 +25,21 @@
                         <img src="{{ $article->thumbnail_url }}" alt="Thumbnail" style="width: 50px; height: auto;">
                         <p>Thumbnail URL: <a href="{{ $article->thumbnail_url }}">{{ $article->thumbnail_url }}</a></p>
                     </div>
-                    <div class="m-2">
-                        <form action="{{ route('articles.destroy', $article) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete Article</button>
-                        </form>
+                    <div class="m-2 d-flex align-items-center justify-content-center">
+                        <div class="mx-2">
+                            <form action="{{ route('articles.destroy', $article) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete Article</button>
+                            </form>
+                        </div>
+                        <div class="mx-2">
+                            <form action="{{ route('articles.update', $article) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-primary">Update Article</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

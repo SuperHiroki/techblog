@@ -38,12 +38,21 @@
                     <a href="{{ $author->favicon_url }}">{{ $author->favicon_url }}</a>
                 </p>
             @endif
-            <div class="m-4">
-                <form action="{{ route('authors.destroy', $author) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete Author</button>
-                </form>
+            <div class="m-4 d-flex align-items-center justify-content-center">
+                <div class="mx-2">
+                    <form action="{{ route('authors.destroy', $author) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete Author</button>
+                    </form>
+                </div>
+                <div class="mx-2">
+                    <form action="{{ route('authors.update', $author) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-primary">Update Author</button>
+                    </form>
+                </div>
             </div>
         </div>
     @endforeach

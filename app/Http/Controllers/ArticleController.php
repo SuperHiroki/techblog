@@ -24,6 +24,7 @@ class ArticleController extends Controller
         });
     }
 
+    //記事一覧のページを表示する。
     public function index()
     {
         // 著者、いいね数、ブックマーク数、アーカイブ数を含めて記事を取得
@@ -31,37 +32,53 @@ class ArticleController extends Controller
         return view('articles.index', compact('articles'));
     }
 
+    //記事作成フォームのページを提供する。
     public function create()
     {
         return view('articles.create');
     }
 
+    //記事を作成
     public function store(Request $request)
     {
-        //記事のリンクを取得
         $validatedData = $request->validate(['link' => 'required|url']);
     
-        //記事のリンクからその他の記事の情報をフェッチ
         try {
+            $existingArticle = Article::where('link', $validatedData['link'])->first();
+            if ($existingArticle) {
+                throw new \Exception('The article already exists.');
+            }
             $metaData = OgImageHelper::getMetaData($validatedData['link']);
-        } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
-        }
-
-        //ドメインチェックと同時にDBに記事を追加する。
-        try {
             Article::createWithDomainCheck($validatedData['link'], $metaData);
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }
+        return redirect()->route('articles.index')->with('success', "記事が作成されました。");
+    }
     
-        return redirect()->route('articles.index');
-    } 
-
+    //記事の削除
     public function destroy(Article $article)
     {
         $article->delete();
-        return redirect()->route('articles.index');
+        return redirect()->route('articles.index')->with('success', "記事が削除されました。");
+    }
+
+    //記事の更新
+    public function update(Article $article)
+    {
+        $articlelink = $article->link;
+
+        try {
+            $existingArticle = Article::where('link', $articlelink)->first();
+            if (!$existingArticle) {
+                throw new \Exception('The article does not exists.');
+            }
+            $metaData = OgImageHelper::getMetaData($articlelink);
+            Article::updateArticle($articlelink, $metaData);
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
+        return redirect()->route('articles.index')->with('success', "記事が更新されました。");
     }
 }
 

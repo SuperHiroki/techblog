@@ -11,6 +11,28 @@ class Author extends Model
 {
     protected $fillable = ['name', 'link', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
+    // 著者情報を更新するメソッド
+    public static function updateAuthor($link, $metaData)
+    {
+        // リンクに一致する著者を検索
+        $author = self::where('link', $link)->first();
+
+        // 著者が見つからない場合は例外を投げる
+        if (!$author) {
+            throw new \Exception('No author found with the provided link.');
+        }
+
+        // メタデータを用いて著者情報を更新
+        $author->update([
+            'name' => $metaData['name'] ?? $author->name,
+            'rss_link' => $metaData['rss_link'] ?? $author->rss_link,
+            'thumbnail_url' => $metaData['thumbnail_url'] ?? $author->thumbnail_url,
+            'favicon_url' => $metaData['favicon_url'] ?? $author->favicon_url
+        ]);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     //著者が書いた記事一覧。Articleインスタンスのリスト。
     public function articles()
     {

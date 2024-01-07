@@ -4,22 +4,59 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class Article extends Model
 {
-    protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url'];
+    protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url', 'created_date', 'updated_date'];
 
     // 記事を作成するメソッド（ドメインチェック含む）
-    public static function createWithDomainCheck($link, $metaData)
+    public static function createWithDomainCheck($link, $metaData, $pubDate = null)
     {
+        // 既に存在するリンクかチェック
+        if (self::existsWithLink($link)) {
+            // 既に存在する場合は例外を投げるか、もしくはnullを返して処理を中断
+            throw new \Exception('The article with the provided link already exists.');
+        }
+
         $author = self::domainCheck($link);
 
         if (!$author) {
             throw new \Exception('The provided link domain does not match any author domain.');
         }
 
-        return self::createArticle($link, $metaData, $author);
+        return self::createArticle($link, $metaData, $author, $pubDate);
     }
+
+    // 記事を更新するメソッド
+    public static function updateArticle($link, $metaData, $pubDate = null)
+    {
+        $article = self::where('link', $link)->first();
+
+        if (!$article) {
+            throw new \Exception('No article found with the provided link.');
+        }
+
+        $updateFields = [
+            'title' => $metaData['title'],
+            'description' => $metaData['description'],
+            'thumbnail_url' => $metaData['thumbnail_url'],
+            'favicon_url' => $metaData['favicon_url'],
+        ];
+
+        // created_at カラムの更新（nullでない場合のみ）
+        if (!is_null($pubDate)) {
+            $updateFields['created_date'] = $pubDate;
+        }
+        
+        $article->update($updateFields);
+    }
+
+    // 記事が既に存在するかどうかをチェックするメソッド
+    public static function existsWithLink($link)
+    {
+        return self::where('link', $link)->exists();
+    }    
 
     //ドメインチェック
     public static function domainCheck($link)
@@ -29,7 +66,7 @@ class Article extends Model
     }
 
     //記事レコードを作成する
-    public static function createArticle($link, $metaData, $author)
+    public static function createArticle($link, $metaData, $author, $pubDate = null)
     {
         return self::create([
             'title' => $metaData['title'],
@@ -38,6 +75,7 @@ class Article extends Model
             'favicon_url' => $metaData['favicon_url'],
             'link' => $link,
             'author_id' => $author->id,
+            'created_date' => $pubDate,
         ]);
     }
 
