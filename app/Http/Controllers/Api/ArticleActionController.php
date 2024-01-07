@@ -44,9 +44,9 @@ class ArticleActionController extends Controller
             if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
                 $result['archive'] = true;
             }
-            return response()->json(array_merge(['message' => 'Fetched Successfully.'], $result));
+            return response()->json(array_merge(['message' => 'Fetched user state successfully.'], $result));
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
 
@@ -63,7 +63,7 @@ class ArticleActionController extends Controller
             $article->likeUsers()->attach(Auth::id());
             return response()->json(['message' => 'Liked successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
 
@@ -79,7 +79,7 @@ class ArticleActionController extends Controller
             $article->likeUsers()->detach(Auth::id());
             return response()->json(['message' => 'Unliked successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
     
@@ -96,7 +96,7 @@ class ArticleActionController extends Controller
             $article->bookmarkUsers()->attach(Auth::id());
             return response()->json(['message' => 'Bookmarked successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
     
@@ -113,7 +113,7 @@ class ArticleActionController extends Controller
             $article->bookmarkUsers()->detach(Auth::id());
             return response()->json(['message' => 'Unbookmarked successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
 
@@ -130,7 +130,7 @@ class ArticleActionController extends Controller
             $article->archiveUsers()->attach(Auth::id());
             return response()->json(['message' => 'Archived successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }    
     
@@ -147,7 +147,7 @@ class ArticleActionController extends Controller
             $article->archiveUsers()->detach(Auth::id());
             return response()->json(['message' => 'Unarchived successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => "Error in processing request: {$e->getMessage()}"], 500);
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
 }

@@ -14,6 +14,7 @@ use App\Helpers\ParameterValidationHelper;
 
 class ArchivesController extends Controller
 {
+    //マイページのユーザがアーカイブしている記事一覧を取得する。
     public function index(Request $request, User $user)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
@@ -26,7 +27,7 @@ class ArchivesController extends Controller
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
             $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'archives')->paginate(5);
-        } catch (InvalidArgumentException $e) {
+        } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
         

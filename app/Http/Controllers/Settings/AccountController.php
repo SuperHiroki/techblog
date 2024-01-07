@@ -20,8 +20,10 @@ class AccountController extends Controller
     // アカウント設定の更新
     public function update(Request $request, User $user)
     {
+        Log::info('CCCCCCCCCCCCCCCCCCCCCCCC');
         if ($request["password"] !== $request["password_confirmation"]){
-            return back()->with('error', 'パスワードが一致しません。');
+            Log::info('XXXXXXXXXXXXXXXXXX');
+            return back()->with('error', 'パスワードとパスワード確認の入力が一致しません。');
         }
     
         // バリデーションルールを定義
@@ -46,7 +48,6 @@ class AccountController extends Controller
 
         $user->update($validateData);
 
-        return redirect()->route('settings.account', $user->id)
-                         ->with('success', 'アカウント設定が更新されました。');
+        return redirect()->route('settings.account', $user->id)->with('success', 'アカウント設定が更新されました。');
     }
 }

@@ -14,6 +14,7 @@ use App\Helpers\ParameterValidationHelper;
 
 class RecommendedAuthorsController extends Controller
 {
+    //著者一覧を表示する。
     public function index(Request $request)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
@@ -27,7 +28,7 @@ class RecommendedAuthorsController extends Controller
 
             //ソート
             $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null));
-        } catch (InvalidArgumentException $e) {
+        } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
 
@@ -42,7 +43,7 @@ class RecommendedAuthorsController extends Controller
         }
         $user = Auth::user();
         $user->followedAuthors()->attach($author);
-        return back();
+        return back()->with('success', "{$author->name}をフォローしました。");
     }
 
     //フォロー解除
@@ -53,7 +54,7 @@ class RecommendedAuthorsController extends Controller
         }
         $user = Auth::user();
         $user->followedAuthors()->detach($author);
-        return back();
+        return back()->with('success', "{$author->name}のフォローを外しました。");
     }
 }
 

@@ -41,7 +41,6 @@ class PublicProfileController extends Controller
         
         $profile->update($validateData);
         
-        return redirect()->route('settings.public-profile', $user->id)
-                         ->with('success', 'プロフィールが更新されました。');
+        return redirect()->route('settings.public-profile', $user->id)->with('success', 'プロフィールが更新されました。');
     }    
 }

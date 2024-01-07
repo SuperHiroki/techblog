@@ -15,6 +15,7 @@ use App\Helpers\ParameterValidationHelper;
 
 class FollowedAuthorsController extends Controller
 {
+    //マイページのユーザがフォローしている著者一覧を表示する。
     public function index(Request $request, User $user)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
@@ -27,7 +28,7 @@ class FollowedAuthorsController extends Controller
             ParameterValidationHelper::validateParametersSortAuthors($request);
             //ソート
             $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null), $user);
-        } catch (InvalidArgumentException $e) {
+        } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
 

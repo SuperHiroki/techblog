@@ -17,7 +17,7 @@ class OgImageHelper
         $html = file_get_contents($url, false, $context);
 
         if ($html === false) {
-            throw new \Exception('LLLLLLLLLLL Unable to fetch metadata from the link.');
+            throw new \Exception('Unable to fetch metadata from the link.');
         }
 
         $doc = new DOMDocument();

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {
+    //マイページのユーザのプロフィールを取得する。
     public function index(User $user)
     {
         $profile = UserProfile::firstOrCreate(

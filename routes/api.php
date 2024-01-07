@@ -35,7 +35,7 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
         return response()->json([
-            'token' => Auth::user()->createToken('api-token')->plainTextToken
+            'token' => Auth::user()->createToken('apiToken')->plainTextToken
         ]);
     }
 

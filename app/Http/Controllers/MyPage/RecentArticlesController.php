@@ -14,6 +14,7 @@ use App\Helpers\ParameterValidationHelper;
 
 class RecentArticlesController extends Controller
 {
+    //マイページのユーザがフォローしている著者の新着記事を取得する。
     public function index(Request $request, User $user, string $days)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
@@ -26,7 +27,7 @@ class RecentArticlesController extends Controller
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
             $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'recent-articles', $days)->paginate(5);
-        } catch (InvalidArgumentException $e) {
+        } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
 
