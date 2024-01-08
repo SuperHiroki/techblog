@@ -116,10 +116,10 @@ function updateSort() {
 
     if (sort=='trending_followers' || sort=='trending_articles') {
         document.getElementById("trendingOption").style.display = "block";
-        location = "{{ route('recommended-authors') }}?sort=" + sort + "&period=" + period;
+        location = window.location.pathname + "?sort=" + sort + "&period=" + period;
     } else if(sort=='followers' || sort=='articles' || sort=='alphabetical') {
         document.getElementById("trendingOption").style.display = "none";
-        location = "{{ route('recommended-authors') }}?sort=" + sort;
+        location = window.location.pathname + "?sort=" + sort;
     }
 }
 
