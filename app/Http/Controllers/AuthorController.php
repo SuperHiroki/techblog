@@ -53,23 +53,31 @@ class AuthorController extends Controller
         $validatedData = $request->validate([
             'link' => 'required|url'
         ]);
-    
-        // リンクからメタデータを取得
-        $metaData = OgImageHelper::getMetaData($validatedData['link']);
-        if ($metaData) {
-            $validatedData = array_merge($validatedData, $metaData);
+
+        try {
+            // リンクからメタデータを取得
+            $metaData = OgImageHelper::getMetaData($validatedData['link']);
+            if ($metaData) {
+                $validatedData = array_merge($validatedData, $metaData);
+            }
+        
+            Author::createAuthor($validatedData['link'], $validatedData);
+        
+            return redirect()->route('authors.index')->with('success', "著者が作成されました。");
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
         }
-    
-        Author::create($validatedData);
-    
-        return redirect()->route('authors.index')->with('success', "著者が作成されました。");
     }
 
     //著者を削除する。
     public function destroy(Author $author)
     {
-        $author->delete();
-        return redirect()->route('authors.index')->with('success', "著者が削除されました。");
+        try {
+            $author->delete();
+            return redirect()->route('authors.index')->with('success', "著者が削除されました。");
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     //著者を更新する。

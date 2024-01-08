@@ -11,6 +11,28 @@ class Author extends Model
 {
     protected $fillable = ['name', 'link', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
+    //著者を作成する。
+    public static function createAuthor($link, $metaData)
+    {
+        // リンクに一致する著者がすでにいたら例外を投げる。
+        $author = self::where('link', $link)->first();
+        if ($author) {
+            throw new \Exception('The author already exists.');
+        }
+
+        $author = new self();
+
+        $author->name = $metaData['title'] ?? $link;//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
+        $author->link = $link; 
+        $author->rss_link = $metaData['rss_link'] ?? null;
+        $author->thumbnail_url = $metaData['thumbnail_url'] ?? null;
+        $author->favicon_url = $metaData['favicon_url'] ?? null;
+
+        $author->save();
+
+        return $author;
+    }
+
     // 著者情報を更新するメソッド
     public static function updateAuthor($link, $metaData)
     {
@@ -24,7 +46,7 @@ class Author extends Model
 
         // メタデータを用いて著者情報を更新
         $author->update([
-            'name' => $metaData['name'] ?? $author->name,
+            'name' => $metaData['title'] ?? $link,//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
             'rss_link' => $metaData['rss_link'] ?? $author->rss_link,
             'thumbnail_url' => $metaData['thumbnail_url'] ?? $author->thumbnail_url,
             'favicon_url' => $metaData['favicon_url'] ?? $author->favicon_url

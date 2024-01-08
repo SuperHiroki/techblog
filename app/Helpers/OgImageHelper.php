@@ -15,23 +15,40 @@ class OgImageHelper
         );
         
         $html = file_get_contents($url, false, $context);
-
         if ($html === false) {
             throw new \Exception('Unable to fetch metadata from the link.');
         }
+        
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
+        //エンコードの形式がutf-8以外の時も対応できるように。
+        $html = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html;
+
+        /*
+        //エンコードの形式がutf-8以外の時も対応できるように。
+        $detectedEncoding = mb_detect_encoding($html, mb_detect_order(), true);
+        if ($detectedEncoding !== 'UTF-8') {
+            $html = mb_convert_encoding($html, 'UTF-8', $detectedEncoding);
+            Log::info('DDDDDDDDDDDDDDDDD');
+        }else{
+            Log::info('TTTTTTTTTTTTT');
+        }
+        */
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
 
         $doc = new DOMDocument();
         @$doc->loadHTML($html);
         $xpath = new DOMXPath($doc);
 
-        $metaData = [];
-        $metaData['name'] = self::getContent($xpath, '//meta[@property="og:title"]') ?: self::getContent($xpath, '//title');
-        $metaData['title'] = self::getContent($xpath, '//meta[@property="og:title"]') ?: self::getContent($xpath, '//title');
-        $metaData['thumbnail_url'] = self::getContent($xpath, '//meta[@property="og:image"]/@content');
-        $metaData['favicon_url'] = self::getContent($xpath, '//link[@rel="icon"]/@href') ?: self::getContent($xpath, '//link[@rel="shortcut icon"]/@href');
-        $metaData['rss_link'] = self::getContent($xpath, '//link[@type="application/rss+xml"]/@href');
-        $metaData['description'] = self::getContent($xpath, '//meta[@property="og:description"]/@content') ?: self::getContent($xpath, '//meta[@name="description"]/@content');
 
+        $metaData = [];
+        $metaData['title'] = self::getContent($xpath, '//meta[@property="og:title"]/@content') ?: self::getContent($xpath, '//title') ?: self::getContent($xpath, '//meta[@property="twitter:title"]/@content') ?: self::getContent($xpath, '//meta[@property="og:site_name"]/@content');
+        $metaData['thumbnail_url'] = self::getContent($xpath, '//meta[@property="og:image"]/@content') ?: self::getContent($xpath, '//meta[@property="twitter:image"]/@content') ?: self::getContent($xpath, '//meta[@property="og:image:secure_url"]/@content') ?: self::getContent($xpath, '//meta[@itemprop="image"]/@content');
+        $metaData['favicon_url'] = self::getContent($xpath, '//link[@rel="icon"]/@href') ?: self::getContent($xpath, '//link[@rel="shortcut icon"]/@href') ?: self::getContent($xpath, '//link[@rel="apple-touch-icon"]/@href');
+        $metaData['rss_link'] = self::getContent($xpath, '//link[@type="application/rss+xml"]/@href') ?: self::getContent($xpath, '//link[@type="application/atom+xml"]/@href');
+        $metaData['description'] = self::getContent($xpath, '//meta[@property="og:description"]/@content') ?: self::getContent($xpath, '//meta[@name="description"]/@content') ?: self::getContent($xpath, '//meta[@name="twitter:description"]/@content');
+        
         return $metaData;
     }
 

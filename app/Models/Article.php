@@ -38,7 +38,7 @@ class Article extends Model
         }
 
         $updateFields = [
-            'title' => $metaData['title'],
+            'title' => $metaData['title'] ?? $link,//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
             'description' => $metaData['description'],
             'thumbnail_url' => $metaData['thumbnail_url'],
             'favicon_url' => $metaData['favicon_url'],
@@ -69,7 +69,7 @@ class Article extends Model
     public static function createArticle($link, $metaData, $author, $pubDate = null)
     {
         return self::create([
-            'title' => $metaData['title'],
+            'title' => $metaData['title'] ?? $link,//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
             'description' => $metaData['description'],
             'thumbnail_url' => $metaData['thumbnail_url'],
             'favicon_url' => $metaData['favicon_url'],
