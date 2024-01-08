@@ -39,8 +39,8 @@ class UpdateArticles extends Command
                         // 既に存在するかどうかをチェック
                         $existingArticle = Article::where('link', $articleData->link)->first();
                         if ($existingArticle) {
-                            $this->info("QQQQQQQQQQQ Article [{$author->name}({$existingArticle->created_date}): {$existingArticle->title}] already exists. Update to article [{$author->name}({$articleData->pubDate}): {$articleData->title}].");
-                            Log::info("QQQQQQQQQQQ Article [{$author->name}({$existingArticle->created_date}): {$existingArticle->title}] already exists. Update to article [{$author->name}({$articleData->pubDate}): {$articleData->title}].");
+                            $this->info("DDDDDDDDDDDDDDD Article [{$author->name}({$existingArticle->created_date}): {$existingArticle->title}] already exists. Update to article [{$author->name}({$articleData->pubDate}): {$articleData->title}].");
+                            Log::info("DDDDDDDDDDDDDDD Article [{$author->name}({$existingArticle->created_date}): {$existingArticle->title}] already exists. Update to article [{$author->name}({$articleData->pubDate}): {$articleData->title}].");
                             $metaData = OgImageHelper::getMetaData($articleData->link);
                             Article::updateArticle($articleData->link, $metaData, $articleData->pubDate);
                         }else{
