@@ -149,11 +149,12 @@
 <script>
 //ページネーション用
 document.addEventListener('DOMContentLoaded', function () {
+
     let currentPage = 1;
     const lastPage = {{ $articles->lastPage() }};
 
     window.addEventListener('scroll', () => {
-        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+        if (window.scrollY + window.innerHeight + 1 >= document.documentElement.scrollHeight) {
             loadMoreArticles();
         }
     });
