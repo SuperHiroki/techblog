@@ -18,7 +18,7 @@
 </div>
 
 @if($authors->count() > 0)
-<div class="row">
+<div class="row" id="authors-container">
     @foreach ($authors as $author)
         <div class="col-md-12 mb-3">
             <div class="card shadow">
@@ -91,6 +91,42 @@
     <p>記事がありません</p>
 </div>
 @endif
+
+<script>
+//ページネーション用
+document.addEventListener('DOMContentLoaded', function () {
+
+    let currentPage = 1;
+    const lastPage = {{ $authors->lastPage() }};
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY + window.innerHeight + 1 >= document.documentElement.scrollHeight) {
+            loadMoreArticles();
+        }
+    });
+
+    function loadMoreArticles() {
+        if (currentPage >= lastPage) {
+            return; // 全てのページが読み込まれた場合は何もしない
+        }
+
+        console.log('YYYYYYYYYYYYYYYY 無限スクロール');
+
+        currentPage++;
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', currentPage);
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(data, "text/html");
+                const newArticles = htmlDocument.getElementById("authors-container").innerHTML;
+                document.getElementById("authors-container").innerHTML += newArticles;
+            });
+    }
+});
+</script>
 
 <script>
 // ページ読み込み時に適切なオプションを選択

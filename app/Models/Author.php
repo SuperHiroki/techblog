@@ -129,6 +129,6 @@ class Author extends Model
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
         }
 
-        return $query->get();
+        return $query;
     }
 }
