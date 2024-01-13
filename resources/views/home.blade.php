@@ -28,13 +28,11 @@
                 Chrome拡張機能によって、その記事を読んでいる時にその場で、いいね（ブックマーク、アーカイブ）をつけることができます。
             </p>
             <div class="my-4">
-                <h4><strong>Chrome拡張機能をダウンロード</strong></h4>
+                <h4><strong>Chrome拡張機能を追加</strong></h4>
+                <img src='images/home/icon128.png' />
                 <p class="mb-0">
-                    クロムストアへの公開は現在申請中なので、下記のレポジトリをダウンロードして手動で導入してください。
+                    <a href='https://chromewebstore.google.com/detail/super-tech-blog-managemen/ifjnihabankpolcmpljkencogpeffjdm' target='_blank' class="mb-0" style="color: blue; text-decoration: underline;">こちら</a>から拡張機能を追加してください。
                 </p>
-                <a href='https://github.com/SuperHiroki/chrome-extensions-for-techblog' target='_blank' class="mb-0" style="color: blue; text-decoration: underline;">
-                    https://github.com/SuperHiroki/chrome-extensions-for-techblog
-                </a>
             </div>
             <div class="my-4">
                 <h4><strong>Chrome拡張機能の使い方</strong></h4>
