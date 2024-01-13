@@ -18,6 +18,9 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/home/favicon.png') }}">
+
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
 <body>
