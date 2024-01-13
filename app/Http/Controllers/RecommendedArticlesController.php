@@ -27,7 +27,7 @@ class RecommendedArticlesController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'),  $request->input('period'))->paginate(5);
+            $articles = Article::sortBy($request->input('sort'),  $request->input('period'))->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
