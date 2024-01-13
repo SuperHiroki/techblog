@@ -27,7 +27,7 @@ class FollowedAuthorsController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortAuthors($request);
             //ソート
-            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null), $user);
+            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null), $user)->paginate(20);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
