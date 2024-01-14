@@ -18,9 +18,21 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
+    <!--****************************************************************************-->
+    <!--****************************************************************************-->
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/home/favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/base/favicon.png') }}">
 
+    <!-- Open Graph / Facebook -->
+    <meta property="og:image" content="{{ asset('images/base/thumbnail.png') }}" />
+
+    <!-- Twitter -->
+    <meta name="twitter:image" content="{{ asset('images/base/thumbnail.png') }}" />
+
+    <!-- Description -->
+    <meta name="description" content="当ウェブアプリを使用することで、簡単にテックブログを管理することができます。">
+
+    <!--CSS-->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
 <body>

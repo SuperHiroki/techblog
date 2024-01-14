@@ -29,7 +29,7 @@
             </p>
             <div class="my-4">
                 <h4><strong>Chrome拡張機能を追加</strong></h4>
-                <img src='images/home/icon128.png' />
+                <img src='images/home/extension_icon128.png' />
                 <p class="mb-0">
                     <a href='https://chromewebstore.google.com/detail/super-tech-blog-managemen/ifjnihabankpolcmpljkencogpeffjdm' target='_blank' class="mb-0" style="color: blue; text-decoration: underline;">こちら</a>から拡張機能を追加してください。
                 </p>
