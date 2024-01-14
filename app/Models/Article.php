@@ -165,16 +165,16 @@ class Article extends Model
         // 通常の並び替え処理
         switch ($sort) {
             case 'likes':
-                $query->withCount('likeUsers')->orderBy('like_users_count', 'desc');
+                $query->withCount('likeUsers')->orderBy('like_users_count', 'desc')->orderBy('id');
                 break;
             case 'bookmarks':
-                $query->withCount('bookmarkUsers')->orderBy('bookmark_users_count', 'desc');
+                $query->withCount('bookmarkUsers')->orderBy('bookmark_users_count', 'desc')->orderBy('id');
                 break;
             case 'archives':
-                $query->withCount('archiveUsers')->orderBy('archive_users_count', 'desc');
+                $query->withCount('archiveUsers')->orderBy('archive_users_count', 'desc')->orderBy('id');
                 break;
             case 'newest':
-                $query->orderBy('created_date', 'desc');
+                $query->orderBy('created_date', 'desc')->orderBy('id');
                 break;
             default:
                 if (str_starts_with($sort, 'trending_')) {
@@ -188,7 +188,7 @@ class Article extends Model
                                 elseif ($period === 'month') $q->where($pivotTable . '.created_at', '>=', now()->subMonth());
                                 elseif ($period === 'year') $q->where($pivotTable . '.created_at', '>=', now()->subYear());
                             }])
-                            ->orderBy($countColumn, 'desc');
+                            ->orderBy($countColumn, 'desc')->orderBy('id');
                 }
                 break;
         }
