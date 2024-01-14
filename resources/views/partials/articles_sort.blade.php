@@ -37,7 +37,8 @@
                     <div class="col-md-8" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
                         <div class="card-body">
                             <h5 class="card-title">{{ $article->title }}</h5>
-                            <small class="card-text">{{ Str::limit($article->description, 100, '...') }}</small>
+                            <p class="card-text"><strong>{{ $article->author->name }}</strong></p>
+                            <p class="card-text"><small>{{ Str::limit($article->description, 100, '...') }}</small></p>
                             <div class="d-flex justify-content-center mb-2">
                                 <img src="{{ $article->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
                                 <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
@@ -80,7 +81,7 @@
                         </div>
                     </div>
                     <div class="col-md-2 gap-2 d-flex align-items-center justify-content-center mb-2">
-                        @if($article->likeUsers->isNotEmpty())
+                        @if($article->liked_by_current_user)
                             <div class="custom-icon">
                                 <form id="unlike-form-{{ $article->id }}" action="{{ route('unlike-article', $article->id) }}" method="POST" style="display: none;">
                                     @csrf
@@ -96,7 +97,7 @@
                                 <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $article->id }}').submit();" alt="unlike" style="cursor: pointer; width: 30px; height: auto;">
                             </div>
                         @endif
-                        @if($article->bookmarkUsers->isNotEmpty())
+                        @if($article->bookmarked_by_current_user)
                             <div class="custom-icon">
                                 <form id="unbookmark-form-{{ $article->id }}" action="{{ route('unbookmark-article', $article->id) }}" method="POST" style="display: none;">
                                     @csrf
@@ -112,7 +113,7 @@
                                 <img src="{{ asset('images/like_bookmark_archive/unbookmark.png') }}" onclick="document.getElementById('bookmark-form-{{ $article->id }}').submit();" alt="unbookmark" style="cursor: pointer; width: 30px; height: auto;">
                             </div>
                         @endif
-                        @if($article->archiveUsers->isNotEmpty())
+                        @if($article->archived_by_current_user)
                             <div class="custom-icon">
                                 <form id="unarchive-form-{{ $article->id }}" action="{{ route('unarchive-article', $article->id) }}" method="POST" style="display: none;">
                                     @csrf

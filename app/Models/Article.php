@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -108,8 +109,14 @@ class Article extends Model
     // 記事の並び替え
     public function scopeSortBy($query, $sort, $period, $user = null, $action = null, $spanFilter = null)
     {
+        $query->with([
+            //これはなくても機能するが、Lagzy LoadによるN+1問題を防ぐために、ここでEager Loadしておく。
+            'author',
+        ]);
+
         // それぞれの記事に対して、いいね（ブックマーク、アーカイブ）をしているかどうか。現在ログイン中のユーザを使う。
         $currentUser = auth()->user();
+        /*
         if ($currentUser) {
             $query->with([
                 //likeUsersは、ログイン中のユーザがいいねをつけている場合はそのユーザのインスタンスが取得できるが、いいねをつけていない場合はnullが取得できるはず。
@@ -124,6 +131,36 @@ class Article extends Model
                 'archiveUsers' => function ($q) use ($currentUser) {
                     $q->where('users.id', $currentUser->id)->select('users.id');
                 }
+            ]);
+        }
+        */
+        if ($currentUser) {
+            // 現在のユーザーがいいねをしたかどうかを判定するサブクエリ
+            $likedByCurrentUserSubQuery = DB::table('article_user_like')
+                ->select(DB::raw(1))
+                ->where('user_id', $currentUser->id)
+                ->whereColumn('article_id', 'articles.id')
+                ->limit(1);
+
+            // 現在のユーザーがブックマークをしたかどうかを判定するサブクエリ
+            $bookmarkedByCurrentUserSubQuery = DB::table('article_user_bookmark')
+                ->select(DB::raw(1))
+                ->where('user_id', $currentUser->id)
+                ->whereColumn('article_id', 'articles.id')
+                ->limit(1);
+
+            // 現在のユーザーがアーカイブをしたかどうかを判定するサブクエリ
+            $archivedByCurrentUserSubQuery = DB::table('article_user_archive')
+                ->select(DB::raw(1))
+                ->where('user_id', $currentUser->id)
+                ->whereColumn('article_id', 'articles.id')
+                ->limit(1);
+
+            // サブクエリをメインクエリに結合
+            $query->addSelect([
+                'liked_by_current_user' => $likedByCurrentUserSubQuery,
+                'bookmarked_by_current_user' => $bookmarkedByCurrentUserSubQuery,
+                'archived_by_current_user' => $archivedByCurrentUserSubQuery
             ]);
         }
 
