@@ -8,6 +8,13 @@
 @section('content')
 <div class="card mb-8 shadow">
     <div class="card-body">
+        <div class="m-2">
+            @if($user->icon_image)
+                <img src="{{ asset('storage/' . $user->icon_image) }}" alt="No Image" style="max-width: 60px; max-height: 60px; border-radius: 50%; margin-right: 5px;">
+            @else
+                <img src="{{ asset('images/default-icons/avatar.png')}}" alt="No Image" style="max-width: 60px; max-height: 60px; border-radius: 50%; margin-right: 5px;">
+            @endif
+        </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item"><strong>Name:</strong> {{ $profile->name }}</li>
             <li class="list-group-item"><strong>Self-Introduction:</strong> {{ $profile->bio }}</li>

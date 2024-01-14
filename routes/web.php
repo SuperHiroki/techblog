@@ -75,7 +75,7 @@ Route::post('/like-comment/{comment}', [App\Http\Controllers\CommentsController:
 Route::delete('/unlike-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'unlike'])->name('unlike-comment');
 
 #マイページ
-Route::prefix('my-page')->middleware('auth')->group(function () {
+Route::prefix('my-page')->group(function () {
     //プロフィール
     Route::get('/{user}/profile', 'App\Http\Controllers\MyPage\ProfileController@index')->name('my-page.profile');
     //フォロー中の著者一覧
@@ -100,6 +100,6 @@ Route::prefix('settings')->middleware('auth')->group(function () {
     Route::patch('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
 });
 
-#APIトークンを取得するためのページ
+#APIトークンを取得するためのページ(すぐにリダイレクトされるから一瞬のみしか表示されない。)
 Route::get('/api-token-get-redirect', [App\Http\Controllers\ApiTokenGetRedirectController::class, 'index'])->name('api-token-get-redirect');
 

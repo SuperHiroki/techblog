@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 
@@ -11,9 +12,34 @@ use App\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
-    // アカウント設定を表示
+    //もちろんログインしている必要がある。
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!Auth::check()) {
+                return response('Please login.', 403);
+            }
+
+            return $next($request);
+        });
+    }
+
+    //設定ページなので、その人のみアクセス可能です。
+    private function userCheck(User $user){
+        if($user->id !== Auth::user()->id){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    // アカウント設定のページを表示
     public function index(User $user)
     {
+        if(!$this->userCheck($user)){
+            return response('You cannot view this page.', 403);
+        }
+
         return view('settings.account', compact('user'));
     }
 
