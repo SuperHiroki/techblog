@@ -116,11 +116,11 @@ class Author extends Model
 
         // 並び替え
         if ($sort === 'alphabetical') {
-            $query->orderBy('name');
+            $query->orderBy('name')->orderBy('id');
         } elseif ($sort=='followers' || $sort=='trending_followers'){
-            $query->orderBy('fc.followers_count', 'desc');
+            $query->orderBy('fc.followers_count', 'desc')->orderBy('id');
         } elseif ($sort=='articles' || $sort=='trending_articles'){
-            $query->orderBy('ac.articles_count', 'desc');
+            $query->orderBy('ac.articles_count', 'desc')->orderBy('id');
         }
     
         //現在ログイン中のユーザが、それぞれの著者に対してフォローしているかどうかのカラムを追加。「WHERE author_id = authors.id AND user_id = {$loggedInUserId}」の部分で存在すれば現在のログイン中のユーザがそのレコードの著者をフォローしているということになる。
