@@ -65,7 +65,7 @@ class Article extends Model
     {
         //ドメインチェック
         $articleDomain = parse_url($link, PHP_URL_HOST);
-        $author = Author::where('link_common', '=', "{$articleDomain}")->first();
+        $author = Author::where('link_common', '=', "{$articleDomain}")->first(); // 「Author::where('link_common', 'like', "%{$articleDomain}%")->first()」だと、「zenn.dev/」の一致で著者と判断してしまう可能性があるのでダメ。
         if ($author) {
             return $author;
         }
@@ -73,8 +73,8 @@ class Article extends Model
         //authorsテーブルのlink_commonカラムのいずれかを、$linkが先頭に含んでいれば、trueを返すロジックを書きたい。
         $authors = Author::all();
         foreach ($authors as $author) {
-            // link_commonが$linkの先頭部分と一致するかチェック
-            if (strpos($link, $author->link_common) === 0) {
+            // link_commonが$linkのどこかに一致するかチェック
+            if (strpos($link, $author->link_common) !== false) { // 先頭部分を確認するなら「if (strpos($link, $author->link_common) === 0)」を使うのがいいと考える。
                 return $author;
             }
         }

@@ -59,12 +59,12 @@ CREATE TABLE `articles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
-  `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `link` varchar(767) COLLATE utf8mb4_unicode_ci NOT NULL,
   `author_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `favicon_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `thumbnail_url` text COLLATE utf8mb4_unicode_ci,
+  `favicon_url` text COLLATE utf8mb4_unicode_ci,
   `created_date` date DEFAULT NULL,
   `updated_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -80,11 +80,12 @@ CREATE TABLE `authors` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `link_common` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `rss_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `favicon_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `thumbnail_url` text COLLATE utf8mb4_unicode_ci,
+  `favicon_url` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `authors_name_unique` (`name`),
   UNIQUE KEY `authors_link_unique` (`link`),
@@ -296,3 +297,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2023_12_30_051
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2023_12_30_051421_create_user_profiles_table',18);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2024_01_01_010611_add_name_to_user_profiles_table',19);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2024_01_03_011824_add_unique_constraint_to_comment_likes',20);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2024_01_13_190303_update_articles_table',21);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (43,'2024_01_14_185212_add_link_common_to_authors_table',22);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (44,'2024_01_14_192328_make_link_common_not_nullable',23);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (45,'2024_01_14_210037_change_links_columns_to_text_in_articles_table',24);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2024_01_14_215154_change_links_columns_to_text_in_authors_table',25);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2024_01_14_215504_change_links_columns_to_text_in_authors_table_second_version',26);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2024_01_15_020539_set_thumbnail_and_favicon_to_nullable_in_authors_table',27);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2024_01_15_021229_set_thumbnail_and_favicon_to_nullable_in_articles_table',28);
