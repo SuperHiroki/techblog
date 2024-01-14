@@ -9,12 +9,16 @@
             <h2>{{ $author->name }}</h2>
             <p>
                 <strong>Link:</strong> 
-                <a href="{{ $author->link }}">{{ $author->link }}</a>
+                <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
+            </p>
+            <p>
+                <strong>Link共通部分:</strong> 
+                <a href="{{ $author->link_common }}" target="_blank">{{ $author->link_common }}</a>
             </p>
             @if ($author->rss_link)
                 <p>
                     <strong>RSS Link:</strong> 
-                    <a href="{{ $author->rss_link }}">{{ $author->rss_link }}</a>
+                    <a href="{{ $author->rss_link }}" target="_blank">{{ $author->rss_link }}</a>
                 </p>
             @endif
             <hr>
@@ -28,14 +32,14 @@
                 <img src="{{ $author->thumbnail_url }}" alt="No Image" style="width: 100px; height: auto;">
                 <p>
                     <strong>Thumbnail uRL:</strong> 
-                    <a href="{{ $author->thumbnail_url }}">{{ $author->thumbnail_url }}</a>
+                    <a href="{{ $author->thumbnail_url }}" target="_blank">{{ $author->thumbnail_url }}</a>
                 </p>
             @endif
             @if ($author->favicon_url)
                 <img src="{{ $author->favicon_url }}" alt="No Image" style="width: 50px; height: auto;">
                 <p>
                     <strong>Favicon URL:</strong> 
-                    <a href="{{ $author->favicon_url }}">{{ $author->favicon_url }}</a>
+                    <a href="{{ $author->favicon_url }}" target="_blank">{{ $author->favicon_url }}</a>
                 </p>
             @endif
             <div class="m-4 d-flex align-items-center justify-content-center">

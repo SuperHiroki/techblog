@@ -12,7 +12,7 @@ class Article extends Model
     protected $fillable = ['title', 'description', 'link', 'author_id', 'thumbnail_url', 'favicon_url', 'created_date', 'updated_date'];
 
     // 記事を作成するメソッド（ドメインチェック含む）
-    public static function createWithDomainCheck($link, $metaData, $pubDate = null)
+    public static function createWithHasAuthorCheck($link, $metaData, $pubDate = null)
     {
         // 既に存在するリンクかチェック
         if (self::existsWithLink($link)) {
@@ -20,7 +20,8 @@ class Article extends Model
             throw new \Exception('The article with the provided link already exists.');
         }
 
-        $author = self::domainCheck($link);
+        //リンクに対応する著者が存在するかどうかの確認。
+        $author = self::hasAuthorCheck($link);
 
         if (!$author) {
             throw new \Exception('The provided link domain does not match any author domain.');
@@ -45,7 +46,7 @@ class Article extends Model
             'favicon_url' => $metaData['favicon_url'],
         ];
 
-        // created_at カラムの更新（nullでない場合のみ）
+        // created_date カラムの更新（nullでない場合のみ）
         if (!is_null($pubDate)) {
             $updateFields['created_date'] = $pubDate;
         }
@@ -59,11 +60,26 @@ class Article extends Model
         return self::where('link', $link)->exists();
     }    
 
-    //ドメインチェック
-    public static function domainCheck($link)
+    //リンクに対応する著者が存在するかどうかの確認。
+    public static function hasAuthorCheck($link)
     {
+        //ドメインチェック
         $articleDomain = parse_url($link, PHP_URL_HOST);
-        return Author::where('link', 'LIKE', "%{$articleDomain}%")->first();
+        $author = Author::where('link_common', '=', "{$articleDomain}")->first();
+        if ($author) {
+            return $author;
+        }
+
+        //authorsテーブルのlink_commonカラムのいずれかを、$linkが先頭に含んでいれば、trueを返すロジックを書きたい。
+        $authors = Author::all();
+        foreach ($authors as $author) {
+            // link_commonが$linkの先頭部分と一致するかチェック
+            if (strpos($link, $author->link_common) === 0) {
+                return $author;
+            }
+        }
+
+        return null;
     }
 
     //記事レコードを作成する

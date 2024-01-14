@@ -42,6 +42,8 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate(['link' => 'required|url']);
+
+        Log::info('UUUUUUUUUUUUUU');
     
         try {
             $existingArticle = Article::where('link', $validatedData['link'])->first();
@@ -49,7 +51,7 @@ class ArticleController extends Controller
                 throw new \Exception('The article already exists.');
             }
             $metaData = OgImageHelper::getMetaData($validatedData['link']);
-            Article::createWithDomainCheck($validatedData['link'], $metaData);
+            Article::createWithHasAuthorCheck($validatedData['link'], $metaData);
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }

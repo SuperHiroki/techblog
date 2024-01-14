@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class Author extends Model
 {
-    protected $fillable = ['name', 'link', 'rss_link', 'thumbnail_url', 'favicon_url'];
+    protected $fillable = ['name', 'link', 'link_common', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
     //著者を作成する。
-    public static function createAuthor($link, $metaData)
+    public static function createAuthor($link, $link_common, $metaData)
     {
         // リンクに一致する著者がすでにいたら例外を投げる。
         $author = self::where('link', $link)->first();
@@ -24,6 +24,7 @@ class Author extends Model
 
         $author->name = $metaData['title'] ?? $link;//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
         $author->link = $link; 
+        $author->link_common = $link_common; 
         $author->rss_link = $metaData['rss_link'] ?? null;
         $author->thumbnail_url = $metaData['thumbnail_url'] ?? null;
         $author->favicon_url = $metaData['favicon_url'] ?? null;

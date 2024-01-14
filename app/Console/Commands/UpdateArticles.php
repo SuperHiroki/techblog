@@ -47,7 +47,7 @@ class UpdateArticles extends Command
                             $this->info("QQQQQQQQQQQ Article [{$author->name}({$articleData->pubDate}): {$articleData->title}] created.");
                             Log::info("QQQQQQQQQQQ Article [{$author->name}({$articleData->pubDate}): {$articleData->title}] created.");
                             $metaData = OgImageHelper::getMetaData($articleData->link);
-                            Article::createWithDomainCheck($articleData->link, $metaData, $articleData->pubDate);
+                            Article::createWithHasAuthorCheck($articleData->link, $metaData, $articleData->pubDate);
                         }
                     } catch (\Exception $e) {
                         $this->error("WWWWWWWWWWWWWWWWWWWWWWWWW Error in add article: " . $e->getMessage());

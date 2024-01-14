@@ -51,7 +51,8 @@ class AuthorController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'link' => 'required|url'
+            'link' => 'required|url',
+            'link_common' => 'required'
         ]);
 
         try {
@@ -61,7 +62,7 @@ class AuthorController extends Controller
                 $validatedData = array_merge($validatedData, $metaData);
             }
         
-            Author::createAuthor($validatedData['link'], $validatedData);
+            Author::createAuthor($validatedData['link'], $validatedData['link_common'], $validatedData);
         
             return redirect()->route('authors.index')->with('success', "著者が作成されました。");
         } catch (\Exception $e) {

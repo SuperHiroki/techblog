@@ -10,6 +10,10 @@
             @csrf
             <label for="link">Link:</label>
             <input type="url" name="link" id="link" class="form-control border border-secondary" required>
+
+            <label for="link_common">Link共通部分:</label>
+            <input type="url" name="link_common" id="link_common" class="form-control border border-secondary" required>
+            
             <button class="btn btn-primary my-2" type="submit">Add Author</button>
         </form>
     </div>
