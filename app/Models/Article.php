@@ -116,24 +116,6 @@ class Article extends Model
 
         // それぞれの記事に対して、いいね（ブックマーク、アーカイブ）をしているかどうか。現在ログイン中のユーザを使う。
         $currentUser = auth()->user();
-        /*
-        if ($currentUser) {
-            $query->with([
-                //likeUsersは、ログイン中のユーザがいいねをつけている場合はそのユーザのインスタンスが取得できるが、いいねをつけていない場合はnullが取得できるはず。
-                'likeUsers' => function ($q) use ($currentUser) {
-                    $q->where('users.id', $currentUser->id)->select('users.id');
-                },
-                //likeUsersの時と考え方は同じ。
-                'bookmarkUsers' => function ($q) use ($currentUser) {
-                    $q->where('users.id', $currentUser->id)->select('users.id');
-                },
-                //likeUsersの時と考え方は同じ。
-                'archiveUsers' => function ($q) use ($currentUser) {
-                    $q->where('users.id', $currentUser->id)->select('users.id');
-                }
-            ]);
-        }
-        */
         if ($currentUser) {
             // 現在のユーザーがいいねをしたかどうかを判定するサブクエリ
             $likedByCurrentUserSubQuery = DB::table('article_user_like')
