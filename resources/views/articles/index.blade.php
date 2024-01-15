@@ -2,7 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <a class="m-4" href="{{ route('articles.create') }}">Add a New Article</a>
+    <div style="margin-top: 120px;">
+        <a class="m-4" href="{{ route('articles.create') }}">Add a New Article</a>
+    </div>
     <h1 class="mx-4 mt-4 mb-2">Articles List</h1>
     <div class="row">
         @foreach ($articles as $article)

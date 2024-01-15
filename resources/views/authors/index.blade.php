@@ -2,7 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <a class="m-4" href="{{ route('authors.create') }}">Add a New Author</a>
+    <div style="margin-top: 120px;">
+        <a class="m-4" href="{{ route('authors.create') }}">Add a New Author</a>
+    </div>
     <h1 class="mx-4 mt-4 mb-2">Authors List</h1>
     @foreach ($authors as $author)
         <div class="author card shadow m-4 p-4">
