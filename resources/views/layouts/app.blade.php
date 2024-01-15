@@ -37,54 +37,66 @@
 </head>
 <body>
 <div id="app">
-    <div class="container">
-        <!-- ヘッダー -->
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-lg rounded p-2 m-2">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- 左側の要素 -->
-                <ul class="navbar-nav me-auto p-1 pt-2">
-                    <li class="nav-item p-1">
-                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home' , '/') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
-                    </li>
-                    <li class="nav-item p-1">
-                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
-                    </li>
-                    <li class="nav-item p-1">
-                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-articles') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
-                    </li>
-                    <li class="nav-item p-1">
-                        <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
-                    </li>
-                </ul>
-                <!-- 右側の認証などの要素 -->
-                @include('partials.auth-dropdown')
-            </div>
-        </nav>
 
-        <!--フラッシュメッセージ-->
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+    <!-- 共通部分 -->
+    <div class="custom-fixed-header">
+        <div class="container">
+            <!-- ヘッダー -->
+            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-lg rounded p-2 mx-2">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- 左側の要素 -->
+                    <ul class="navbar-nav me-auto p-1 pt-2">
+                        <li class="nav-item p-1">
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home' , '/') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
+                        </li>
+                        <li class="nav-item p-1">
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
+                        </li>
+                        <li class="nav-item p-1">
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-articles') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
+                        </li>
+                        <li class="nav-item p-1">
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
+                        </li>
+                    </ul>
+                    <!-- 右側の認証などの要素 -->
+                    @include('partials.auth-dropdown')
+                </div>
+            </nav>
 
+            <!--フラッシュメッセージ-->
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- ページ固有の追加ヘッダー -->
+            <div id="page-specific-header">
+                @yield('page-specific-header')
+            </div>
+        </div>
+    </div>
+
+    <!--ページごとに異なる-->
+    <div class="container" id="containerId">
         <!-- タイトル -->
         @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments"))
         <div class="row justify-content-center m-4">
@@ -108,9 +120,6 @@
         </div>
         @endif
 
-        <!-- ページ固有の追加ヘッダー -->
-        @yield('page-specific-header')
-
         <!--ページそれぞれの中身-->
         <main>
             @yield('content')
@@ -118,5 +127,19 @@
 
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var subHeader = document.getElementById('page-specific-header');
+    var containerId = document.getElementById('containerId');
+
+    if (subHeader && subHeader.innerHTML.trim() !== '') {
+        containerId.style.paddingTop = '240px';
+    } else {
+        containerId.style.paddingTop = '70px';
+    }
+});
+</script>
+
 </body>
 </html>

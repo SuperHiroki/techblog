@@ -1,7 +1,7 @@
 <!-- resources/views/layouts/partials/auth-dropdown.blade.php -->
 
 <!-- ナビゲーションバーの右側の要素 -->
-<ul class="navbar-nav ml-auto">
+<ul class="navbar-nav mr-8">
     @guest
         <li class="nav-item dropdown">
             <a id="navbarDropdown_guest" class="nav-link dropdown-toggle p-1 custom-header-link rounded" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

@@ -45,7 +45,7 @@
 </nav>
 
 <!-- タイトル -->
-<div class="row justify-content-center m-4">
+<div class="row justify-content-center mx-4 my-2">
     <div class="col-lg-8">
         <div class="card text-white bg-secondary shadow">
             <div class="card-body d-flex align-items-center justify-content-center">
