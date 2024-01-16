@@ -38,6 +38,7 @@
                 <h4><strong>Chrome拡張機能の使い方</strong></h4>
                 <p class="mb-1">
                      本機能を起動するためのショートカットは、<strong>Ctrl+Shift+X</strong> です。<br>
+                     記事を読んでいる時にその場で、いいね（ブックマーク、アーカイブ）をつけることができます。<br>
                      下記にデモ動画があります。
                 </p>
                 <div class="card mb-2" style="max-width: 620px;">
