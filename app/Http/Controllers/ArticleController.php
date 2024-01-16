@@ -42,8 +42,6 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate(['link' => 'required|url']);
-
-        Log::info('UUUUUUUUUUUUUU');
     
         try {
             $existingArticle = Article::where('link', $validatedData['link'])->first();

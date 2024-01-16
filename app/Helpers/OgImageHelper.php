@@ -37,8 +37,6 @@ class OgImageHelper
         if (!str_starts_with($metaData['rss_link'], 'https://' . parse_url($url, PHP_URL_HOST))) {
             $metaData['rss_link'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['rss_link'];
         }
-
-        Log::info('FFFFFF ' . $metaData['rss_link']);
         
         return $metaData;
     }
