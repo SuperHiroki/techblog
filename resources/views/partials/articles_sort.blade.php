@@ -81,22 +81,47 @@
                         </div>
                     </div>
                     <div class="col-md-2 gap-2 d-flex align-items-center justify-content-center mb-2">
-                        @if($article->liked_by_current_user)
+                        <!--同期通信-->
+                        <div style="display:none">
+                            @if($article->liked_by_current_user)
+                                <div class="custom-icon">
+                                    <form id="unlike-form-{{ $article->id }}" action="{{ route('unlike-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $article->id }}').submit();" alt="like" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @else
+                                <div class="custom-icon">
+                                    <form id="like-form-{{ $article->id }}" action="{{ route('like-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $article->id }}').submit();" alt="unlike" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @endif
+                        </div>
+                        <!--非同期通信-->
+                        <div>
                             <div class="custom-icon">
-                                <form id="unlike-form-{{ $article->id }}" action="{{ route('unlike-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $article->id }}').submit();" alt="like" style="cursor: pointer; width: 30px; height: auto;">
+                            <img style="display:{{$article->liked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                    src="images/like_bookmark_archive/like.png"
+                                    class="icon-to-add-func" 
+                                    data-article-id="{{ $article->id }}" 
+                                    data-article-title="{{ $article->title }}"
+                                    data-type="like"
+                                    alt="like">
+
+                            <img style="display:{{$article->liked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                    src="images/like_bookmark_archive/unlike.png"
+                                    class="icon-to-add-func"
+                                    data-article-id="{{ $article->id }}"
+                                    data-article-title="{{ $article->title }}"
+                                    data-type="unlike"
+                                    alt="unlike">
                             </div>
-                        @else
-                            <div class="custom-icon">
-                                <form id="like-form-{{ $article->id }}" action="{{ route('like-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $article->id }}').submit();" alt="unlike" style="cursor: pointer; width: 30px; height: auto;">
-                            </div>
-                        @endif
+                        </div>
+
+
                         @if($article->bookmarked_by_current_user)
                             <div class="custom-icon">
                                 <form id="unbookmark-form-{{ $article->id }}" action="{{ route('unbookmark-article', $article->id) }}" method="POST" style="display: none;">
@@ -215,4 +240,79 @@ function updateSort() {
 
 // ページ読み込み時に初期化
 window.onload = initializeSortOptions;
+</script>
+
+<script>
+//定数
+const baseUrl ="https://techblog.shiroatohiro.com"
+const apiToken = localStorage.getItem('apiToken');
+
+//非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+document.querySelectorAll('.icon-to-add-func').forEach(item => {
+    item.addEventListener('click', function() {
+        //記事ID
+        const articleId = this.dataset.articleId;
+        //記事タイトル
+        const articleTitle = this.dataset.articleTitle;
+        //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+        const clickedType = this.dataset.type;
+        let type;
+        if(clickedType.startsWith('un')){
+            type = clickedType.substring(2);
+        }else{
+            type = 'un' + clickedType;
+        }
+        //URL
+        const url = `${baseUrl}/api/${type}-article/${articleId}`;
+        //手法
+        let method;
+        if(type.startsWith('un')){
+            method = 'DELETE';
+        }else{
+            method = 'POST';
+        }
+
+        fetch(url, {
+            method: method, 
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Authorization': `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
+            },
+            //body: JSON.stringify({ articleId: articleId })//いらないね。
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(data => {
+            if (data.message) {
+                toggleChecked(articleId, type);
+                document.getElementById('flush_success').innerText = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('flush_error').value = error;
+        });
+    });
+});
+
+//いいね（ブックマーク、アーカイブ）の表示を変更する。
+function toggleChecked(articleId, type) {
+    const icons = document.querySelectorAll('.icon-to-add-func[data-article-id="' + articleId + '"]');
+
+    icons.forEach(function(icon) {
+        if(icon.dataset.type === type){
+            icon.style.display = 'block'; 
+        }else{
+            icon.style.display = 'none'; 
+        }
+    });
+}
+
+
 </script>

@@ -88,6 +88,12 @@
                 </div>
             @endif
 
+            <!--非同期処理で起きるフラッシュメッセージ-->
+            <div id="flush_error" class="alert alert-danger flush_msg" style="display:none">
+            </div>
+            <div id="flush_success" class="alert alert-success flush_msg" style="display:none">
+            </div>
+
             <!-- ページ固有の追加ヘッダー -->
             <div id="page-specific-header">
                 @yield('page-specific-header')
@@ -129,6 +135,7 @@
 </div>
 
 <script>
+//コンテンツが固定されたヘッダーに隠れないようにする。
 document.addEventListener("DOMContentLoaded", function() {
     var subHeader = document.getElementById('page-specific-header');
     var containerId = document.getElementById('containerId');
@@ -139,6 +146,29 @@ document.addEventListener("DOMContentLoaded", function() {
         containerId.style.paddingTop = '70px';
     }
 });
+
+
+
+// 監視することでフラッシュメッセージの表示と非表示を切り替える。
+const targetNodes = document.getElementsByClassName('flush_msg');
+const config = { characterData: true, childList: true, subtree: true };
+const callback = function(mutationsList, observer) {
+    for(let mutation of mutationsList) {
+        if(mutation.type === 'childList' || mutation.type === 'characterData') {
+            const target = mutation.target;
+            if(target.textContent.length === 0) {
+                target.style.display = 'none';
+            } else {
+                target.style.display = 'block';
+            }
+        }
+    }
+};
+const observer = new MutationObserver(callback);
+Array.from(targetNodes).forEach(node => {
+    observer.observe(node, config);
+});
+
 </script>
 
 </body>

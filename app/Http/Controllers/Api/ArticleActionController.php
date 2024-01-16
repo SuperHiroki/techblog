@@ -150,4 +150,31 @@ class ArticleActionController extends Controller
             return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //記事にいいねを付ける
+    public function likeArticleFromArticleId(Article $article){
+        try {
+            if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already liked.'], 409);
+            }
+            $article->likeUsers()->attach(Auth::id());
+            return response()->json(['message' => "{$article->title}にいいねをつけました。"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
+
+    //記事からいいねを外す
+    public function unlikeArticleFromArticleId(Article $article){
+        try {
+            if (!$article->likeUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already unliked.'], 409);
+            }
+            $article->likeUsers()->detach(Auth::id());
+            return response()->json(['message' => "{$article->title}からいいねを削除しました。"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
 }
