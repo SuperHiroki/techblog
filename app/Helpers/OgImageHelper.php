@@ -19,23 +19,8 @@ class OgImageHelper
             throw new \Exception('Unable to fetch metadata from the link.');
         }
         
-        ///////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////
         //エンコードの形式がutf-8以外の時も対応できるように。
         $html = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html;
-
-        /*
-        //エンコードの形式がutf-8以外の時も対応できるように。
-        $detectedEncoding = mb_detect_encoding($html, mb_detect_order(), true);
-        if ($detectedEncoding !== 'UTF-8') {
-            $html = mb_convert_encoding($html, 'UTF-8', $detectedEncoding);
-            Log::info('DDDDDDDDDDDDDDDDD');
-        }else{
-            Log::info('TTTTTTTTTTTTT');
-        }
-        */
-        ///////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////
 
         $doc = new DOMDocument();
         @$doc->loadHTML($html);
@@ -48,6 +33,12 @@ class OgImageHelper
         $metaData['favicon_url'] = self::getContent($xpath, '//link[@rel="icon"]/@href') ?: self::getContent($xpath, '//link[@rel="shortcut icon"]/@href') ?: self::getContent($xpath, '//link[@rel="apple-touch-icon"]/@href');
         $metaData['rss_link'] = self::getContent($xpath, '//link[@type="application/rss+xml"]/@href') ?: self::getContent($xpath, '//link[@type="application/atom+xml"]/@href');
         $metaData['description'] = self::getContent($xpath, '//meta[@property="og:description"]/@content') ?: self::getContent($xpath, '//meta[@name="description"]/@content') ?: self::getContent($xpath, '//meta[@name="twitter:description"]/@content');
+
+        if (!str_starts_with($metaData['rss_link'], 'https://' . parse_url($url, PHP_URL_HOST))) {
+            $metaData['rss_link'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['rss_link'];
+        }
+
+        Log::info('FFFFFF ' . $metaData['rss_link']);
         
         return $metaData;
     }
