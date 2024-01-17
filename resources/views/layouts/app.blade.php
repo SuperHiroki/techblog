@@ -151,17 +151,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // 監視することでフラッシュメッセージの表示と非表示を切り替える。
 const targetNodes = document.getElementsByClassName('flush_msg');
-const config = { characterData: true, childList: true, subtree: true };
+const config = { characterData: true, childList: true };
 const callback = function(mutationsList, observer) {
     for(let mutation of mutationsList) {
-        if(mutation.type === 'childList' || mutation.type === 'characterData') {
+        if(mutation.type === 'characterData' || mutation.type === 'childList') {
             const target = mutation.target;
             if(target.textContent.length === 0) {
                 target.style.display = 'none';
             } else {
                 target.style.display = 'block';
             }
-            adjustPaddingTop();
         }
     }
 };
@@ -169,6 +168,21 @@ const observer = new MutationObserver(callback);
 Array.from(targetNodes).forEach(node => {
     observer.observe(node, config);
 });
+
+
+//動的に、コンテンツが固定されたヘッダーに隠れないようにする。
+const config_fixed_header = { attributes: true, characterData: true, childList: true, subtree: true };
+const callback_fixed_header = function(mutationsList, observer) {
+    for(let mutation of mutationsList) {
+        if(mutation.type === 'attributes' || mutation.type === 'characterData'  || mutation.type === 'childList' || mutation.type === 'subtree') {
+            const target = mutation.target;
+            adjustPaddingTop();
+        }
+    }
+};
+const observer_fixed_header = new MutationObserver(callback_fixed_header);
+observer_fixed_header.observe(fixedHeader, config_fixed_header);
+
 
 </script>
 
