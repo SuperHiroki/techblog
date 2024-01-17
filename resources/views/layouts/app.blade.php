@@ -39,7 +39,7 @@
 <div id="app">
 
     <!-- 共通部分 -->
-    <div class="custom-fixed-header">
+    <div id="fixed-header" class="custom-fixed-header">
         <div class="container">
             <!-- ヘッダー -->
             <nav class="navbar navbar-expand-md navbar-light bg-white shadow-lg rounded p-2 mx-2">
@@ -67,9 +67,14 @@
                 </div>
             </nav>
 
+            <!-- ページ固有の追加ヘッダー -->
+            <div id="page-specific-header">
+                @yield('page-specific-header')
+            </div>
+
             <!--フラッシュメッセージ-->
             @if ($errors->any())
-                <div class="alert alert-danger">
+                <div class="alert alert-danger flush_msg">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -78,31 +83,25 @@
                 </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger">
+                <div class="alert alert-danger flush_msg">
                     {{ session('error') }}
                 </div>
             @endif
             @if (session('success'))
-                <div class="alert alert-success">
+                <div class="alert alert-success flush_msg">
                     {{ session('success') }}
                 </div>
             @endif
 
             <!--非同期処理で起きるフラッシュメッセージ-->
-            <div id="flush_error" class="alert alert-danger flush_msg" style="display:none">
-            </div>
-            <div id="flush_success" class="alert alert-success flush_msg" style="display:none">
-            </div>
+            <div id="flush_error" class="alert alert-danger flush_msg" style="display:none"></div>
+            <div id="flush_success" class="alert alert-success flush_msg" style="display:none"></div>
 
-            <!-- ページ固有の追加ヘッダー -->
-            <div id="page-specific-header">
-                @yield('page-specific-header')
-            </div>
         </div>
     </div>
 
     <!--ページごとに異なる-->
-    <div class="container" id="containerId">
+    <div class="container" id="containerContent">
         <!-- タイトル -->
         @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments"))
         <div class="row justify-content-center m-4">
@@ -135,19 +134,20 @@
 </div>
 
 <script>
-//コンテンツが固定されたヘッダーに隠れないようにする。
+//ヘッダーとコンテンツ
+var fixedHeader = document.getElementById('fixed-header');
+var containerContent = document.getElementById('containerContent');
+
+//コンテントのpaddingTopを再調整する関数
+function adjustPaddingTop(){
+    var headerHeight = fixedHeader.offsetHeight;
+    containerContent.style.paddingTop = headerHeight + 'px';
+}
+
+//ページ読み込み時に、コンテンツが固定されたヘッダーに隠れないようにする。
 document.addEventListener("DOMContentLoaded", function() {
-    var subHeader = document.getElementById('page-specific-header');
-    var containerId = document.getElementById('containerId');
-
-    if (subHeader && subHeader.innerHTML.trim() !== '') {
-        containerId.style.paddingTop = '240px';
-    } else {
-        containerId.style.paddingTop = '70px';
-    }
+    adjustPaddingTop();
 });
-
-
 
 // 監視することでフラッシュメッセージの表示と非表示を切り替える。
 const targetNodes = document.getElementsByClassName('flush_msg');
@@ -161,6 +161,7 @@ const callback = function(mutationsList, observer) {
             } else {
                 target.style.display = 'block';
             }
+            adjustPaddingTop();
         }
     }
 };
