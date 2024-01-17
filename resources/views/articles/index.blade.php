@@ -29,7 +29,7 @@
                     </div>
                     <div class="m-2 d-flex align-items-center justify-content-center">
                         <div class="mx-2">
-                            <form action="{{ route('articles.destroy', $article) }}" method="POST">
+                            <form action="{{ route('articles.destroy', $article) }}" method="POST" onsubmit="return confirmDelete()">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete Article</button>
@@ -48,3 +48,9 @@
         @endforeach
     </div>
 @endsection
+
+<script>
+function confirmDelete() {
+    return confirm('Are you sure you want to delete this author?');
+}
+</script>

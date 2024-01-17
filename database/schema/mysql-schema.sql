@@ -70,7 +70,7 @@ CREATE TABLE `articles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `articles_link_unique` (`link`),
   KEY `articles_author_id_foreign` (`author_id`),
-  CONSTRAINT `articles_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`)
+  CONSTRAINT `articles_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `authors`;
@@ -305,3 +305,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2024_01_14_215
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2024_01_14_215504_change_links_columns_to_text_in_authors_table_second_version',26);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2024_01_15_020539_set_thumbnail_and_favicon_to_nullable_in_authors_table',27);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2024_01_15_021229_set_thumbnail_and_favicon_to_nullable_in_articles_table',28);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2024_01_17_182936_add_cascade_to_articles_author_id_foreign',29);

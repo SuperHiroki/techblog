@@ -48,9 +48,9 @@ class Author extends Model
         // メタデータを用いて著者情報を更新
         $author->update([
             'name' => $metaData['title'] ?? $link,//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
-            'rss_link' => $metaData['rss_link'] ?? $author->rss_link,
-            'thumbnail_url' => $metaData['thumbnail_url'] ?? $author->thumbnail_url,
-            'favicon_url' => $metaData['favicon_url'] ?? $author->favicon_url
+            'rss_link' => $metaData['rss_link'] ?? null,
+            'thumbnail_url' => $metaData['thumbnail_url'] ?? null,
+            'favicon_url' => $metaData['favicon_url'] ?? null
         ]);
     }
 

@@ -34,8 +34,15 @@ class OgImageHelper
         $metaData['rss_link'] = self::getContent($xpath, '//link[@type="application/rss+xml"]/@href') ?: self::getContent($xpath, '//link[@type="application/atom+xml"]/@href');
         $metaData['description'] = self::getContent($xpath, '//meta[@property="og:description"]/@content') ?: self::getContent($xpath, '//meta[@name="description"]/@content') ?: self::getContent($xpath, '//meta[@name="twitter:description"]/@content');
 
-        if (!str_starts_with($metaData['rss_link'], 'https://' . parse_url($url, PHP_URL_HOST))) {
+        //「Favicon URL: /favicon.ico」のように相対パスで指定されている場合があるので。
+        if ($metaData['rss_link'] != null && !str_starts_with($metaData['rss_link'], 'https://')) {
             $metaData['rss_link'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['rss_link'];
+        }
+        if (!str_starts_with($metaData['thumbnail_url'], 'https://')) {
+            $metaData['thumbnail_url'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['thumbnail_url'];
+        }
+        if (!str_starts_with($metaData['favicon_url'], 'https://')) {
+            $metaData['favicon_url'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['favicon_url'];
         }
         
         return $metaData;
