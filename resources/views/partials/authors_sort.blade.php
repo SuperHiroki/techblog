@@ -67,18 +67,33 @@
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
                         <div class="m-1">
-                            @if($author->is_followed)
-                                <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">フォロー解除</button>
-                                </form>
-                            @else
-                                <form action="{{ route('follow-author', $author->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success btn-sm">フォロー</button>
-                                </form>
-                            @endif
+                            <!---------------------------------------------------------------------------------------->
+                            <!--同期処理-->
+                            <div style="display:none">
+                                @if($author->is_followed)
+                                    <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">フォロー解除</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('follow-author', $author->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">フォロー</button>
+                                    </form>
+                                @endif
+                            </div>
+                            <!--非同期処理-->
+                            <div>
+                                <button style="display:{{$author->is_followed ? 'block' : 'none'}}"
+                                        data-author-id="{{$author->id}}" 
+                                        data-target-type = "unfollow"
+                                        class="button-to-add-func btn btn-danger btn-sm">フォロー解除</button>
+                                <button style="display:{{$author->is_followed ? 'none' : 'block'}}"
+                                        data-author-id="{{$author->id}}" 
+                                        data-target-type = "follow"
+                                        class="button-to-add-func btn btn-success btn-sm">フォロー</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,4 +176,79 @@ function updateSort() {
 
 // ページ読み込み時に初期化
 window.onload = initializeSortOptions;
+</script>
+
+<script>
+//定数
+const baseUrl ="https://techblog.shiroatohiro.com"
+const apiToken = localStorage.getItem('apiToken');
+
+//非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+document.querySelectorAll('.button-to-add-func').forEach(item => {
+    item.addEventListener('click', function() {
+        //記事ID
+        const authorId = this.dataset.authorId;
+        //リクエストの種類（フォロー、アンフォロー）
+        const targetType = this.dataset.targetType;
+        //URL
+        const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
+        //手法
+        let method;
+        if(targetType.startsWith('un')){
+            method = 'DELETE';
+        }else{
+            method = 'POST';
+        }
+
+        fetch(url, {
+            method: method, 
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Authorization': `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
+            },
+            //body: JSON.stringify({ authorId: authorId })//いらないね。
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.statusText);
+            }
+        })
+        .then(data => {
+            if (data.message) {
+                toggleChecked(authorId, targetType);
+                document.getElementById('flush_success').innerText = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('flush_error').innerText = error;
+        });
+    });
+});
+
+//follow, unfollowのボタン表示を変更する。
+function toggleChecked(authorId, targetType) {
+    const buttons = document.querySelectorAll('.button-to-add-func[data-author-id="' + authorId + '"]');
+
+    buttons.forEach(function(button) {
+        if(button.dataset.targetType === revserseType(targetType)){
+            button.style.display = 'block'; 
+        }else if (button.dataset.targetType === targetType){
+            button.style.display = 'none'; 
+        }
+    });
+}
+
+//タイプを逆転する。
+function revserseType(type){
+    if(type.startsWith('un')){
+        reversedType = type.substring(2);
+    }else{
+        reversedType = 'un' + type;
+    }
+    return reversedType
+}
 </script>

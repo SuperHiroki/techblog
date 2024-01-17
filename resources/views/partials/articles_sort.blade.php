@@ -109,15 +109,13 @@
                                         src="/images/like_bookmark_archive/like.png"
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="like"
+                                        data-current-type="like"
                                         alt="like">
                                 <img style="display:{{$article->liked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unlike.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="unlike"
+                                        data-current-type="unlike"
                                         alt="unlike">
                             </div>
                         </div>
@@ -149,15 +147,13 @@
                                         src="/images/like_bookmark_archive/bookmark.png"
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="bookmark"
+                                        data-current-type="bookmark"
                                         alt="bookmark">
                                 <img style="display:{{$article->bookmarked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unbookmark.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="unbookmark"
+                                        data-current-type="unbookmark"
                                         alt="unbookmark">
                             </div>
                         </div>
@@ -189,15 +185,13 @@
                                         src="/images/like_bookmark_archive/archive.png"
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="archive"
+                                        data-current-type="archive"
                                         alt="archive">
                                 <img style="display:{{$article->archived_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unarchive.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
-                                        data-article-title="{{ $article->title }}"
-                                        data-type="unarchive"
+                                        data-current-type="unarchive"
                                         alt="unarchive">
                             </div>
                         </div>
@@ -299,21 +293,14 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
     item.addEventListener('click', function() {
         //記事ID
         const articleId = this.dataset.articleId;
-        //記事タイトル
-        const articleTitle = this.dataset.articleTitle;
         //いいね（ブックマーク、アーカイブ）などのリクエストの種類
-        const clickedType = this.dataset.type;
-        let type;
-        if(clickedType.startsWith('un')){
-            type = clickedType.substring(2);
-        }else{
-            type = 'un' + clickedType;
-        }
+        const currentType = this.dataset.currentType;
+        const resultType = revserseType(currentType);
         //URL
-        const url = `${baseUrl}/api/${type}-article/${articleId}`;
+        const url = `${baseUrl}/api/${resultType}-article/${articleId}`;
         //手法
         let method;
-        if(type.startsWith('un')){
+        if(resultType.startsWith('un')){
             method = 'DELETE';
         }else{
             method = 'POST';
@@ -337,7 +324,7 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
         })
         .then(data => {
             if (data.message) {
-                toggleChecked(articleId, clickedType, type);
+                toggleChecked(articleId, currentType, resultType);
                 document.getElementById('flush_success').innerText = data.message;
             }
         })
@@ -349,17 +336,25 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
 });
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
-function toggleChecked(articleId, clickedType, type) {
+function toggleChecked(articleId, currentType, resultType) {
     const icons = document.querySelectorAll('.icon-to-add-func[data-article-id="' + articleId + '"]');
 
     icons.forEach(function(icon) {
-        if(icon.dataset.type === type){
+        if(icon.dataset.currentType === resultType){
             icon.style.display = 'block'; 
-        }else if (icon.dataset.type === clickedType){
+        }else if (icon.dataset.currentType === currentType){
             icon.style.display = 'none'; 
         }
     });
 }
 
-
+//タイプを逆転する。
+function revserseType(type){
+    if(type.startsWith('un')){
+        reversedType = type.substring(2);
+    }else{
+        reversedType = 'un' + type;
+    }
+    return reversedType
+}
 </script>
