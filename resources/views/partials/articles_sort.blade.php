@@ -81,6 +81,8 @@
                         </div>
                     </div>
                     <div class="col-md-2 gap-2 d-flex align-items-center justify-content-center mb-2">
+                        <!----------------------------------------------------------------------->
+                        <!--いいね-->
                         <!--同期通信-->
                         <div style="display:none">
                             @if($article->liked_by_current_user)
@@ -103,57 +105,102 @@
                         <!--非同期通信-->
                         <div>
                             <div class="custom-icon">
-                            <img style="display:{{$article->liked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
-                                    src="images/like_bookmark_archive/like.png"
-                                    class="icon-to-add-func" 
-                                    data-article-id="{{ $article->id }}" 
-                                    data-article-title="{{ $article->title }}"
-                                    data-type="like"
-                                    alt="like">
-
-                            <img style="display:{{$article->liked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
-                                    src="images/like_bookmark_archive/unlike.png"
-                                    class="icon-to-add-func"
-                                    data-article-id="{{ $article->id }}"
-                                    data-article-title="{{ $article->title }}"
-                                    data-type="unlike"
-                                    alt="unlike">
+                                <img style="display:{{$article->liked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/like.png"
+                                        class="icon-to-add-func" 
+                                        data-article-id="{{ $article->id }}" 
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="like"
+                                        alt="like">
+                                <img style="display:{{$article->liked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/unlike.png"
+                                        class="icon-to-add-func"
+                                        data-article-id="{{ $article->id }}"
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="unlike"
+                                        alt="unlike">
                             </div>
                         </div>
-
-
-                        @if($article->bookmarked_by_current_user)
+                        <!----------------------------------------------------------------------->
+                        <!--ブックマーク-->
+                        <!--同期通信-->
+                        <div style="display:none">
+                            @if($article->bookmarked_by_current_user)
+                                <div class="custom-icon">
+                                    <form id="unbookmark-form-{{ $article->id }}" action="{{ route('unbookmark-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/bookmark.png') }}" onclick="document.getElementById('unbookmark-form-{{ $article->id }}').submit();" alt="bookmark" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @else
+                                <div class="custom-icon">
+                                    <form id="bookmark-form-{{ $article->id }}" action="{{ route('bookmark-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unbookmark.png') }}" onclick="document.getElementById('bookmark-form-{{ $article->id }}').submit();" alt="unbookmark" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @endif
+                        </div>
+                        <!--非同期通信-->
+                        <div>
                             <div class="custom-icon">
-                                <form id="unbookmark-form-{{ $article->id }}" action="{{ route('unbookmark-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/bookmark.png') }}" onclick="document.getElementById('unbookmark-form-{{ $article->id }}').submit();" alt="bookmark" style="cursor: pointer; width: 30px; height: auto;">
+                                <img style="display:{{$article->bookmarked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/bookmark.png"
+                                        class="icon-to-add-func" 
+                                        data-article-id="{{ $article->id }}" 
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="bookmark"
+                                        alt="bookmark">
+                                <img style="display:{{$article->bookmarked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/unbookmark.png"
+                                        class="icon-to-add-func"
+                                        data-article-id="{{ $article->id }}"
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="unbookmark"
+                                        alt="unbookmark">
                             </div>
-                        @else
+                        </div>
+                        <!----------------------------------------------------------------------->
+                        <!--アーカイブ-->
+                        <!--同期通信-->
+                        <div style="display:none">
+                            @if($article->archived_by_current_user)
+                                <div class="custom-icon">
+                                    <form id="unarchive-form-{{ $article->id }}" action="{{ route('unarchive-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/archive.png') }}" onclick="document.getElementById('unarchive-form-{{ $article->id }}').submit();" alt="archive" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @else
+                                <div class="custom-icon">
+                                    <form id="archive-form-{{ $article->id }}" action="{{ route('archive-article', $article->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <img src="{{ asset('images/like_bookmark_archive/unarchive.png') }}" onclick="document.getElementById('archive-form-{{ $article->id }}').submit();" alt="unarchive" style="cursor: pointer; width: 30px; height: auto;">
+                                </div>
+                            @endif
+                        </div>
+                        <!--非同期通信-->
+                        <div>
                             <div class="custom-icon">
-                                <form id="bookmark-form-{{ $article->id }}" action="{{ route('bookmark-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/unbookmark.png') }}" onclick="document.getElementById('bookmark-form-{{ $article->id }}').submit();" alt="unbookmark" style="cursor: pointer; width: 30px; height: auto;">
+                                <img style="display:{{$article->archived_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/archive.png"
+                                        class="icon-to-add-func" 
+                                        data-article-id="{{ $article->id }}" 
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="archive"
+                                        alt="archive">
+                                <img style="display:{{$article->archived_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/unarchive.png"
+                                        class="icon-to-add-func"
+                                        data-article-id="{{ $article->id }}"
+                                        data-article-title="{{ $article->title }}"
+                                        data-type="unarchive"
+                                        alt="unarchive">
                             </div>
-                        @endif
-                        @if($article->archived_by_current_user)
-                            <div class="custom-icon">
-                                <form id="unarchive-form-{{ $article->id }}" action="{{ route('unarchive-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/archive.png') }}" onclick="document.getElementById('unarchive-form-{{ $article->id }}').submit();" alt="archive" style="cursor: pointer; width: 30px; height: auto;">
-                            </div>
-                        @else
-                            <div class="custom-icon">
-                                <form id="archive-form-{{ $article->id }}" action="{{ route('archive-article', $article->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                                <img src="{{ asset('images/like_bookmark_archive/unarchive.png') }}" onclick="document.getElementById('archive-form-{{ $article->id }}').submit();" alt="unarchive" style="cursor: pointer; width: 30px; height: auto;">
-                            </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -290,7 +337,7 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
         })
         .then(data => {
             if (data.message) {
-                toggleChecked(articleId, type);
+                toggleChecked(articleId, clickedType, type);
                 document.getElementById('flush_success').innerText = data.message;
             }
         })
@@ -302,13 +349,13 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
 });
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
-function toggleChecked(articleId, type) {
+function toggleChecked(articleId, clickedType, type) {
     const icons = document.querySelectorAll('.icon-to-add-func[data-article-id="' + articleId + '"]');
 
     icons.forEach(function(icon) {
         if(icon.dataset.type === type){
             icon.style.display = 'block'; 
-        }else{
+        }else if (icon.dataset.type === clickedType){
             icon.style.display = 'none'; 
         }
     });
