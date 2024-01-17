@@ -37,3 +37,14 @@
 .container.with-subheader {
     padding-top:120px;
 }
+/*ゴミ箱に入った記事のオーバーレイ*/
+.gray-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); 
+    pointer-events: none;
+    z-index: 100;
+}

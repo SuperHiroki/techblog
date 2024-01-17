@@ -38,10 +38,10 @@ class OgImageHelper
         if ($metaData['rss_link'] != null && !str_starts_with($metaData['rss_link'], 'https://')) {
             $metaData['rss_link'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['rss_link'];
         }
-        if (!str_starts_with($metaData['thumbnail_url'], 'https://')) {
+        if ($metaData['thumbnail_url'] != null && !str_starts_with($metaData['thumbnail_url'], 'https://')) {
             $metaData['thumbnail_url'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['thumbnail_url'];
         }
-        if (!str_starts_with($metaData['favicon_url'], 'https://')) {
+        if ($metaData['favicon_url'] != null && !str_starts_with($metaData['favicon_url'], 'https://')) {
             $metaData['favicon_url'] = 'https://' . parse_url($url, PHP_URL_HOST) . $metaData['favicon_url'];
         }
         
