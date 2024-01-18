@@ -101,5 +101,5 @@ Route::prefix('settings')->middleware('auth')->group(function () {
 });
 
 #APIトークンを取得するためのページ(すぐにリダイレクトされるから一瞬のみしか表示されない。)
-Route::get('/api-token-get-redirect', [App\Http\Controllers\ApiTokenGetRedirectController::class, 'index'])->name('api-token-get-redirect');
-
+Route::get('/api-token-get-redirect', [App\Http\Controllers\ApiTokenRedirectController::class, 'get'])->name('api-token-get-redirect');
+Route::get('/api-token-throw-away-redirect', [App\Http\Controllers\ApiTokenRedirectController::class, 'throwAway'])->name('api-token-throw-away-redirect');

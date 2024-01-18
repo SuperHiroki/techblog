@@ -210,9 +210,18 @@ document.querySelectorAll('.button-to-add-func').forEach(item => {
             //body: JSON.stringify({ authorId: authorId })//いらないね。
         })
         .then(response => {
-            if (response.ok) {
-                return response.json();
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                // JSONレスポンスを解析する
+                return response.json().then(json => {
+                    if (response.ok) {
+                        return json;
+                    } else {
+                        throw new Error(json.message || response.statusText);
+                    }
+                });
             } else {
+                // JSONでない場合は、直接statusTextを使用
                 throw new Error(response.statusText);
             }
         })

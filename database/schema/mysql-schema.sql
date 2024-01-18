@@ -52,6 +52,22 @@ CREATE TABLE `article_user_like` (
   CONSTRAINT `article_user_like_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `article_user_trash`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `article_user_trash` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `article_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `article_user_trash_user_id_article_id_unique` (`user_id`,`article_id`),
+  KEY `article_user_trash_article_id_foreign` (`article_id`),
+  CONSTRAINT `article_user_trash_article_id_foreign` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `article_user_trash_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -306,3 +322,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2024_01_14_215
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2024_01_15_020539_set_thumbnail_and_favicon_to_nullable_in_authors_table',27);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2024_01_15_021229_set_thumbnail_and_favicon_to_nullable_in_articles_table',28);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2024_01_17_182936_add_cascade_to_articles_author_id_foreign',29);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2024_01_18_115614_create_article_user_trash_table',30);

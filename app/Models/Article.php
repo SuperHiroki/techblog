@@ -122,6 +122,12 @@ class Article extends Model
                     ->withTimestamps();
     }
 
+    public function trashUsers()
+    {
+        return $this->belongsToMany(User::class, 'article_user_trash')
+                    ->withTimestamps();
+    }
+
     // 記事の並び替え
     public function scopeSortBy($query, $sort, $period, $user = null, $action = null, $spanFilter = null)
     {
@@ -154,11 +160,19 @@ class Article extends Model
                 ->whereColumn('article_id', 'articles.id')
                 ->limit(1);
 
+            // 現在のユーザーが記事をゴミ箱にいれたかどうかを判定するサブクエリ
+            $trashedByCurrentUserSubQuery = DB::table('article_user_trash')
+            ->select(DB::raw(1))
+            ->where('user_id', $currentUser->id)
+            ->whereColumn('article_id', 'articles.id')
+            ->limit(1);
+
             // サブクエリをメインクエリに結合
             $query->addSelect([
                 'liked_by_current_user' => $likedByCurrentUserSubQuery,
                 'bookmarked_by_current_user' => $bookmarkedByCurrentUserSubQuery,
-                'archived_by_current_user' => $archivedByCurrentUserSubQuery
+                'archived_by_current_user' => $archivedByCurrentUserSubQuery,
+                'trashed_by_current_user' => $trashedByCurrentUserSubQuery
             ]);
         }
 

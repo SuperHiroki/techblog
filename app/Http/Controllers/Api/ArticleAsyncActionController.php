@@ -54,19 +54,6 @@ class ArticleAsyncActionController extends Controller
         }
     }
 
-    // 記事にアーカイブを追加
-    public function archiveArticleFromArticleId(Article $article){
-        try {
-            if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
-                return response()->json(['message' => 'Already archived.'], 409);
-            }
-            $article->archiveUsers()->attach(Auth::id());
-            return response()->json(['message' => "{$article->title}にアーカイブを追加しました。"]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => "{$e->getMessage()}"], 500);
-        }
-    }
-
     // 記事からブックマークを外す
     public function unbookmarkArticleFromArticleId(Article $article){
         try {
@@ -80,6 +67,19 @@ class ArticleAsyncActionController extends Controller
         }
     }
 
+    // 記事にアーカイブを追加
+    public function archiveArticleFromArticleId(Article $article){
+        try {
+            if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already archived.'], 409);
+            }
+            $article->archiveUsers()->attach(Auth::id());
+            return response()->json(['message' => "{$article->title}にアーカイブを追加しました。"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
+
     // 記事からアーカイブを外す
     public function unarchiveArticleFromArticleId(Article $article){
         try {
@@ -88,6 +88,32 @@ class ArticleAsyncActionController extends Controller
             }
             $article->archiveUsers()->detach(Auth::id());
             return response()->json(['message' => "{$article->title}からアーカイブを削除しました。"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
+
+    //記事をゴミ箱に入れる。
+    public function trashArticleFromArticleId(Article $article){
+        try {
+            if ($article->trashUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already trashed.'], 409);
+            }
+            $article->trashUsers()->attach(Auth::id());
+            return response()->json(['message' => "{$article->title}をゴミ箱にいれました。"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
+
+    // 記事からアーカイブを外す
+    public function untrashArticleFromArticleId(Article $article){
+        try {
+            if (!$article->trashUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already untrashed.'], 409);
+            }
+            $article->trashUsers()->detach(Auth::id());
+            return response()->json(['message' => "{$article->title}をゴミ箱から復元しました。"]);
         } catch (\Exception $e) {
             return response()->json(['message' => "{$e->getMessage()}"], 500);
         }

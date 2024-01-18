@@ -26,7 +26,7 @@
     @foreach ($articles as $article)
         <div class="col-md-12 mb-3">
             <div class="card shadow ">
-                <div id="for-gray-overlay" class=""></div><!--オーバーレイ-->
+                <div id="for-gray-overlay-{{$article->id}}" class="{{$article->trashed_by_current_user ? 'gray-overlay' : ''}}"></div><!--オーバーレイ-->
                 <div class="row g-0">
                     <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
                         @if($article->thumbnail_url)
@@ -81,7 +81,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2 gap-2 d-flex align-items-center justify-content-center mb-2">
+                    <div class="col-md-2 gap-0 d-flex align-items-center justify-content-center mb-2">
                         <!----------------------------------------------------------------------->
                         <!--いいね-->
                         <!--同期通信-->
@@ -194,6 +194,25 @@
                                         data-article-id="{{ $article->id }}"
                                         data-current-type="unarchive"
                                         alt="unarchive">
+                            </div>
+                        </div>
+                        <!----------------------------------------------------------------------->
+                        <!--trash-->
+                        <!--非同期通信-->
+                        <div>
+                            <div class="custom-icon">
+                                <img style="display:{{$article->trashed_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/trash.png"
+                                        class="icon-to-add-func" 
+                                        data-article-id="{{ $article->id }}" 
+                                        data-current-type="trash"
+                                        alt="trash">
+                                <img style="display:{{$article->trashed_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/untrash.png"
+                                        class="icon-to-add-func"
+                                        data-article-id="{{ $article->id }}"
+                                        data-current-type="untrash"
+                                        alt="untrash">
                             </div>
                         </div>
                     </div>
@@ -317,21 +336,31 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
             //body: JSON.stringify({ articleId: articleId })//いらないね。
         })
         .then(response => {
-            if (response.ok) {
-                return response.json();
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                // JSONレスポンスを解析する
+                return response.json().then(json => {
+                    if (response.ok) {
+                        return json;
+                    } else {
+                        throw new Error(json.message || response.statusText);
+                    }
+                });
             } else {
+                // JSONでない場合は、直接statusTextを使用
                 throw new Error(response.statusText);
             }
         })
         .then(data => {
             if (data.message) {
                 toggleChecked(articleId, currentType, resultType);
+                trashOverlay(articleId, currentType, resultType);
                 document.getElementById('flush_success').innerText = data.message;
             }
         })
         .catch(error => {
+            document.getElementById('flush_error').innerText = error;
             console.error('Error:', error);
-            document.getElementById('flush_error').value = error;
         });
     });
 });
@@ -347,6 +376,17 @@ function toggleChecked(articleId, currentType, resultType) {
             icon.style.display = 'none'; 
         }
     });
+}
+
+//ゴミ箱に入れたらオーバーレイを適用する。
+function trashOverlay(articleId, currentType, resultType) {
+    const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
+
+    if(currentType == 'trash'){
+        overlaySection.classList.remove('gray-overlay');
+    }else if(currentType == 'untrash'){
+        overlaySection.classList.add('gray-overlay');
+    }
 }
 
 //タイプを逆転する。

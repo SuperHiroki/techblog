@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -26,5 +29,19 @@ class LoginController extends Controller
 
         // トークンをセッションに保存してリダイレクト
         return redirect()->route('api-token-get-redirect')->with('api_token', $token);
+    }
+
+    //ログアウト処理をオーバーライドする
+    public function logout(Request $request)
+    {
+        Auth::guard()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect()->route('api-token-throw-away-redirect');
     }
 }

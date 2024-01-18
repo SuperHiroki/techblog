@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unbookmark-article/{article}', [ArticleAsyncActionController::class, 'unbookmarkArticleFromArticleId'])->name('api-unbookmark-article-from-article-id');
     Route::post('/archive-article/{article}', [ArticleAsyncActionController::class, 'archiveArticleFromArticleId'])->name('api-archive-article-from-article-id');
     Route::delete('/unarchive-article/{article}', [ArticleAsyncActionController::class, 'unarchiveArticleFromArticleId'])->name('api-unarchive-article-from-article-id');
+    Route::post('/trash-article/{article}', [ArticleAsyncActionController::class, 'trashArticleFromArticleId'])->name('api-trash-article-from-article-id');
+    Route::delete('/untrash-article/{article}', [ArticleAsyncActionController::class, 'untrashArticleFromArticleId'])->name('api-untrash-article-from-article-id');
     // フォローとフォロー解除のルート
     Route::post('/follow-author/{author}', [AuthorAsyncActionController::class, 'followAuthorFromAuthorId'])->name('api-follow-author-from-author-id');
     Route::delete('/unfollow-author/{author}', [AuthorAsyncActionController::class, 'unfollowAuthorFromAuthorId'])->name('api-unfollow-author-from-author-id');
