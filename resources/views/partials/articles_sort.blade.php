@@ -391,6 +391,7 @@ function trashOverlay(articleId, currentType, resultType) {
 
 //タイプを逆転する。
 function revserseType(type){
+    let reversedType;
     if(type.startsWith('un')){
         reversedType = type.substring(2);
     }else{
