@@ -34,9 +34,6 @@
 
     <!--CSS-->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-
-    <!--JJS-->
-    <!--<script src="{{ asset('js/common-async-fetch.js') }}"></script>-->
 </head>
 <body>
 <div id="app">

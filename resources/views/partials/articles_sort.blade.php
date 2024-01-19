@@ -303,70 +303,41 @@ function updateSort() {
 window.onload = initializeSortOptions;
 </script>
 
-<script>
-//定数
-const baseUrl ="https://techblog.shiroatohiro.com"
-const apiToken = localStorage.getItem('apiToken');
 
+<!--非同期でいいね（ブックマーク、アーカイブ）をつけるための補助メソッド-->
+<script src="{{ asset('js/common-async-fetch.js') }}"></script>
+<script>
 //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
 document.querySelectorAll('.icon-to-add-func').forEach(item => {
-    item.addEventListener('click', function() {
-        //記事ID
-        const articleId = this.dataset.articleId;
-        //いいね（ブックマーク、アーカイブ）などのリクエストの種類
-        const currentType = this.dataset.currentType;
-        const resultType = revserseType(currentType);
-        //URL
-        const url = `${baseUrl}/api/${resultType}-article/${articleId}`;
-        //手法
-        let method;
-        if(resultType.startsWith('un')){
-            method = 'DELETE';
-        }else{
-            method = 'POST';
-        }
-
-        fetch(url, {
-            method: method, 
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Authorization': `Bearer ${apiToken}`,
-                'Content-Type': 'application/json',
-            },
-            //body: JSON.stringify({ articleId: articleId })//いらないね。
-        })
-        .then(response => {
-            const contentType = response.headers.get('Content-Type');
-            if (contentType && contentType.includes('application/json')) {
-                // JSONレスポンスを解析する
-                return response.json().then(json => {
-                    if (response.ok) {
-                        return json;
-                    } else {
-                        throw new Error(json.message || response.statusText);
-                    }
-                });
-            } else {
-                // JSONでない場合は、直接statusTextを使用
-                throw new Error(response.statusText);
-            }
-        })
-        .then(data => {
-            if (data.message) {
-                toggleChecked(articleId, currentType, resultType);
-                trashOverlay(articleId, currentType, resultType);
-                document.getElementById('flush_success').innerText = data.message;
-            }
-        })
-        .catch(error => {
+    item.addEventListener('click', async function () {
+        try {
+            //apiトークンの取得
+            const apiToken = getApiToken();
+            //記事ID
+            const articleId = this.dataset.articleId;
+            //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+            const currentType = this.dataset.currentType;
+            const resultType = revserseType(currentType);
+            //メソッド
+            const method = getMethod(resultType);
+            //URL
+            const url = `${baseUrl}/api/${resultType}-article/${articleId}`;
+            //fetch
+            const jsonData = await fetchApi(url, method, apiToken); 
+            //UIの切り替え。
+            toggleCheckedArticle(articleId, currentType, resultType);
+            toggleTrashOverlayArticle(articleId, currentType, resultType);
+            //フラッシュメッセージ
+            document.getElementById('flush_success').innerText = jsonData.message;
+        } catch (error) {
             document.getElementById('flush_error').innerText = error;
             console.error('Error:', error);
-        });
+        }
     });
 });
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
-function toggleChecked(articleId, currentType, resultType) {
+function toggleCheckedArticle(articleId, currentType, resultType) {
     const icons = document.querySelectorAll('.icon-to-add-func[data-article-id="' + articleId + '"]');
 
     icons.forEach(function(icon) {
@@ -379,7 +350,7 @@ function toggleChecked(articleId, currentType, resultType) {
 }
 
 //ゴミ箱に入れたらオーバーレイを適用する。
-function trashOverlay(articleId, currentType, resultType) {
+function toggleTrashOverlayArticle(articleId, currentType, resultType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
 
     if(currentType == 'trash'){
@@ -387,16 +358,5 @@ function trashOverlay(articleId, currentType, resultType) {
     }else if(currentType == 'untrash'){
         overlaySection.classList.add('gray-overlay');
     }
-}
-
-//タイプを逆転する。
-function revserseType(type){
-    let reversedType;
-    if(type.startsWith('un')){
-        reversedType = type.substring(2);
-    }else{
-        reversedType = 'un' + type;
-    }
-    return reversedType
 }
 </script>
