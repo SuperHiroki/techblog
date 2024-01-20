@@ -30,9 +30,9 @@
                 <div class="row g-0">
                     <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" style="max-width: 300px;" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
                         @if($article->thumbnail_url)
-                            <img src="{{ $article->thumbnail_url }}" class="img-fluid" alt="Article Image" style="cursor: pointer;">
+                            <img src="{{ $article->thumbnail_url }}" class="img-fluid" alt="Article Thumbnail." style="cursor: pointer;">
                         @else
-                            <span class="text-center">No Image</span>
+                            <span class="text-center">Article Thumbnail.</span>
                         @endif
                     </div>
                     <div class="col-md-8" onclick="window.open('{{ $article->link }}', '_blank')" style="cursor: pointer;">
@@ -41,7 +41,7 @@
                             <p class="card-text"><strong>{{ $article->author->name }}</strong></p>
                             <p class="card-text"><small>{{ Str::limit($article->description, 100, '...') }}</small></p>
                             <div class="d-flex justify-content-center mb-2">
-                                <img src="{{ $article->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
+                                <img src="{{ $article->favicon_url }}" style="width: 20px; height: auto; margin-right: 5px;" alt="Article Favicon.">
                                 <a href="{{ $article->link }}" target="_blank">{{ $article->link }}</a>
                             </div>
                             <div class="d-flex justify-content-center">
@@ -234,9 +234,13 @@
 
 
 <script>
-//ページネーション用
+//ページが読み込まれたときに発火する
 document.addEventListener('DOMContentLoaded', function () {
+    pagination();
+});
 
+//ページネーションのメイン処理
+function pagination(){
     let currentPage = 1;
     const lastPage = {{ $articles->lastPage() }};
 
@@ -251,8 +255,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return; // 全てのページが読み込まれた場合は何もしない
         }
 
-        console.log('YYYYYYYYYYYYYYYY 無限スクロール');
-
         currentPage++;
         const url = new URL(window.location.href);
         url.searchParams.set('page', currentPage);
@@ -266,10 +268,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("articles-container").innerHTML += newArticles;
             });
     }
-});
+}
 </script>
 
 <script>
+// ページ読み込み時に初期化
+document.addEventListener('DOMContentLoaded', function () {
+    initializeSortOptions();
+})
+
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -298,43 +305,49 @@ function updateSort() {
         location = window.location.pathname + "?sort=" + sort;
     }
 }
-
-// ページ読み込み時に初期化
-window.onload = initializeSortOptions;
 </script>
 
 
 <!--非同期でリクエストを送るための補助メソッド-->
 @include('js.common-async-fetch-js')
 <script>
-//非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
-document.querySelectorAll('.icon-to-add-func').forEach(item => {
-    item.addEventListener('click', async function () {
-        try {
-            //apiトークンの取得
-            const apiToken = getApiToken();
-            //記事ID
-            const articleId = this.dataset.articleId;
-            //いいね（ブックマーク、アーカイブ）などのリクエストの種類
-            const currentType = this.dataset.currentType;
-            const targetType = revserseType(currentType);
-            //メソッド
-            const method = getMethod(targetType);
-            //URL
-            const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
-            //fetch
-            const jsonData = await fetchApi(url, method, apiToken); 
-            //UIの切り替え。
-            toggleCheckedArticle(articleId, currentType, targetType);
-            toggleTrashOverlayArticle(articleId, currentType, targetType);
-            //フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+//ページ読み込み時に発火する。
+document.addEventListener('DOMContentLoaded', function () {
+    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+    setEventToIcon();
 });
+
+//非同期でいいね（ブックマーク、アーカイブ）をつけるためにイベントを設定
+function setEventToIcon(){
+    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+    document.querySelectorAll('.icon-to-add-func').forEach(item => {
+        item.addEventListener('click', async function () {
+            try {
+                //apiトークンの取得
+                const apiToken = getApiToken();
+                //記事ID
+                const articleId = this.dataset.articleId;
+                //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+                const currentType = this.dataset.currentType;
+                const targetType = revserseType(currentType);
+                //メソッド
+                const method = getMethod(targetType);
+                //URL
+                const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
+                //fetch
+                const jsonData = await fetchApi(url, method, apiToken); 
+                //UIの切り替え。
+                toggleCheckedArticle(articleId, currentType, targetType);
+                toggleTrashOverlayArticle(articleId, currentType, targetType);
+                //フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
 function toggleCheckedArticle(articleId, currentType, targetType) {

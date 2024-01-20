@@ -25,16 +25,16 @@
                 <div class="row g-0">
                     <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" onclick="window.open('{{ $author->link }}', '_blank')" style="max-width: 300px; cursor: pointer;">
                         @if($author->thumbnail_url)
-                            <img src="{{ $author->thumbnail_url }}" class="img-fluid" alt="No Image">
+                            <img src="{{ $author->thumbnail_url }}" class="img-fluid" alt="Author Thumbnail.">
                         @else
-                            <span class="text-center">No Image!</span>
+                            <span class="text-center">Author Thumbnail.</span>
                         @endif
                     </div>
                     <div class="col-md-8 d-flex align-items-center justify-content-center" onclick="window.open('{{ $author->link }}', '_blank')" style="cursor: pointer;">
                         <div class="card-body text-center">
                             <h4 class="card-title">{{ $author->name }}</h4>
                             <div class="d-flex justify-content-center mb-2">
-                                <img src="{{ $author->favicon_url ?: asset('images/default-favicon.png') }}" style="width: 20px; height: auto; margin-right: 5px;">
+                                <img src="{{ $author->favicon_url }}" style="width: 20px; height: auto; margin-right: 5px;"  alt="Author Favicon.">
                                 <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
                             </div>
                             <div>
@@ -110,7 +110,11 @@
 <script>
 //ページネーション用
 document.addEventListener('DOMContentLoaded', function () {
+    pagination();
+});
 
+//ページネーションのメイン処理
+function pagination(){
     let currentPage = 1;
     const lastPage = {{ $authors->lastPage() }};
 
@@ -125,8 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return; // 全てのページが読み込まれた場合は何もしない
         }
 
-        console.log('YYYYYYYYYYYYYYYY 無限スクロール');
-
         currentPage++;
         const url = new URL(window.location.href);
         url.searchParams.set('page', currentPage);
@@ -140,10 +142,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("authors-container").innerHTML += newArticles;
             });
     }
-});
+}
 </script>
 
 <script>
+// ページ読み込み時に初期化
+document.addEventListener('DOMContentLoaded', function () {
+    initializeSortOptions();
+})
+
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -173,9 +180,6 @@ function updateSort() {
         location = window.location.pathname + "?sort=" + sort;
     }
 }
-
-// ページ読み込み時に初期化
-window.onload = initializeSortOptions;
 </script>
 
 <!--非同期でリクエストを送るための補助メソッド-->
