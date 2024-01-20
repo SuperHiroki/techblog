@@ -18,19 +18,22 @@
                     <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/profile') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.profile', $user->id) }}">公開プロフィール</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/followed-authors') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.followed-authors', $user->id) }}">フォローしている著者</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/followed-authors') ? 'bg-light border border-secondary rounded' : '' }}" id="account-link" href="{{ route('my-page.followed-authors', $user->id) }}">フォロー著者</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/recent-articles/*') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.recent-articles', ['user' => $user->id, 'days' => 7]) }}">新着記事</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/likes') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.likes', $user->id) }}">いいねした記事</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/likes') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.likes', $user->id) }}">いいね記事</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/bookmarks') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.bookmarks', $user->id) }}">ブックマークした記事</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/bookmarks') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.bookmarks', $user->id) }}">ブックマーク記事</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/archives') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.archives', $user->id) }}">アーカイブした記事</a>
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/archives') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.archives', $user->id) }}">アーカイブ記事</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link m-1 p-1 custom-header-link rounded {{ request()->is('my-page/*/trashes') ? 'bg-light border border-secondary rounded' : '' }}" id="profile-link" href="{{ route('my-page.trashes', $user->id) }}">ゴミ箱記事</a>
                 </li>
             @elseif(request()->is("settings/*"))
                 <li class="nav-item">
@@ -63,6 +66,8 @@
                         @elseif(request()->is("my-page/*/bookmarks"))
                             ブックマークした記事
                         @elseif(request()->is("my-page/*/archives"))
+                            アーカイブした記事
+                        @elseif(request()->is("my-page/*/trashes"))
                             アーカイブした記事
                         @endif
                     @elseif(request()->is("settings/*"))

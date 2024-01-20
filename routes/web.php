@@ -88,6 +88,8 @@ Route::prefix('my-page')->group(function () {
     Route::get('/{user}/bookmarks', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarks');
     //アーカイブした記事
     Route::get('/{user}/archives', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archives');
+    //trashした記事
+    Route::get('/{user}/trashes', 'App\Http\Controllers\MyPage\TrashesController@index')->name('my-page.trashes');
 });
 
 #設定

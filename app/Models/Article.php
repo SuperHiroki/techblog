@@ -194,6 +194,11 @@ class Article extends Model
                         $q->where('users.id', $user->id);
                     });
                     break;
+                case 'trashes':
+                    $query->whereHas('trashUsers', function ($q) use ($user) {
+                        $q->where('users.id', $user->id);
+                    });
+                    break;
                 case 'recent-articles':
                     if ($spanFilter) {
                         $dateFrom = now()->subDays(intval($spanFilter));
