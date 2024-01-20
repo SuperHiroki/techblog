@@ -32,6 +32,12 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function trashedAuthors(): BelongsToMany
+    {
+        return $this->belongsToMany(Author::class, 'user_author_trashes', 'user_id', 'author_id')
+                    ->withTimestamps();
+    }
+
     //今のユーザがいいね、ブックマーク、アーカイブしている記事一覧。Articleインスタンスのリスト。
     public function likeArticles()
     {
@@ -48,6 +54,12 @@ class User extends Authenticatable
     public function archiveArticles()
     {
         return $this->belongsToMany(Article::class, 'article_user_archive')
+                    ->withTimestamps();
+    }
+
+    public function trashArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_user_trash')
                     ->withTimestamps();
     }
 }

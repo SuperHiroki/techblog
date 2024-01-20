@@ -124,10 +124,13 @@ class Author extends Model
             $query->orderBy('ac.articles_count', 'desc')->orderBy('id');
         }
     
-        //現在ログイン中のユーザが、それぞれの著者に対してフォローしているかどうかのカラムを追加。「WHERE author_id = authors.id AND user_id = {$loggedInUserId}」の部分で存在すれば現在のログイン中のユーザがそのレコードの著者をフォローしているということになる。
+        //現在ログイン中のユーザについて。
         if (Auth::check()) {
             $loggedInUserId = Auth::id();
+            //現在ログイン中のユーザが、それぞれの著者に対してフォローしているかどうかのカラムを追加。「WHERE author_id = authors.id AND user_id = {$loggedInUserId}」の部分で存在すれば現在のログイン中のユーザがそのレコードの著者をフォローしているということになる。
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
+            //現在ログイン中のユーザが、それぞれの著者に対してtrashしているかどうかのカラムを追加。
+            $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_trashes WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as trashed_by_current_user"));
         }
 
         return $query;

@@ -82,6 +82,15 @@ function toggleChecked(icons, currentType, targetType){
         }
     });
 }
+
+//ゴミ箱に入れたらオーバーレイを適用する。
+function toggleTrashOverlay(overlaySection, targetType) {
+    if(targetType == 'untrash'){
+        overlaySection.classList.remove('gray-overlay');
+    }else if(targetType == 'trash'){
+        overlaySection.classList.add('gray-overlay');
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 

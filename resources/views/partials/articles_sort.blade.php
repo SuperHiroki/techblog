@@ -299,7 +299,7 @@ function setEventToIcons(){
                 const jsonData = await fetchApi(url, method, apiToken); 
                 //UIの切り替え。
                 toggleCheckedArticle(articleId, currentType, targetType);
-                toggleTrashOverlayArticle(articleId, currentType, targetType);
+                toggleTrashOverlayArticle(articleId, targetType);
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
             } catch (error) {
@@ -318,13 +318,8 @@ function toggleCheckedArticle(articleId, currentType, targetType) {
 }
 
 //ゴミ箱に入れたらオーバーレイを適用する。
-function toggleTrashOverlayArticle(articleId, currentType, targetType) {
+function toggleTrashOverlayArticle(articleId, targetType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
-
-    if(targetType == 'untrash'){
-        overlaySection.classList.remove('gray-overlay');
-    }else if(targetType == 'trash'){
-        overlaySection.classList.add('gray-overlay');
-    }
+    toggleTrashOverlay(overlaySection, targetType);
 }
 </script>

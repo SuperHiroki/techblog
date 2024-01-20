@@ -22,6 +22,7 @@
     @foreach ($authors as $author)
         <div class="col-md-12 mb-3">
             <div class="card shadow">
+                <div id="for-gray-overlay-{{$author->id}}" class="{{$author->trashed_by_current_user ? 'gray-overlay' : ''}}"></div><!--オーバーレイ-->
                 <div class="row g-0">
                     <div class="col-md-2 d-flex align-items-center justify-content-center mx-auto" onclick="window.open('{{ $author->link }}', '_blank')" style="max-width: 300px; cursor: pointer;">
                         @if($author->thumbnail_url)
@@ -66,8 +67,9 @@
                         </div>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <div class="m-1">
+                        <div class="m-1 gap-0 d-flex align-items-center justify-content-center">
                             <!---------------------------------------------------------------------------------------->
+                            <!--フォロー（アンフォロー）-->
                             <!--同期処理-->
                             <div style="display:none">
                                 @if($author->is_followed)
@@ -93,6 +95,23 @@
                                         data-author-id="{{$author->id}}" 
                                         data-current-type = "unfollow"
                                         class="button-to-add-func btn btn-success btn-sm">フォロー</button>
+                            </div>
+                            <!---------------------------------------------------------------------------------------->
+                            <!--trash-->
+                            <!--非同期処理-->
+                            <div class="custom-icon">
+                                <img style="display:{{$author->trashed_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/trash.png"
+                                        class="button-to-add-func" 
+                                        data-author-id="{{ $author->id }}" 
+                                        data-current-type="trash"
+                                        alt="trash">
+                                <img style="display:{{$author->trashed_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
+                                        src="/images/like_bookmark_archive/untrash.png"
+                                        class="button-to-add-func"
+                                        data-author-id="{{ $author->id }}"
+                                        data-current-type="untrash"
+                                        alt="untrash">
                             </div>
                         </div>
                     </div>
@@ -172,6 +191,7 @@ function setEventToButtons(){
                 const jsonData = await fetchApi(url, method, apiToken); 
                 //UIの切り替え。
                 toggleCheckedAuthor(authorId, currentType, targetType);
+                toggleTrashOverlayAuthor(authorId, targetType);
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
             }catch (error) {
@@ -186,5 +206,11 @@ function setEventToButtons(){
 function toggleCheckedAuthor(authorId, currentType, targetType) {
     const buttons = document.querySelectorAll('.button-to-add-func[data-author-id="' + authorId + '"]');
     toggleChecked(buttons, currentType, targetType);
+}
+
+//ゴミ箱に入れたらオーバーレイを適用する。
+function toggleTrashOverlayAuthor(authorId, targetType) {
+    const overlaySection = document.getElementById(`for-gray-overlay-${authorId}`);
+    toggleTrashOverlay(overlaySection, targetType);
 }
 </script>

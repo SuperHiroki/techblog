@@ -221,6 +221,22 @@ CREATE TABLE `user_author_follows` (
   CONSTRAINT `user_author_follows_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_author_trashes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_author_trashes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `author_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_author_trashes_user_id_author_id_unique` (`user_id`,`author_id`),
+  KEY `user_author_trashes_author_id_foreign` (`author_id`),
+  CONSTRAINT `user_author_trashes_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_author_trashes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -323,3 +339,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2024_01_15_020
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2024_01_15_021229_set_thumbnail_and_favicon_to_nullable_in_articles_table',28);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2024_01_17_182936_add_cascade_to_articles_author_id_foreign',29);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2024_01_18_115614_create_article_user_trash_table',30);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (52,'2024_01_20_190228_create_user_author_trashes_table',31);

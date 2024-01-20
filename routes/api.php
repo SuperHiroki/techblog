@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // フォローとフォロー解除のルート
     Route::post('/follow-author/{author}', [AuthorAsyncActionController::class, 'followAuthorFromAuthorId'])->name('api-follow-author-from-author-id');
     Route::delete('/unfollow-author/{author}', [AuthorAsyncActionController::class, 'unfollowAuthorFromAuthorId'])->name('api-unfollow-author-from-author-id');
+    Route::post('/trash-author/{author}', [AuthorAsyncActionController::class, 'trashAuthorFromAuthorId'])->name('api-trash-author-from-author-id');
+    Route::delete('/untrash-author/{author}', [AuthorAsyncActionController::class, 'untrashAuthorFromAuthorId'])->name('api-untrash-author-from-author-id');
 });
 
 // トークンベースの認証が不要なルート
