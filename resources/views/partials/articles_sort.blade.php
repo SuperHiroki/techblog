@@ -328,9 +328,9 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
             toggleCheckedArticle(articleId, currentType, targetType);
             toggleTrashOverlayArticle(articleId, currentType, targetType);
             //フラッシュメッセージ
-            document.getElementById('flush_success').innerText = jsonData.message;
+            showFlush("success", jsonData.message);
         } catch (error) {
-            document.getElementById('flush_error').innerText = error;
+            showFlush("error", error);
             console.error('Error:', error);
         }
     });

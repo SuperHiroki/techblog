@@ -1,4 +1,4 @@
-// public/js/common-async-fetch-js.blade.php
+//js/common-async-fetch-js.blade.php
 <script>
 
 //定数
@@ -39,6 +39,7 @@ function fetchApi(url, method, apiToken) {
         },
     })
     .then(response => {
+        const responseMag = response.status + ' ' + response.statusText;
         const contentType = response.headers.get('Content-Type');
         if (contentType && contentType.includes('application/json')) {
             // JSONレスポンスを解析する
@@ -46,12 +47,12 @@ function fetchApi(url, method, apiToken) {
                 if (response.ok) {
                     return json;
                 } else {
-                    throw new Error(json.message || response.statusText);
+                    throw new Error(json.message || responseMag);
                 }
             });
         } else {
             // JSONでない場合は、直接statusTextを使用
-            throw new Error(response.statusText);
+            throw new Error(responseMag);
         }
     })
     .catch(error => {

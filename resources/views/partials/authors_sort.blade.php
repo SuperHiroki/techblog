@@ -201,9 +201,9 @@ document.querySelectorAll('.button-to-add-func').forEach(item => {
             //UIの切り替え。
             toggleCheckedAuthor(authorId, currentType, targetType);
             //フラッシュメッセージ
-            document.getElementById('flush_success').innerText = jsonData.message;
+            showFlush("success", jsonData.message);
         }catch (error) {
-            document.getElementById('flush_error').innerText = error;
+            showFlush("error", error);
             console.error('Error:', error);
         }
     });
