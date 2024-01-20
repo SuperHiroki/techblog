@@ -1,10 +1,15 @@
-// public/js/common-async-fetch.js
+// public/js/common-async-fetch-js.blade.php
+<script>
 
 //定数
 const baseUrl = "https://techblog.shiroatohiro.com"
 
 //ローカルストレージからapiTokenを取得する。
 function getApiToken() {
+    var isGuest = @guest true @else false @endguest;
+    if (isGuest) {
+        throw new Error("ログインしていません！！")
+    }
     const apiToken = localStorage.getItem('apiToken');
     if (!apiToken) {
         throw new Error("apiToken not found!!")
@@ -64,3 +69,16 @@ function revserseType(type) {
     }
     return reversedType
 }
+
+//チェックを切り替える。
+function toggleChecked(icons, currentType, targetType){
+    //現在アイコンは一つしかないので、forループを使う必要はない。
+    icons.forEach(function(icon) {
+        if(icon.dataset.currentType === targetType){
+            icon.style.display = 'block'; 
+        }else if (icon.dataset.currentType === currentType){
+            icon.style.display = 'none'; 
+        }
+    });
+}
+</script>

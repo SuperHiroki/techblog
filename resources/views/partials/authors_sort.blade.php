@@ -87,11 +87,11 @@
                             <div>
                                 <button style="display:{{$author->is_followed ? 'block' : 'none'}}"
                                         data-author-id="{{$author->id}}" 
-                                        data-target-type = "unfollow"
+                                        data-current-type = "follow"
                                         class="button-to-add-func btn btn-danger btn-sm">フォロー解除</button>
                                 <button style="display:{{$author->is_followed ? 'none' : 'block'}}"
                                         data-author-id="{{$author->id}}" 
-                                        data-target-type = "follow"
+                                        data-current-type = "unfollow"
                                         class="button-to-add-func btn btn-success btn-sm">フォロー</button>
                             </div>
                         </div>
@@ -178,86 +178,40 @@ function updateSort() {
 window.onload = initializeSortOptions;
 </script>
 
+<!--非同期でリクエストを送るための補助メソッド-->
+@include('js.common-async-fetch-js')
 <script>
-//定数
-const baseUrl ="https://techblog.shiroatohiro.com"
-const apiToken = localStorage.getItem('apiToken');
-
-//非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+//非同期でフォロー（アンフォロー）をつけるために設定
 document.querySelectorAll('.button-to-add-func').forEach(item => {
-    item.addEventListener('click', function() {
-        //記事ID
-        const authorId = this.dataset.authorId;
-        //リクエストの種類（フォロー、アンフォロー）
-        const targetType = this.dataset.targetType;
-        //URL
-        const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
-        //手法
-        let method;
-        if(targetType.startsWith('un')){
-            method = 'DELETE';
-        }else{
-            method = 'POST';
-        }
-
-        fetch(url, {
-            method: method, 
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Authorization': `Bearer ${apiToken}`,
-                'Content-Type': 'application/json',
-            },
-            //body: JSON.stringify({ authorId: authorId })//いらないね。
-        })
-        .then(response => {
-            const contentType = response.headers.get('Content-Type');
-            if (contentType && contentType.includes('application/json')) {
-                // JSONレスポンスを解析する
-                return response.json().then(json => {
-                    if (response.ok) {
-                        return json;
-                    } else {
-                        throw new Error(json.message || response.statusText);
-                    }
-                });
-            } else {
-                // JSONでない場合は、直接statusTextを使用
-                throw new Error(response.statusText);
-            }
-        })
-        .then(data => {
-            if (data.message) {
-                toggleChecked(authorId, targetType);
-                document.getElementById('flush_success').innerText = data.message;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    item.addEventListener('click', async function() {
+        try{
+            //apiトークンの取得
+            const apiToken = getApiToken();
+            //著者ID
+            const authorId = this.dataset.authorId;
+            //リクエストの種類（フォロー、アンフォロー）
+            const currentType = this.dataset.currentType;
+            const targetType = revserseType(currentType);
+            //メソッド
+            const method = getMethod(targetType);
+            //URL
+            const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
+            //fetch
+            const jsonData = await fetchApi(url, method, apiToken); 
+            //UIの切り替え。
+            toggleCheckedAuthor(authorId, currentType, targetType);
+            //フラッシュメッセージ
+            document.getElementById('flush_success').innerText = jsonData.message;
+        }catch (error) {
             document.getElementById('flush_error').innerText = error;
-        });
+            console.error('Error:', error);
+        }
     });
 });
 
 //follow, unfollowのボタン表示を変更する。
-function toggleChecked(authorId, targetType) {
+function toggleCheckedAuthor(authorId, currentType, targetType) {
     const buttons = document.querySelectorAll('.button-to-add-func[data-author-id="' + authorId + '"]');
-
-    buttons.forEach(function(button) {
-        if(button.dataset.targetType === revserseType(targetType)){
-            button.style.display = 'block'; 
-        }else if (button.dataset.targetType === targetType){
-            button.style.display = 'none'; 
-        }
-    });
-}
-
-//タイプを逆転する。
-function revserseType(type){
-    if(type.startsWith('un')){
-        reversedType = type.substring(2);
-    }else{
-        reversedType = 'un' + type;
-    }
-    return reversedType
+    toggleChecked(buttons, currentType, targetType);
 }
 </script>

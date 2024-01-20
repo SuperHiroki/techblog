@@ -304,8 +304,8 @@ window.onload = initializeSortOptions;
 </script>
 
 
-<!--非同期でいいね（ブックマーク、アーカイブ）をつけるための補助メソッド-->
-<script src="{{ asset('js/common-async-fetch.js') }}"></script>
+<!--非同期でリクエストを送るための補助メソッド-->
+@include('js.common-async-fetch-js')
 <script>
 //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
 document.querySelectorAll('.icon-to-add-func').forEach(item => {
@@ -317,16 +317,16 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
             const articleId = this.dataset.articleId;
             //いいね（ブックマーク、アーカイブ）などのリクエストの種類
             const currentType = this.dataset.currentType;
-            const resultType = revserseType(currentType);
+            const targetType = revserseType(currentType);
             //メソッド
-            const method = getMethod(resultType);
+            const method = getMethod(targetType);
             //URL
-            const url = `${baseUrl}/api/${resultType}-article/${articleId}`;
+            const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
             //fetch
             const jsonData = await fetchApi(url, method, apiToken); 
             //UIの切り替え。
-            toggleCheckedArticle(articleId, currentType, resultType);
-            toggleTrashOverlayArticle(articleId, currentType, resultType);
+            toggleCheckedArticle(articleId, currentType, targetType);
+            toggleTrashOverlayArticle(articleId, currentType, targetType);
             //フラッシュメッセージ
             document.getElementById('flush_success').innerText = jsonData.message;
         } catch (error) {
@@ -337,25 +337,19 @@ document.querySelectorAll('.icon-to-add-func').forEach(item => {
 });
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
-function toggleCheckedArticle(articleId, currentType, resultType) {
+function toggleCheckedArticle(articleId, currentType, targetType) {
+    //実際は一つしかないけど複数ある前提で検索される。
     const icons = document.querySelectorAll('.icon-to-add-func[data-article-id="' + articleId + '"]');
-
-    icons.forEach(function(icon) {
-        if(icon.dataset.currentType === resultType){
-            icon.style.display = 'block'; 
-        }else if (icon.dataset.currentType === currentType){
-            icon.style.display = 'none'; 
-        }
-    });
+    toggleChecked(icons, currentType, targetType);
 }
 
 //ゴミ箱に入れたらオーバーレイを適用する。
-function toggleTrashOverlayArticle(articleId, currentType, resultType) {
+function toggleTrashOverlayArticle(articleId, currentType, targetType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
 
-    if(currentType == 'trash'){
+    if(targetType == 'untrash'){
         overlaySection.classList.remove('gray-overlay');
-    }else if(currentType == 'untrash'){
+    }else if(targetType == 'trash'){
         overlaySection.classList.add('gray-overlay');
     }
 }
