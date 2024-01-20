@@ -80,6 +80,8 @@ Route::prefix('my-page')->group(function () {
     Route::get('/{user}/profile', 'App\Http\Controllers\MyPage\ProfileController@index')->name('my-page.profile');
     //フォロー中の著者一覧
     Route::get('/{user}/followed-authors', 'App\Http\Controllers\MyPage\FollowedAuthorsController@index')->name('my-page.followed-authors');
+    //trashした著者一覧
+    Route::get('/{user}/trashed-authors', 'App\Http\Controllers\MyPage\TrashedAuthorsController@index')->name('my-page.trashed-authors');
     //最近の記事
     Route::get('/{user}/recent-articles/days/{days}', 'App\Http\Controllers\MyPage\RecentArticlesController@index')->name('my-page.recent-articles');
     //いいねした記事

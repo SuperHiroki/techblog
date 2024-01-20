@@ -70,14 +70,18 @@ class Author extends Model
     }
 
     //ソート
-    public static function getSortedAuthors($sort, $period = null, $user = null)
+    public static function getSortedAuthors($sort, $period = null, $user = null, $isTrashExcluded = false, $action = "followed")
     {
         //クエリの生成
         $query = self::query();
     
         //ユーザが渡されたらそのユーザがフォローしている著者に絞る（マイページに表示するもの）。
         if ($user) {
-            $query->whereIn('authors.id', $user->followedAuthors->pluck('id'));
+            if($action == "followed"){
+                $query->whereIn('authors.id', $user->followedAuthors->pluck('id'));
+            }else if($action == "trashed"){
+                $query->whereIn('authors.id', $user->trashedAuthors->pluck('id'));
+            }
         }
 
         //期間の取得
@@ -131,6 +135,10 @@ class Author extends Model
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
             //現在ログイン中のユーザが、それぞれの著者に対してtrashしているかどうかのカラムを追加。
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_trashes WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as trashed_by_current_user"));
+            //ゴミ箱のものを表示しない場合。
+            if($isTrashExcluded){
+                $query->whereRaw("NOT EXISTS (SELECT 1 FROM user_author_trashes WHERE author_id = authors.id AND user_id = ?)", [$loggedInUserId]);
+            }
         }
 
         return $query;
