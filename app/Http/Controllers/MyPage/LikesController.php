@@ -26,7 +26,7 @@ class LikesController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'likes')->paginate(15);
+            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'likes', isTrashExcluded: true)->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }

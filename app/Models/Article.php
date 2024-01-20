@@ -129,7 +129,7 @@ class Article extends Model
     }
 
     // 記事の並び替え
-    public function scopeSortBy($query, $sort, $period, $user = null, $action = null, $spanFilter = null)
+    public function scopeSortBy($query, $sort, $period, $user = null, $action = null, $spanFilter = null, $isTrashExcluded = false)
     {
         $query->with([
             //これはなくても機能するが、Lagzy LoadによるN+1問題を防ぐために、ここでEager Loadしておく。
@@ -162,10 +162,10 @@ class Article extends Model
 
             // 現在のユーザーが記事をゴミ箱にいれたかどうかを判定するサブクエリ
             $trashedByCurrentUserSubQuery = DB::table('article_user_trash')
-            ->select(DB::raw(1))
-            ->where('user_id', $currentUser->id)
-            ->whereColumn('article_id', 'articles.id')
-            ->limit(1);
+                ->select(DB::raw(1))
+                ->where('user_id', $currentUser->id)
+                ->whereColumn('article_id', 'articles.id')
+                ->limit(1);
 
             // サブクエリをメインクエリに結合
             $query->addSelect([
@@ -213,6 +213,10 @@ class Article extends Model
                               ->where('articles.created_date', '>=', $dateFrom);
                     }
                     break;
+            }
+            //ゴミ箱のものを表示しない場合。
+            if($isTrashExcluded){
+                $query->whereRaw("NOT EXISTS (SELECT 1 FROM article_user_trash WHERE article_id = articles.id AND user_id = ?)", [$user->id]);
             }
         }
     
