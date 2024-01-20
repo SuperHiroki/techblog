@@ -232,93 +232,54 @@
 </div>
 @endif
 
-
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--ページネーション-->
+@include('js.common-pagination-js')
 <script>
 //ページが読み込まれたときに発火する
 document.addEventListener('DOMContentLoaded', function () {
-    pagination();
+    pagination({{ $articles->lastPage() }}, "articles-container");
 });
-
-//ページネーションのメイン処理
-function pagination(){
-    let currentPage = 1;
-    const lastPage = {{ $articles->lastPage() }};
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY + window.innerHeight + 1 >= document.documentElement.scrollHeight) {
-            loadMoreArticles();
-        }
-    });
-
-    function loadMoreArticles() {
-        if (currentPage >= lastPage) {
-            return; // 全てのページが読み込まれた場合は何もしない
-        }
-
-        currentPage++;
-        const url = new URL(window.location.href);
-        url.searchParams.set('page', currentPage);
-
-        fetch(url)
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const htmlDocument = parser.parseFromString(data, "text/html");
-                const newArticles = htmlDocument.getElementById("articles-container").innerHTML;
-                document.getElementById("articles-container").innerHTML += newArticles;
-            });
-    }
-}
 </script>
 
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--ドロップダウンの更新-->
+@include('js.common-change-sort-option')
 <script>
 // ページ読み込み時に初期化
 document.addEventListener('DOMContentLoaded', function () {
     initializeSortOptions();
 })
 
+//定数の定義
+const candidates = {
+    "normal": ["likes", "bookmarks", "archives", "newest"],
+    "trending": ["trending_likes", "trending_bookmarks", "trending_archives"]
+};
+
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort');
-    const period = urlParams.get('period');
-
-    document.getElementById("sortOption").value = sort;
-
-    if (sort.startsWith('trending')){
-        document.getElementById("trendingOption").style.display = "block";
-        document.getElementById("trendingOption").value = period;
-    } else {
-        document.getElementById("trendingOption").style.display = "none";
-    }
+    commonInitializeSortOptions(candidates);
 }
 
-//ドロップダウンの選択の変更をするたびに発火する
+//選択肢を切り替えたとき
 function updateSort() {
-    const sort = document.getElementById("sortOption").value;
-    const period = document.getElementById("trendingOption").value;
-    if (sort.startsWith('trending')) {
-        document.getElementById("trendingOption").style.display = "block";
-        location = window.location.pathname + "?sort=" + sort + "&period=" + period;
-    } else {
-        document.getElementById("trendingOption").style.display = "none";
-        location = window.location.pathname + "?sort=" + sort;
-    }
+    commonUpdateSort(candidates);
 }
 </script>
 
-
-<!--非同期でリクエストを送るための補助メソッド-->
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--非同期でリクエストを送る-->
 @include('js.common-async-fetch-js')
 <script>
 //ページ読み込み時に発火する。
 document.addEventListener('DOMContentLoaded', function () {
     //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
-    setEventToIcon();
+    setEventToIcons();
 });
 
 //非同期でいいね（ブックマーク、アーカイブ）をつけるためにイベントを設定
-function setEventToIcon(){
+function setEventToIcons(){
     //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
     document.querySelectorAll('.icon-to-add-func').forEach(item => {
         item.addEventListener('click', async function () {

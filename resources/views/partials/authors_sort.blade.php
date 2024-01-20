@@ -107,111 +107,80 @@
 </div>
 @endif
 
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--ページネーション-->
+@include('js.common-pagination-js')
 <script>
-//ページネーション用
+//ページが読み込まれたときに発火する
 document.addEventListener('DOMContentLoaded', function () {
-    pagination();
+    pagination({{ $authors->lastPage() }}, "authors-container");
 });
-
-//ページネーションのメイン処理
-function pagination(){
-    let currentPage = 1;
-    const lastPage = {{ $authors->lastPage() }};
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY + window.innerHeight + 1 >= document.documentElement.scrollHeight) {
-            loadMoreArticles();
-        }
-    });
-
-    function loadMoreArticles() {
-        if (currentPage >= lastPage) {
-            return; // 全てのページが読み込まれた場合は何もしない
-        }
-
-        currentPage++;
-        const url = new URL(window.location.href);
-        url.searchParams.set('page', currentPage);
-
-        fetch(url)
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const htmlDocument = parser.parseFromString(data, "text/html");
-                const newArticles = htmlDocument.getElementById("authors-container").innerHTML;
-                document.getElementById("authors-container").innerHTML += newArticles;
-            });
-    }
-}
 </script>
 
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--ドロップダウンの更新-->
+@include('js.common-change-sort-option')
 <script>
 // ページ読み込み時に初期化
 document.addEventListener('DOMContentLoaded', function () {
     initializeSortOptions();
 })
 
+//定数の定義
+const candidates = {
+    "normal": ["followers", "articles", "alphabetical"],
+    "trending": ["trending_followers", "trending_articles"]
+};
+
 // ページ読み込み時に適切なオプションを選択
 function initializeSortOptions() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sort = urlParams.get('sort');//絶対に必要
-    const period = urlParams.get('period');//trendingの時は絶対に必要
-
-    document.getElementById("sortOption").value = sort;
-
-    if (sort=='trending_followers' || sort=='trending_articles'){
-        document.getElementById("trendingOption").style.display = "block";
-        document.getElementById("trendingOption").value = period;
-    } else if(sort=='followers' || sort=='articles' || sort=='alphabetical') {
-        document.getElementById("trendingOption").style.display = "none";
-    }
+    commonInitializeSortOptions(candidates);
 }
 
 //選択肢を切り替えたとき
 function updateSort() {
-    const sort = document.getElementById("sortOption").value;
-    const period = document.getElementById("trendingOption").value;
-
-    if (sort=='trending_followers' || sort=='trending_articles') {
-        document.getElementById("trendingOption").style.display = "block";
-        location = window.location.pathname + "?sort=" + sort + "&period=" + period;
-    } else if(sort=='followers' || sort=='articles' || sort=='alphabetical') {
-        document.getElementById("trendingOption").style.display = "none";
-        location = window.location.pathname + "?sort=" + sort;
-    }
+    commonUpdateSort(candidates);
 }
 </script>
 
+<!----------------------------------------------------------------------------------------------------------------------------->
 <!--非同期でリクエストを送るための補助メソッド-->
 @include('js.common-async-fetch-js')
 <script>
 //非同期でフォロー（アンフォロー）をつけるために設定
-document.querySelectorAll('.button-to-add-func').forEach(item => {
-    item.addEventListener('click', async function() {
-        try{
-            //apiトークンの取得
-            const apiToken = getApiToken();
-            //著者ID
-            const authorId = this.dataset.authorId;
-            //リクエストの種類（フォロー、アンフォロー）
-            const currentType = this.dataset.currentType;
-            const targetType = revserseType(currentType);
-            //メソッド
-            const method = getMethod(targetType);
-            //URL
-            const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
-            //fetch
-            const jsonData = await fetchApi(url, method, apiToken); 
-            //UIの切り替え。
-            toggleCheckedAuthor(authorId, currentType, targetType);
-            //フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        }catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
+document.addEventListener('DOMContentLoaded', function () {
+    setEventToButtons();
+})
+
+//フォローとアンフォローの関数をボタンにセット
+function setEventToButtons(){
+    document.querySelectorAll('.button-to-add-func').forEach(item => {
+        item.addEventListener('click', async function() {
+            try{
+                //apiトークンの取得
+                const apiToken = getApiToken();
+                //著者ID
+                const authorId = this.dataset.authorId;
+                //リクエストの種類（フォロー、アンフォロー）
+                const currentType = this.dataset.currentType;
+                const targetType = revserseType(currentType);
+                //メソッド
+                const method = getMethod(targetType);
+                //URL
+                const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
+                //fetch
+                const jsonData = await fetchApi(url, method, apiToken); 
+                //UIの切り替え。
+                toggleCheckedAuthor(authorId, currentType, targetType);
+                //フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            }catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
     });
-});
+}
 
 //follow, unfollowのボタン表示を変更する。
 function toggleCheckedAuthor(authorId, currentType, targetType) {
