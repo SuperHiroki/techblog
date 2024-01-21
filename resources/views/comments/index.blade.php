@@ -41,6 +41,13 @@
 <!------------------------------------------------------------------------------------------------------>
 <!--Collapseによる展開-->
 <script>
+//返信一覧を展開する
+function toggleReplies(commentId) {
+    var replies = document.getElementById('replies' + commentId);
+    var repliesButton = document.getElementById('repliesButton' + commentId);
+    toggleCollapse(replies, repliesButton);
+}
+
 //コメント追加フォームを展開
 function toggleAddCommentForm() {
     var addCommentForm = document.getElementById('addCommentForm');
@@ -106,7 +113,7 @@ function setEventToAddComment(){
             //fetch
             const jsonData = await fetchApi(url, method, apiToken, body); 
             //追加されたコメントを埋め込む
-            document.getElementById('commentAsyncAddedField').innerHTML = jsonData.commentHtml;
+            document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.commentHtml);
             //フラッシュメッセージ
             showFlush("success", jsonData.message);
         } catch (error) {

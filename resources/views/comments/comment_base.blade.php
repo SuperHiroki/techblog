@@ -4,7 +4,7 @@
 </head>
 
 <div class="row">
-    <div class="col-8 col-md-10">
+    <div class="col-9 col-md-10">
         <div class="d-flex align-items-center justify-content-left">
             <a href="{{ route('my-page.profile', $item->user_id) }}" class="custom-user-link rounded p-1 d-flex align-items-center justify-content-left">
                 @if($item->user->icon_image)
@@ -15,9 +15,9 @@
                 <div class="small rounded">&#64;{{ $item->user->name }}</div>
             </a>
         </div>
-        <p class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</p>
+        <div style="margin-left: 42px;" class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</div>
     </div>
-    <div class="col-2 col-md-1 d-flex align-items-center justify-content-center">
+    <div class="col-3 col-md-2 d-flex align-items-center justify-content-center">
         <!-- いいねボタン -->
         <div class="custom-three-point rounded">
             @if ($item->likedByAuthUser)

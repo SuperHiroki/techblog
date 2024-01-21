@@ -10,11 +10,16 @@
                 <div class="row">
                     <div class="col-md-12">
                         {{-- 返信表示ボタン --}}
-                        <div>
-                            <a class="btn btn-link text-info mt-2 custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">{{ $comment->repliesCount}}件の返信</a>
+                        <div id="repliesButton{{ $comment->id }}">
+                            <a onclick="toggleReplies({{ $comment->id }})" class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">{{ $comment->repliesCount}}件の返信</a>
                         </div>
                         {{-- 返信一覧 --}}
                         <div class="collapse" id="replies{{ $comment->id }}">
+                            <div class="d-flex align-items-center justify-content-left">
+                                <div class="custom-cross rounded p-2" style="cursor: pointer;">
+                                    <img onclick="toggleReplies({{ $comment->id }})" src="{{asset('images/icons/cross.png')}}" style="width: 20px; height: 20px;" />
+                                </div>
+                            </div>
                             <!--ここの部分は非同期で取得することで、ここの部分でもページネーションを実装する。-->
                             <div id="replies-container-to-comment-{{ $comment->id }}"></div>
                         </div>
@@ -26,7 +31,7 @@
         {{-- 返信フォームボタン --}}
         <div style="margin-left: 40px;">
             <div id="replyFormButton{{ $comment->id }}">
-                <a onclick="toggleReplyForm({{ $comment->id }})" class="btn btn-link text-info mt-2 custom-link" data-bs-toggle="collapse" href="#replyForm{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replyForm{{ $comment->id }}">返信する</a>
+                <a onclick="toggleReplyForm({{ $comment->id }})" class="btn btn-link text-info custom-link" data-bs-toggle="collapse" href="#replyForm{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replyForm{{ $comment->id }}">返信する</a>
             </div>
             {{-- 返信フォーム --}}
             <div class="collapse" id="replyForm{{ $comment->id }}">
