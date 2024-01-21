@@ -300,6 +300,7 @@ function setEventToIcons(){
                 //UIの切り替え。
                 toggleCheckedArticle(articleId, currentType, targetType);
                 toggleTrashOverlayArticle(articleId, targetType);
+                //toggleExcludeTrashedArticle(articleId, targetType);
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
             } catch (error) {
@@ -321,5 +322,20 @@ function toggleCheckedArticle(articleId, currentType, targetType) {
 function toggleTrashOverlayArticle(articleId, targetType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
     toggleTrashOverlay(overlaySection, targetType);
+}
+
+// ゴミ箱に入れたら表示・非表示を切り替える
+function toggleExcludeTrashedArticle(articleId, targetType) {
+    const excludedSection = document.getElementById(`to-exclude-trashed-article-${articleId}`);
+
+    if (!mypageUserEqualsToLoggedinUser()) {
+        return;
+    }
+
+    if (@json(request()->is("my-page/*/trashes")) && targetType === "untrash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    } else if ( ( @json(request()->is("my-page/*/likes")) || @json(request()->is("my-page/*/bookmarks")) || @json(request()->is("my-page/*/archives")) ) && targetType === "trash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    }
 }
 </script>
