@@ -13,14 +13,11 @@ class CommentsController extends Controller
     //コメント全てを取得する。
     public function index()
     {
-        $comments = Comment::with('likes')->whereNull('parent_id')->paginate(20);
+        $comments = Comment::with(['replies', 'likes'])->whereNull('parent_id')->get();
     
-        // 各コメントに対していいねの詳細を追加
-        foreach ($comments as $comment) {
-            $comment->likedByAuthUser = $comment->likes->contains('user_id', Auth::id());
-            $comment->likesCount = $comment->likes->count();
-            $comment->repliesCount = $comment->replies()->count(); // 返信の数をカウント
-        }
+        $comments->each(function ($comment) {
+            $this->addLikeDetails($comment);
+        });
     
         return view('comments.index', compact('comments'));
     }

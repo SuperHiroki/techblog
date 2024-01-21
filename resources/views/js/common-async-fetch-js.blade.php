@@ -29,15 +29,22 @@ function getMethod(resultType) {
 }
 
 //非同期でリクエストを投げる。
-function fetchApi(url, method, apiToken) {
-    return fetch(url, {
+function fetchApi(url, method, apiToken, body = null) {
+    const fetchOptions = {
         method: method,
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Authorization': `Bearer ${apiToken}`,
             'Content-Type': 'application/json',
-        },
-    })
+        }
+    };
+
+    // GETリクエストの場合はbodyを追加しない
+    if (method !== 'GET' && body !== null) {
+        fetchOptions.body = JSON.stringify(body);
+    }
+
+    return fetch(url, fetchOptions)
     .then(response => {
         const responseMag = response.status + ' ' + response.statusText;
         const contentType = response.headers.get('Content-Type');

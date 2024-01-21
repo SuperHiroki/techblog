@@ -40,11 +40,11 @@ class Handler extends ExceptionHandler
     //認証失敗
     public function render($request, Throwable $exception)
     {
-        Log::info('RRRRRRRRRRRRRRRRRRRRRRRRR');
+        Log::info('RRRRRRRRRRRRRRRRRRRRRRRRR Handker Error.');
 
         if ($exception instanceof AuthenticationException ) {
 
-            Log::info('GGGGGGGGGGGGGGGGGG');
+            Log::info('GGGGGGGGGGGGGGGGGG AuthenticationException');
             return response()->json([
              'message' => 'ログインしていません。'
             ],401);

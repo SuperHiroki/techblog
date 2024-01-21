@@ -18,10 +18,10 @@
             <form action="{{ route('comments.add') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="commentBody" class="mb-2">Your Comment :</label>
-                    <textarea name="body" id="commentBody" class="form-control" rows="3" required></textarea>
+                    <label for="commentBodyInput" class="mb-2">Your Comment :</label>
+                    <textarea name="body" id="commentBodyInput" class="form-control" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary m-2">コメント追加</button>
+                <button type="submit" class="btn btn-primary m-2" id="button-to-add-comment">コメント追加</button>
                 <button type="button" class="btn btn-secondary m-2" onclick="toggleAddCommentForm()">キャンセル</button>
             </form>
         </div>
@@ -29,75 +29,26 @@
 </div>
 
 {{-- コメント一覧 --}}
-@foreach ($comments as $comment)
-    <div class="card mb-3">
-        <div class="card-body">
+<div id="comments-container">
+    @foreach ($comments as $comment)
+        @include('comments.comment_template', ['comment' => $comment])
+    @endforeach
 
-            {{-- コメント --}}
-            @include('comments.comment_form', ['item' => $comment])
+    <div id="commentAsyncAddedField"></div><!--コメントを非同期的に追加する場所-->
 
-            {{-- 返信一覧 --}}
-            @if ($comment->replies->count() > 0)
-                <div style="margin-left: 40px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{-- 返信ボタン --}}
-                            <div id="repliesButton{{ $comment->id }}">
-                                <a onclick="toggleReplies({{ $comment->id }})" class="btn btn-link text-info mt-2 custom-link" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">返信を表示</a>
-                            </div>
-                            {{-- 返信 --}}
-                            <div class="collapse" id="replies{{ $comment->id }}">
-                                @foreach ($comment->replies as $reply)
-                                    <hr>
-                                    <div>
-                                        @include('comments.comment_form', ['item' => $reply])
-                                    </div>
-                                @endforeach
-                                <button type="button" class="btn btn-secondary mt-2" onclick="toggleReplies({{ $comment->id }})">返信を閉じる</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            {{-- 返信フォームボタン --}}
-            <div style="margin-left: 40px;">
-                <div id="replyFormButton{{ $comment->id }}">
-                    <a onclick="toggleReplyForm({{ $comment->id }})" class="btn btn-link text-info mt-2 custom-link" data-bs-toggle="collapse" href="#replyForm{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replyForm{{ $comment->id }}">返信する</a>
-                </div>
-                {{-- 返信フォーム --}}
-                <div class="collapse" id="replyForm{{ $comment->id }}">
-                    <form action="{{ route('comments.add') }}" method="POST" class="mt-2">
-                        @csrf
-                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                        <div class="form-group">
-                            <textarea name="body" class="form-control" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary m-2">返信を追加</button>
-                        <button type="button" class="btn btn-secondary m-2" onclick="toggleReplyForm({{ $comment->id }})">キャンセル</button>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </div>
-@endforeach
+</div>
 
 <!------------------------------------------------------------------------------------------------------>
 <!--Collapseによる展開-->
 <script>
+//コメント追加フォームを展開
 function toggleAddCommentForm() {
     var addCommentForm = document.getElementById('addCommentForm');
     var addCommentFormButton = document.getElementById('addCommentFormButton');
     toggleCollapse(addCommentForm, addCommentFormButton);
 }
 
-function toggleReplies(commentId) {
-    var replies = document.getElementById('replies' + commentId);
-    var repliesButton = document.getElementById('repliesButton' + commentId);
-    toggleCollapse(replies, repliesButton);
-}
-
+//返信フォームを展開
 function toggleReplyForm(commentId) {
     var replyForm = document.getElementById('replyForm' + commentId);
     var replyFormButton = document.getElementById('replyFormButton' + commentId);
@@ -116,5 +67,85 @@ function toggleCollapse(section, button) {
         button.setAttribute('aria-expanded', 'true');
     }
 }
+</script>
+
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!--ページネーション-->
+@include('js.common-pagination-js')
+<script>
+//ページが読み込まれたときに発火する
+document.addEventListener('DOMContentLoaded', function () {
+    pagination({{ $comments->lastPage() }}, "comments-container");
+});
+</script>
+
+<!------------------------------------------------------------------------------------------------------>
+<!--非同期処理によるコメントのアクション-->
+@include('js.common-async-fetch-js')
+<script>
+//ページ読み込み時に発火する。
+document.addEventListener('DOMContentLoaded', function () {
+    //コメント追加
+    setEventToAddComment();
+    //返信一覧を取得する
+    setEventToShowReplies();
+});
+
+/////////////////////////////////////////////////////////////
+//コメント追加
+function setEventToAddComment(){
+    document.getElementById('button-to-add-comment').addEventListener('click', async function () {
+        event.preventDefault();
+        try {
+            //apiトークンの取得
+            const apiToken = getApiToken();
+            //URLなど
+            const method = "POST"
+            const url = `${baseUrl}/api/comments`;
+            const body = {"body": document.getElementById("commentBodyInput").value};
+            //fetch
+            const jsonData = await fetchApi(url, method, apiToken, body); 
+            //追加されたコメントを埋め込む
+            document.getElementById('commentAsyncAddedField').innerHTML = jsonData.commentHtml;
+            //フラッシュメッセージ
+            showFlush("success", jsonData.message);
+        } catch (error) {
+            showFlush("error", error);
+            console.error('Error:', error);
+        }
+    });
+}
+
+/////////////////////////////////////////////////////////////
+//返信一覧を取得する
+function setEventToShowReplies(){
+    document.querySelectorAll('.show-replies-to-comment').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                //コメントIDの取得
+                const commentId = item.getAttribute('data-comment-id');
+                //console.log(commentId);
+                //apiトークンの取得
+                const apiToken = getApiToken();
+                //URLなど
+                const method = "GET";
+                const url = `${baseUrl}/api/comments/${commentId}/replies`;
+                //fetch
+                const jsonData = await fetchApi(url, method, apiToken); 
+                //追加されたコメントを埋め込む
+                document.getElementById(`replies-container-to-comment-${commentId}`).innerHTML = jsonData.html;
+                //フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
+
+
+
 </script>
 @endsection
