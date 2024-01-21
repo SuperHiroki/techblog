@@ -24,7 +24,7 @@
 @if($articles->count() > 0)
 <div class="row" id="articles-container">
     @foreach ($articles as $article)
-        <div class="col-md-12 mb-3">
+        <div class="col-md-12 mb-3" id="to-exclude-trashed-article-{{$article->id}}">
             <div class="card shadow ">
                 <div id="for-gray-overlay-{{$article->id}}" class="{{$article->trashed_by_current_user ? 'gray-overlay' : ''}}"></div><!--オーバーレイ-->
                 <div class="row g-0">
@@ -300,6 +300,7 @@ function setEventToIcons(){
                 //UIの切り替え。
                 toggleCheckedArticle(articleId, currentType, targetType);
                 toggleTrashOverlayArticle(articleId, targetType);
+                //toggleExcludeTrashedArticle(articleId, targetType);
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
             } catch (error) {
@@ -321,5 +322,20 @@ function toggleCheckedArticle(articleId, currentType, targetType) {
 function toggleTrashOverlayArticle(articleId, targetType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${articleId}`);
     toggleTrashOverlay(overlaySection, targetType);
+}
+
+// ゴミ箱に入れたら表示・非表示を切り替える
+function toggleExcludeTrashedArticle(articleId, targetType) {
+    const excludedSection = document.getElementById(`to-exclude-trashed-article-${articleId}`);
+
+    if (!mypageUserEqualsToLoggedinUser()) {
+        return;
+    }
+
+    if (@json(request()->is("my-page/*/trashes")) && targetType === "untrash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    } else if ( ( @json(request()->is("my-page/*/likes")) || @json(request()->is("my-page/*/bookmarks")) || @json(request()->is("my-page/*/archives")) ) && targetType === "trash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    }
 }
 </script>

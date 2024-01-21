@@ -20,7 +20,7 @@
 @if($authors->count() > 0)
 <div class="row" id="authors-container">
     @foreach ($authors as $author)
-        <div class="col-md-12 mb-3">
+        <div class="col-md-12 mb-3" id="to-exclude-trashed-author-{{$author->id}}"><!--ゴミ箱に投げられた時表示・非表示を切り替える。-->
             <div class="card shadow">
                 <div id="for-gray-overlay-{{$author->id}}" class="{{$author->trashed_by_current_user ? 'gray-overlay' : ''}}"></div><!--オーバーレイ-->
                 <div class="row g-0">
@@ -192,6 +192,7 @@ function setEventToButtons(){
                 //UIの切り替え。
                 toggleCheckedAuthor(authorId, currentType, targetType);
                 toggleTrashOverlayAuthor(authorId, targetType);
+                //toggleExcludeTrashedAuthor(authorId, targetType);
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
             }catch (error) {
@@ -212,5 +213,20 @@ function toggleCheckedAuthor(authorId, currentType, targetType) {
 function toggleTrashOverlayAuthor(authorId, targetType) {
     const overlaySection = document.getElementById(`for-gray-overlay-${authorId}`);
     toggleTrashOverlay(overlaySection, targetType);
+}
+
+// ゴミ箱に入れたら表示・非表示を切り替える
+function toggleExcludeTrashedAuthor(authorId, targetType) {
+    const excludedSection = document.getElementById(`to-exclude-trashed-author-${authorId}`);
+
+    if (!mypageUserEqualsToLoggedinUser()) {
+        return;
+    }
+
+    if (@json(request()->is("my-page/*/trashed-authors")) && targetType === "untrash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    } else if (@json(request()->is("my-page/*/followed-authors")) && targetType === "trash") {
+        commonDisplayNoneWhenTrashed(excludedSection);
+    }
 }
 </script>

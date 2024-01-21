@@ -91,6 +91,17 @@ function toggleTrashOverlay(overlaySection, targetType) {
         overlaySection.classList.add('gray-overlay');
     }
 }
+
+//マイページのユーザが現在のログインユーザと一致しているかどうか
+function mypageUserEqualsToLoggedinUser(){
+    var mypageUserEqualsToLoggedinUser = @json(request()->is("my-page/*") && Auth::check() && Auth::user()->id == $user->id);
+    return mypageUserEqualsToLoggedinUser;
+}
+
+//非表示にする
+function commonDisplayNoneWhenTrashed(excludedSection){
+    excludedSection.style.display = "none";
+}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
