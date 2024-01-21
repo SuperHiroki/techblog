@@ -83,7 +83,8 @@
     </div>
 @endforeach
 
-{{-- JavaScriptを追加 --}}
+<!------------------------------------------------------------------------------------------------------>
+<!--Collapseによる展開-->
 <script>
 function toggleAddCommentForm() {
     var addCommentForm = document.getElementById('addCommentForm');

@@ -74,6 +74,9 @@ Route::post('/comments/report/{comment}', [App\Http\Controllers\CommentsControll
 Route::post('/like-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'like'])->name('like-comment');
 Route::delete('/unlike-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'unlike'])->name('unlike-comment');
 
+#ユーザ一覧
+Route::get('/users-list', [App\Http\Controllers\UsersListController::class, 'index'])->name('users-list');
+
 #マイページ
 Route::prefix('my-page')->group(function () {
     //プロフィール

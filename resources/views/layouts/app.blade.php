@@ -61,6 +61,9 @@
                         <li class="nav-item p-1">
                             <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
                         </li>
+                        <li class="nav-item p-1">
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('users-list') ? 'bg-light border border-secondary rounded' : '' }}" href="/users-list">ユーザ一覧</a>
+                        </li>
                     </ul>
                     <!-- 右側の認証などの要素 -->
                     @include('partials.auth-dropdown')
@@ -103,26 +106,28 @@
     <!--ページごとに異なる-->
     <div class="container" id="containerContent">
         <!-- タイトル -->
-        @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments"))
-        <div class="row justify-content-center m-4">
-            <div class="col-lg-8">
-                <div class="card text-white bg-secondary shadow">
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <h3 class="card-title text-center m-0">
-                            @if(request()->is('/') || request()->is('home'))
-                                ホーム
-                            @elseif(request()->is("recommended-authors"))
-                                おすすめ著者
-                            @elseif(request()->is("recommended-articles"))
-                                おすすめ記事
-                            @elseif(request()->is("comments"))
-                                コメント
-                            @endif   
-                        </h3>
+        @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments") | request()->is("users-list"))
+            <div class="row justify-content-center m-4">
+                <div class="col-lg-8">
+                    <div class="card text-white bg-secondary shadow">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <h3 class="card-title text-center m-0">
+                                @if(request()->is('/') || request()->is('home'))
+                                    ホーム
+                                @elseif(request()->is("recommended-authors"))
+                                    おすすめ著者
+                                @elseif(request()->is("recommended-articles"))
+                                    おすすめ記事
+                                @elseif(request()->is("comments"))
+                                    コメント
+                                @elseif(request()->is("users-list"))
+                                    ユーザ一覧
+                                @endif   
+                            </h3>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endif
 
         <!--ページそれぞれの中身-->
