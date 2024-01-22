@@ -23,7 +23,13 @@
                         {{-- 返信一覧 --}}
                         <div class="collapse" id="replies{{ $comment->id }}">
                             <!--ここの部分は非同期で取得することで、ここの部分でもページネーションを実装する。-->
-                            <div id="replies-container-to-comment-{{ $comment->id }}"></div>
+                            <div id="replies-container-to-comment-{{ $comment->id }}" class="replies-to-comment" data-comment-id="{{ $comment->id }}"></div>
+                            <!--さらに返信を表示するためのボタン-->
+                            <div>
+                                <div class="custom-link" id="show-more-replies-to-comment-{{ $comment->id }}">さらに返信を表示</div>
+                            </div>
+                            <!--自分のコメントの追加領域-->
+                            <div id="my-reply-added-field-to-comment-{{ $comment->id }}"></div>
                         </div>
                     </div>
                 </div>
@@ -41,9 +47,9 @@
                     @csrf
                     <input type="hidden" name="parent_id" value="{{ $comment->id }}">
                     <div class="form-group">
-                        <textarea name="body" class="form-control" rows="3" required></textarea>
+                        <textarea id="textarea-reply-{{$comment->id}}" name="body" class="form-control" rows="3" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary m-2">返信を追加</button>
+                    <button type="submit" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}">返信を追加</button>
                     <button type="button" class="btn btn-secondary m-2" onclick="toggleReplyForm({{ $comment->id }})">キャンセル</button>
                 </form>
             </div>

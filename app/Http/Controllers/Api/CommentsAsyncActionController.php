@@ -20,7 +20,7 @@ class CommentsAsyncActionController extends Controller
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }
     
-        $replies = $comment->replies()->paginate(20);
+        $replies = $comment->replies()->paginate(4);
     
         $repliesHtml = view('comments.replies_template', compact('replies'))->render();
     
@@ -33,13 +33,11 @@ class CommentsAsyncActionController extends Controller
         if (!Auth::check()) {
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }
-    
+
         $validatedData = $request->validate([
             'body' => 'required|max:256',
             'parent_id' => 'nullable|exists:comments,id'
         ]);
-
-        Log::info($validatedData['body']);
     
         $comment = new Comment();
         $comment->body = $validatedData['body'];
@@ -47,7 +45,11 @@ class CommentsAsyncActionController extends Controller
         $comment->parent_id = $validatedData['parent_id'] ?? null;
         $comment->save();
     
-        $commentHtml = view('comments.comment_template', ['comment' => $comment])->render();
+        if($comment->parent_id == null){
+            $commentHtml = view('comments.comment_template', ['comment' => $comment])->render();
+        }else{
+            $commentHtml = view('comments.reply_template', ['reply' => $comment])->render();
+        }
     
         return response()->json(['html' => $commentHtml, 'message' => "次のコメントを追加しました。\n{$comment->user->name}さんのコメント: \n{$comment->body}"]);
     }

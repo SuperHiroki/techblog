@@ -40,7 +40,7 @@ class Handler extends ExceptionHandler
     //認証失敗
     public function render($request, Throwable $exception)
     {
-        Log::info('RRRRRRRRRRRRRRRRRRRRRRRRR Handker Error.');
+        Log::info('RRRRRRRRRRRRRRRRRRRRRRRRR Handler Error.');
 
         if ($exception instanceof AuthenticationException ) {
 

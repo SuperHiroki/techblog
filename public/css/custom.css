@@ -25,10 +25,6 @@
     background-color: lightblue;
 }
 
-.custom-cross:hover {
-    background-color: lightgray;
-}
-
 /*ヘッダーの固定*/
 .custom-fixed-header {
     position: fixed;

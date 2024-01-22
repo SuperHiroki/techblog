@@ -38,7 +38,7 @@
 
 </div>
 
-<!------------------------------------------------------------------------------------------------------>
+<!----------------------------------------------------------------------------------------------------------------------------->
 <!--Collapseによる展開-->
 <script>
 //コメント追加フォームを展開
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!------------------------------------------------------------------------------------------------------>
+<!----------------------------------------------------------------------------------------------------------------------------->
 <!--非同期処理によるコメントのアクション-->
 @include('js.common-async-fetch-js')
 <script>
@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     //コメント追加
     setEventToAddComment();
+    //返信追加
+    setEventToAddReply();
     //返信一覧を取得する
     setEventToShowReplies();
 });
@@ -106,13 +108,45 @@ function setEventToAddComment(){
             //fetch
             const jsonData = await fetchApi(url, method, apiToken, body); 
             //追加されたコメントを埋め込む
-            document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.commentHtml);
+            document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
             //フラッシュメッセージ
             showFlush("success", jsonData.message);
         } catch (error) {
             showFlush("error", error);
             console.error('Error:', error);
         }
+    });
+}
+
+/////////////////////////////////////////////////////////////
+//コメント追加
+function setEventToAddReply() {
+    console.log('UUUUUU');
+    document.querySelectorAll('.button-to-add-reply').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                // コメントIdの取得
+                const commentId = item.getAttribute('data-comment-id');
+                console.log(commentId);
+                // apiトークンの取得
+                const apiToken = getApiToken();
+                // URLなど
+                const method = "POST";
+                const url = `${baseUrl}/api/comments`;
+                const body = {"body": document.getElementById(`textarea-reply-${commentId}`).value, "parent_id": commentId};
+                console.log(body);
+                // fetch
+                const jsonData = await fetchApi(url, method, apiToken, body);
+                // 追加されたコメントを埋め込む
+                document.getElementById(`my-reply-added-field-to-comment-${commentId}`).insertAdjacentHTML('beforeend', jsonData.html);
+                // フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
     });
 }
 
@@ -140,6 +174,8 @@ function setEventToShowReplies(){
                 showFlush("success", jsonData.message);
                 //イベントを削除する。
                 item.removeEventListener('click', handleClick);
+                //ページネーションを設定する。
+                setPaginationReplies();
             } catch (error) {
                 showFlush("error", error);
                 console.error('Error:', error);
@@ -160,6 +196,81 @@ function setEventToShowReplies(){
         item.addEventListener('click', rotateTriangle);
     });
 }
+
+// 初めに返信が読み込まれたときに発火する。
+function setPaginationReplies () {
+    document.querySelectorAll(".replies-to-comment").forEach(item => {
+        const commentId = item.getAttribute('data-comment-id');
+        console.log("AAAAAAAAAAAAA commentId");
+        console.log(commentId);
+        const lastPage = document.getElementById(`keep-replies-lastPage-to-comment-${commentId}`).textContent;
+        console.log(lastPage);
+        console.log("AAAAAAAAAAAAA lastPage");
+        console.log(lastPage);
+        paginationReplies(baseUrl, lastPage, commentId, item);
+    });
+};
+
+// ページネーションのメイン処理
+function paginationReplies(baseUrl, lastPage, commentId, item) {
+    let currentPage = 1;
+    const url = new URL(`${baseUrl}/api/comments/${commentId}/replies`);
+
+    document.getElementById(`show-more-replies-to-comment-${commentId}`).addEventListener('click', () => {
+        console.log('YYYYYYYYYYYYYYY');
+        loadMoreArticles();
+    });
+
+    console.log(lastPage);
+
+    function loadMoreArticles() {
+        if (currentPage >= lastPage) {
+            return;
+        }
+
+        currentPage++;
+        url.searchParams.set('page', currentPage);
+
+        console.log(url);
+
+        const apiToken = getApiToken();
+
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiToken}`, // トークンをヘッダーに追加
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                // レスポンスが ok でない場合はエラーを投げる
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Network response was not ok.');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(data.html, "text/html");
+            const newArticles = htmlDocument.documentElement.innerHTML; // HTMLコンテンツを取得
+            item.innerHTML += newArticles; 
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showFlush("error", error);
+            throw new Error(error.message || 'Something went wrong.');
+        });
+
+        if (currentPage >= lastPage) {
+            document.getElementById(`show-more-replies-to-comment-${commentId}`).style.display="none";
+            return;
+        }
+    }
+}
+/////////////////////////////////////////////////////////////
+//報告する。
 
 
 </script>
