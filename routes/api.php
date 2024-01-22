@@ -63,10 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/comments', [CommentsAsyncActionController::class, 'add'])->name('comments.add');
     Route::patch('/comments/{comment}', [CommentsAsyncActionController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentsAsyncActionController::class, 'destroy'])->name('comments.destroy');
-    Route::post('/comments/{comment}/report', [CommentsAsyncActionController::class, 'report'])->name('comments.report');
+    Route::post('/comments/{comment}/report', [CommentsAsyncActionController::class, 'reports'])->name('comments.report');
     #いいね
-    Route::post('/comments/{comment}/likes', [CommentsAsyncActionController::class, 'like'])->name('comments.like');
-    Route::delete('/comments/{comment}/likes', [CommentsAsyncActionController::class, 'unlike'])->name('comments.unlike');
+    Route::post('/comments/{comment}/like', [CommentsAsyncActionController::class, 'like'])->name('comments.like');
+    Route::delete('/comments/{comment}/like', [CommentsAsyncActionController::class, 'unlike'])->name('comments.unlike');
 
 });
 

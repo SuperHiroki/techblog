@@ -1,28 +1,33 @@
-/*リンクにホバーさせたとき。*/
+/*「返信を表示」などに使う*/
 .custom-link:hover {
     color: #007bff;
     background-color: lightblue;
 }
+.custom-link {
+    color: #71b6ff;
+}
+
+/*三点リーダーのアイコン、ハートマークに使う。*/
 .custom-three-point:hover {
     background-color: lightgray;
 }
+.custom-icon:hover {
+    background-color: lightgray;
+}
 
+/*ヘッダーのメニュー*/
 .custom-header-link:hover {
     background-color: lightblue;
 }
 
+/*ユーザアイコンやユーザID*/
 .custom-user-link {
     color: black;
     text-decoration: none;
 }
-
 .custom-user-link:hover {
     background-color: lightblue;
     color: black;
-}
-
-.custom-icon:hover {
-    background-color: lightblue;
 }
 
 /*ヘッダーの固定*/

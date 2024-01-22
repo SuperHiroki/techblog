@@ -30,11 +30,13 @@
 
 {{-- コメント一覧 --}}
 <div id="comments-container">
+     <!--コメント一覧を同期的に表示する-->
     @foreach ($comments as $comment)
         @include('comments.comment_template', ['comment' => $comment])
     @endforeach
 
-    <div id="commentAsyncAddedField"></div><!--コメントを非同期的に追加する場所-->
+    <!--コメントを非同期的に追加する場所-->
+    <div id="commentAsyncAddedField"></div>
 
 </div>
 
@@ -82,18 +84,59 @@ document.addEventListener('DOMContentLoaded', function () {
 <!----------------------------------------------------------------------------------------------------------------------------->
 <!--非同期処理によるコメントのアクション-->
 @include('js.common-async-fetch-js')
-<script>
+<script
+>/////////////////////////////////////////////////////////////
 //ページ読み込み時に発火する。
 document.addEventListener('DOMContentLoaded', function () {
+    //返信追加
+    setEventToUpdateItem();
     //コメント追加
     setEventToAddComment();
     //返信追加
     setEventToAddReply();
+    //コメント削除
+    setEventToDeleteComment();
+    //コメント報告
+    setEventToReportComment();
     //返信一覧を取得する
     setEventToShowReplies();
+    //非同期でいいねをつけるために設定
+    setEventToIcons();
 });
 
-/////////////////////////////////////////////////////////////
+>/////////////////////////////////////////////////////////////
+//返信追加
+function setEventToUpdateItem() {
+    document.querySelectorAll('.add-func-to-update-item').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                // コメントIdの取得
+                const commentId = item.getAttribute('data-item-id');
+                // apiトークンの取得
+                const apiToken = getApiToken();
+                // URLなど
+                const method = "PATCH";
+                const url = `${baseUrl}/api/comments/${commentId}`;
+                const body = {"body": document.getElementById(`update-textarea-item-${commentId}`).value};
+                // fetch
+                const jsonData = await fetchApi(url, method, apiToken, body);
+                // 追加されたコメントを埋め込む
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(jsonData.html, "text/html");
+                const content = htmlDocument.getElementById(`item-${commentId}`).innerHTML;
+                document.getElementById(`item-${commentId}`).innerHTML = content;
+                // フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
+
+>/////////////////////////////////////////////////////////////
 //コメント追加
 function setEventToAddComment(){
     document.getElementById('button-to-add-comment').addEventListener('click', async function () {
@@ -109,6 +152,7 @@ function setEventToAddComment(){
             const jsonData = await fetchApi(url, method, apiToken, body); 
             //追加されたコメントを埋め込む
             document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
+            toggleAddCommentForm();
             //フラッシュメッセージ
             showFlush("success", jsonData.message);
         } catch (error) {
@@ -119,7 +163,7 @@ function setEventToAddComment(){
 }
 
 /////////////////////////////////////////////////////////////
-//コメント追加
+//返信追加
 function setEventToAddReply() {
     document.querySelectorAll('.button-to-add-reply').forEach(item => {
         item.addEventListener('click', async function (event) {
@@ -137,6 +181,65 @@ function setEventToAddReply() {
                 const jsonData = await fetchApi(url, method, apiToken, body);
                 // 追加されたコメントを埋め込む
                 document.getElementById(`my-reply-added-field-to-comment-${commentId}`).insertAdjacentHTML('beforeend', jsonData.html);
+                // フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
+
+/////////////////////////////////////////////////////////////
+//コメント削除
+function setEventToDeleteComment() {
+    document.querySelectorAll('.add-func-to-delete-item').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                // コメントIdの取得
+                const commentId = item.getAttribute('data-item-id');
+                const parentId = item.getAttribute('data-parent-id');
+                // apiトークンの取得
+                const apiToken = getApiToken();
+                // URLなど
+                const method = "DELETE";
+                const url = `${baseUrl}/api/comments/${commentId}`;
+                // fetch
+                const jsonData = await fetchApi(url, method, apiToken);
+                //コメントを削除する
+                if (parentId === null || parentId === ''){
+                    document.getElementById(`area-comment-${commentId}`).style.display="none";
+                }else{
+                    document.getElementById(`area-item-${commentId}`).style.display="none";
+                }
+                // フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
+
+/////////////////////////////////////////////////////////////
+//コメント報告
+function setEventToReportComment() {
+    document.querySelectorAll('.add-func-to-report-item').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                // コメントIdの取得
+                const commentId = item.getAttribute('data-item-id');
+                // apiトークンの取得
+                const apiToken = getApiToken();
+                // URLなど
+                const method = "POST";
+                const url = `${baseUrl}/api/comments/${commentId}/report`;
+                // fetch
+                const jsonData = await fetchApi(url, method, apiToken);
                 // フラッシュメッセージ
                 showFlush("success", jsonData.message);
             } catch (error) {
@@ -237,7 +340,6 @@ function paginationReplies(baseUrl, lastPage, commentId, item) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             const parser = new DOMParser();
             const htmlDocument = parser.parseFromString(data.html, "text/html");
             const newArticles = htmlDocument.documentElement.innerHTML; // HTMLコンテンツを取得
@@ -253,19 +355,13 @@ function paginationReplies(baseUrl, lastPage, commentId, item) {
             document.getElementById(`show-more-replies-to-comment-${commentId}`).style.display="none";
             return;
         }
+
     }
 }
 /////////////////////////////////////////////////////////////
-//いいねをつける。
-//ページ読み込み時に発火する。
-document.addEventListener('DOMContentLoaded', function () {
-    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
-    setEventToIcons();
-});
-
-//非同期でいいね（ブックマーク、アーカイブ）をつけるためにイベントを設定
+//非同期でいいねをつけるためにイベントを設定
 function setEventToIcons(){
-    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+    //非同期でいいねをつけるために設定
     document.querySelectorAll('.icon-to-add-function').forEach(item => {
         item.addEventListener('click', async function (event) {
             event.preventDefault();
@@ -280,7 +376,7 @@ function setEventToIcons(){
                 //メソッド
                 const method = getMethod(targetType);
                 //URL
-                const url = `${baseUrl}/api/comments/${itemId}/likes`;
+                const url = `${baseUrl}/api/comments/${itemId}/like`;
                 //fetch
                 const jsonData = await fetchApi(url, method, apiToken); 
                 //UIの切り替え。
@@ -302,12 +398,14 @@ function setEventToIcons(){
     });
 }
 
-//いいね（ブックマーク、アーカイブ）の表示を変更する。
+//いいねの表示を変更する。
 function toggleCheckedItem(itemId, currentType, targetType) {
     //実際は一つしかないけど複数ある前提で検索される。
     const icons = document.querySelectorAll('.icon-to-add-function[data-item-id="' + itemId + '"]');
     toggleChecked(icons, currentType, targetType);
 }
+
+/////////////////////////////////////////////////////////////
 
 
 

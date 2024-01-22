@@ -76,6 +76,8 @@ class CommentsAsyncActionController extends Controller
     //コメントを削除する。
     public function destroy(Comment $comment)
     {
+Log::info('DDDDDDDDDDDDD');
+
         if (!Auth::check() || $comment->user_id !== Auth::id()) {
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }
