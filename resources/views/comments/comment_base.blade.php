@@ -20,21 +20,29 @@
     <div class="col-3 col-md-2 d-flex align-items-center justify-content-center">
         <!-- いいねボタン -->
         <div class="custom-three-point rounded">
-            @if ($item->likedByAuthUser)
-                <form id="unlike-form-{{ $item->id }}" action="{{ route('unlike-comment', $item->id) }}" method="POST" style="display: none;">
-                    @csrf
-                    @method('DELETE')
-                </form>
-                <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $item->id }}').submit();" alt="like" style="cursor: pointer; width: 15px; height: auto;">
-            @else
-                <form id="like-form-{{ $item->id }}" action="{{ route('like-comment', $item->id) }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-                <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $item->id }}').submit();" alt="unlike" style="cursor: pointer; width: 15px; height: auto;">
-            @endif
+            <!--同期通信-->
+            <div style="display:none">
+                @if ($item->likedByAuthUser)
+                    <form id="unlike-form-{{ $item->id }}" action="{{ route('unlike-comment', $item->id) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $item->id }}').submit();" alt="like" style="cursor: pointer; width: 15px; height: auto;">
+                @else
+                    <form id="like-form-{{ $item->id }}" action="{{ route('like-comment', $item->id) }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $item->id }}').submit();" alt="unlike" style="cursor: pointer; width: 15px; height: auto;">
+                @endif
+            </div>
+            <!--非同期通信-->
+            <div>
+                <img class="icon-to-add-function" id="like-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="like" src="{{ asset('images/like_bookmark_archive/like.png') }}" alt="like" style="cursor: pointer; width: 15px; height: auto; display: {{$item->likedByAuthUser ? 'block' : 'none'}};">
+                <img class="icon-to-add-function" id="unlike-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="unlike" src="{{ asset('images/like_bookmark_archive/unlike.png') }}" alt="unlike" style="cursor: pointer; width: 15px; height: auto; display: {{$item->likedByAuthUser ? 'none' : 'block'}};">
+            </div>
         </div>
         <!-- いいね数 -->
-        <div class="px-1">
+        <div class="px-1" id="like-count-of-item-{{$item->id}}">
             {{$item->likesCount}}
         </div>
         <!-- 三点リーダーメニュー -->

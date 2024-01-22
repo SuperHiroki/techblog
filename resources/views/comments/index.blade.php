@@ -121,21 +121,18 @@ function setEventToAddComment(){
 /////////////////////////////////////////////////////////////
 //コメント追加
 function setEventToAddReply() {
-    console.log('UUUUUU');
     document.querySelectorAll('.button-to-add-reply').forEach(item => {
         item.addEventListener('click', async function (event) {
             event.preventDefault();
             try {
                 // コメントIdの取得
                 const commentId = item.getAttribute('data-comment-id');
-                console.log(commentId);
                 // apiトークンの取得
                 const apiToken = getApiToken();
                 // URLなど
                 const method = "POST";
                 const url = `${baseUrl}/api/comments`;
                 const body = {"body": document.getElementById(`textarea-reply-${commentId}`).value, "parent_id": commentId};
-                console.log(body);
                 // fetch
                 const jsonData = await fetchApi(url, method, apiToken, body);
                 // 追加されたコメントを埋め込む
@@ -160,7 +157,6 @@ function setEventToShowReplies(){
             try {
                 //コメントIDの取得
                 const commentId = item.getAttribute('data-comment-id');
-                //console.log(commentId);
                 //apiトークンの取得
                 const apiToken = getApiToken();
                 //URLなど
@@ -201,12 +197,7 @@ function setEventToShowReplies(){
 function setPaginationReplies () {
     document.querySelectorAll(".replies-to-comment").forEach(item => {
         const commentId = item.getAttribute('data-comment-id');
-        console.log("AAAAAAAAAAAAA commentId");
-        console.log(commentId);
         const lastPage = document.getElementById(`keep-replies-lastPage-to-comment-${commentId}`).textContent;
-        console.log(lastPage);
-        console.log("AAAAAAAAAAAAA lastPage");
-        console.log(lastPage);
         paginationReplies(baseUrl, lastPage, commentId, item);
     });
 };
@@ -217,11 +208,8 @@ function paginationReplies(baseUrl, lastPage, commentId, item) {
     const url = new URL(`${baseUrl}/api/comments/${commentId}/replies`);
 
     document.getElementById(`show-more-replies-to-comment-${commentId}`).addEventListener('click', () => {
-        console.log('YYYYYYYYYYYYYYY');
         loadMoreArticles();
     });
-
-    console.log(lastPage);
 
     function loadMoreArticles() {
         if (currentPage >= lastPage) {
@@ -230,8 +218,6 @@ function paginationReplies(baseUrl, lastPage, commentId, item) {
 
         currentPage++;
         url.searchParams.set('page', currentPage);
-
-        console.log(url);
 
         const apiToken = getApiToken();
 
@@ -270,7 +256,59 @@ function paginationReplies(baseUrl, lastPage, commentId, item) {
     }
 }
 /////////////////////////////////////////////////////////////
-//報告する。
+//いいねをつける。
+//ページ読み込み時に発火する。
+document.addEventListener('DOMContentLoaded', function () {
+    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+    setEventToIcons();
+});
+
+//非同期でいいね（ブックマーク、アーカイブ）をつけるためにイベントを設定
+function setEventToIcons(){
+    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
+    document.querySelectorAll('.icon-to-add-function').forEach(item => {
+        item.addEventListener('click', async function (event) {
+            event.preventDefault();
+            try {
+                //apiトークンの取得
+                const apiToken = getApiToken();
+                //記事ID
+                const itemId = this.dataset.itemId;
+                //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+                const currentType = this.dataset.currentType;
+                const targetType = revserseType(currentType);
+                //メソッド
+                const method = getMethod(targetType);
+                //URL
+                const url = `${baseUrl}/api/comments/${itemId}/likes`;
+                //fetch
+                const jsonData = await fetchApi(url, method, apiToken); 
+                //UIの切り替え。
+                toggleCheckedItem(itemId, currentType, targetType);
+                if (targetType == "like") {
+                    const likeElement = document.getElementById(`like-count-of-item-${itemId}`);
+                    likeElement.textContent = parseInt(likeElement.textContent, 10) + 1;
+                } else if (targetType == "unlike") {
+                    const likeElement = document.getElementById(`like-count-of-item-${itemId}`);
+                    likeElement.textContent = parseInt(likeElement.textContent, 10) - 1;
+                }
+                //フラッシュメッセージ
+                showFlush("success", jsonData.message);
+            } catch (error) {
+                showFlush("error", error);
+                console.error('Error:', error);
+            }
+        });
+    });
+}
+
+//いいね（ブックマーク、アーカイブ）の表示を変更する。
+function toggleCheckedItem(itemId, currentType, targetType) {
+    //実際は一つしかないけど複数ある前提で検索される。
+    const icons = document.querySelectorAll('.icon-to-add-function[data-item-id="' + itemId + '"]');
+    toggleChecked(icons, currentType, targetType);
+}
+
 
 
 </script>
