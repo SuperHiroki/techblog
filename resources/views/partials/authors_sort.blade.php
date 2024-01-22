@@ -176,8 +176,6 @@ function setEventToButtons(){
     document.querySelectorAll('.button-to-add-func').forEach(item => {
         item.addEventListener('click', async function() {
             try{
-                //apiトークンの取得
-                const apiToken = getApiToken();
                 //著者ID
                 const authorId = this.dataset.authorId;
                 //リクエストの種類（フォロー、アンフォロー）
@@ -188,7 +186,7 @@ function setEventToButtons(){
                 //URL
                 const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
                 //fetch
-                const jsonData = await fetchApi(url, method, apiToken); 
+                const jsonData = await fetchApi(url, method); 
                 //UIの切り替え。
                 toggleCheckedAuthor(authorId, currentType, targetType);
                 toggleTrashOverlayAuthor(authorId, targetType);

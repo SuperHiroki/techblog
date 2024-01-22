@@ -28,8 +28,18 @@ function getMethod(resultType) {
     return method;
 }
 
-//非同期でリクエストを投げる。
-function fetchApi(url, method, apiToken, body = null) {
+//bodyをJSONに変換する
+function getJsonBody(method, body){
+    if (method !== 'GET' && body !== null) {
+        return JSON.stringify(body);
+    }else{
+        return null;
+    }
+}
+
+// 非同期でリクエストを投げる。
+async function fetchApi(url, method, body = null) {
+    const apiToken = getApiToken();
     const fetchOptions = {
         method: method,
         headers: {
@@ -39,32 +49,35 @@ function fetchApi(url, method, apiToken, body = null) {
         }
     };
 
-    // GETリクエストの場合はbodyを追加しない
-    if (method !== 'GET' && body !== null) {
-        fetchOptions.body = JSON.stringify(body);
+    const jsonBody = getJsonBody(method, body);
+    if (jsonBody != null) {
+        fetchOptions.body = jsonBody;
     }
 
-    return fetch(url, fetchOptions)
-    .then(response => {
-        const responseMag = response.status + ' ' + response.statusText;
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.includes('application/json')) {
-            // JSONレスポンスを解析する
-            return response.json().then(json => {
-                if (response.ok) {
-                    return json;
-                } else {
-                    throw new Error(json.message || responseMag);
-                }
-            });
-        } else {
-            // JSONでない場合は、直接statusTextを使用
-            throw new Error(responseMag);
-        }
-    })
-    .catch(error => {
+    try {
+        const response = await fetch(url, fetchOptions);
+        return await processFetchResponse(response);
+    } catch (error) {
         throw error;
-    });
+    }
+}
+
+// レスポンスを受け取った後の処理
+async function processFetchResponse(response) {
+    const responseMsg = response.status + ' ' + response.statusText;
+    const contentType = response.headers.get('Content-Type');
+    
+    if (contentType && contentType.includes('application/json')) {
+        const json = await response.json();
+        if (response.ok) {
+            return json;
+        } else {
+            throw new Error(json.message || responseMsg);
+        }
+    } else {
+        // JSONでない場合は、直接statusTextを使用
+        throw new Error(responseMsg);
+    }
 }
 
 //タイプを逆転する。

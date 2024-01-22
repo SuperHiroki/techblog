@@ -284,8 +284,6 @@ function setEventToIcons(){
     document.querySelectorAll('.icon-to-add-func').forEach(item => {
         item.addEventListener('click', async function () {
             try {
-                //apiトークンの取得
-                const apiToken = getApiToken();
                 //記事ID
                 const articleId = this.dataset.articleId;
                 //いいね（ブックマーク、アーカイブ）などのリクエストの種類
@@ -296,7 +294,7 @@ function setEventToIcons(){
                 //URL
                 const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
                 //fetch
-                const jsonData = await fetchApi(url, method, apiToken); 
+                const jsonData = await fetchApi(url, method); 
                 //UIの切り替え。
                 toggleCheckedArticle(articleId, currentType, targetType);
                 toggleTrashOverlayArticle(articleId, targetType);

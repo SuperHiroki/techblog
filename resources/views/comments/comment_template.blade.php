@@ -29,9 +29,9 @@
                                 <div class="d-flex align-items-center justify-content-left m-1 p-1" style="cursor:pointer">
                                     <div class="rounded custom-link" id="show-more-replies-to-comment-{{ $comment->id }}">さらに返信を表示</div>
                                 </div>
-                                <!--自分のコメントの追加領域-->
-                                <div id="my-reply-added-field-to-comment-{{ $comment->id }}"></div>
                             </div>
+                            <!--自分のコメントの追加領域-->
+                            <div id="my-reply-added-field-to-comment-{{ $comment->id }}"></div>
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                         <div class="form-group">
                             <textarea id="textarea-reply-{{$comment->id}}" name="body" class="form-control" rows="3" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}">返信を追加</button>
+                        <button type="button" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}">返信を追加</button>
                         <button type="button" class="btn btn-secondary m-2" onclick="toggleReplyForm({{ $comment->id }})">キャンセル</button>
                     </form>
                 </div>
