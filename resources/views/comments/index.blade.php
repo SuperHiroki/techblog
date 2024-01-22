@@ -41,13 +41,6 @@
 <!------------------------------------------------------------------------------------------------------>
 <!--Collapseによる展開-->
 <script>
-//返信一覧を展開する
-function toggleReplies(commentId) {
-    var replies = document.getElementById('replies' + commentId);
-    var repliesButton = document.getElementById('repliesButton' + commentId);
-    toggleCollapse(replies, repliesButton);
-}
-
 //コメント追加フォームを展開
 function toggleAddCommentForm() {
     var addCommentForm = document.getElementById('addCommentForm');
@@ -127,7 +120,8 @@ function setEventToAddComment(){
 //返信一覧を取得する
 function setEventToShowReplies(){
     document.querySelectorAll('.show-replies-to-comment').forEach(item => {
-        item.addEventListener('click', async function (event) {
+        //返信一覧のリクエストの関数を定義
+        const handleClick = async function (event) {
             event.preventDefault();
             try {
                 //コメントIDの取得
@@ -144,14 +138,28 @@ function setEventToShowReplies(){
                 document.getElementById(`replies-container-to-comment-${commentId}`).innerHTML = jsonData.html;
                 //フラッシュメッセージ
                 showFlush("success", jsonData.message);
+                //イベントを削除する。
+                item.removeEventListener('click', handleClick);
             } catch (error) {
                 showFlush("error", error);
                 console.error('Error:', error);
             }
-        });
+        }
+        // rotateTriangle関数の定義
+        const rotateTriangle = function() {
+            const commentId = item.getAttribute('data-comment-id');
+            var triangleIcon = document.getElementById(`triangle-to-comment-${commentId}`);
+            if(item.getAttribute('aria-expanded') === "false"){
+                triangleIcon.style.transform = "none";
+            } else if(item.getAttribute('aria-expanded') === "true"){
+                triangleIcon.style.transform = "rotate(180deg)";
+            }
+        };
+        //関数を設定
+        item.addEventListener('click', handleClick);
+        item.addEventListener('click', rotateTriangle);
     });
 }
-
 
 
 </script>

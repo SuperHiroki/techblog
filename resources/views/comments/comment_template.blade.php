@@ -10,16 +10,18 @@
                 <div class="row">
                     <div class="col-md-12">
                         {{-- 返信表示ボタン --}}
-                        <div id="repliesButton{{ $comment->id }}">
-                            <a onclick="toggleReplies({{ $comment->id }})" class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">{{ $comment->repliesCount}}件の返信</a>
+                        <div>
+                            <a class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">
+                                <div class="d-flex align-items-center justify-content-left">
+                                    <div class="p-2">
+                                        <img id="triangle-to-comment-{{ $comment->id }}" src="{{asset('images/icons/triangle.png')}}" style="width: 15px; height: 15px;" />
+                                    </div>
+                                    {{ $comment->repliesCount}}件の返信
+                                </div>
+                            </a>
                         </div>
                         {{-- 返信一覧 --}}
                         <div class="collapse" id="replies{{ $comment->id }}">
-                            <div class="d-flex align-items-center justify-content-left">
-                                <div class="custom-cross rounded p-2" style="cursor: pointer;">
-                                    <img onclick="toggleReplies({{ $comment->id }})" src="{{asset('images/icons/cross.png')}}" style="width: 20px; height: 20px;" />
-                                </div>
-                            </div>
                             <!--ここの部分は非同期で取得することで、ここの部分でもページネーションを実装する。-->
                             <div id="replies-container-to-comment-{{ $comment->id }}"></div>
                         </div>
