@@ -70,21 +70,6 @@
                         <div class="m-1 gap-0 d-flex align-items-center justify-content-center">
                             <!---------------------------------------------------------------------------------------->
                             <!--フォロー（アンフォロー）-->
-                            <!--同期処理-->
-                            <div style="display:none">
-                                @if($author->is_followed)
-                                    <form action="{{ route('unfollow-author', $author->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">フォロー解除</button>
-                                    </form>
-                                @else
-                                    <form action="{{ route('follow-author', $author->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-sm">フォロー</button>
-                                    </form>
-                                @endif
-                            </div>
                             <!--非同期処理-->
                             <div>
                                 <button style="display:{{$author->is_followed ? 'block' : 'none'}}"
