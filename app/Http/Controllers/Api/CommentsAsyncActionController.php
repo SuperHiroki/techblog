@@ -20,7 +20,7 @@ class CommentsAsyncActionController extends Controller
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }
 
-        $replies = $comment->replies()->with('likes')->paginate(4);
+        $replies = $comment->replies()->with('likes')->paginate(10);
 
         foreach ($replies as $reply) {
             $reply->likedByAuthUser = $reply->likes->contains('user_id', Auth::id());

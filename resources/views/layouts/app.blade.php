@@ -112,9 +112,10 @@
                     <div class="card text-white bg-secondary shadow">
                         <div class="card-body d-flex align-items-center justify-content-center">
                             <h3 class="card-title text-center m-0">
+                                {{----@elseif(request()->is(parse_url(route('recommended-authors'), PHP_URL_PATH)))のような書き方も可能。----}}
                                 @if(request()->is('/') || request()->is('home'))
                                     ホーム
-                                @elseif(request()->is("recommended-authors"))<!--@elseif(request()->is(parse_url(route('recommended-authors'), PHP_URL_PATH)))のような書き方も可能。-->
+                                @elseif(request()->is("recommended-authors"))
                                     おすすめ著者
                                 @elseif(request()->is("recommended-articles"))
                                     おすすめ記事
