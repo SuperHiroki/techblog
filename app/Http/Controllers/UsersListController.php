@@ -11,6 +11,6 @@ class UsersListController extends Controller
     {
         $users = User::with('profile')->paginate(20);
 
-        return view('users-list', compact('users'));
+        return view('users', compact('users'));
     }
 }

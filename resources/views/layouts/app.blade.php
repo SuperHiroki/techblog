@@ -62,7 +62,7 @@
                             <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
                         </li>
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('users-list') ? 'bg-light border border-secondary rounded' : '' }}" href="/users-list">ユーザ一覧</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('users') ? 'bg-light border border-secondary rounded' : '' }}" href="/users">ユーザ一覧</a>
                         </li>
                     </ul>
                     <!-- 右側の認証などの要素 -->

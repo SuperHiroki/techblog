@@ -47,35 +47,15 @@ Route::resource('/articles', ArticleController::class);
 
 #おすすめ著者
 Route::get('/recommended-authors', [App\Http\Controllers\RecommendedAuthorsController::class, 'index'])->name('recommended-authors');
-// フォローとフォロー解除のルート
-Route::post('/follow-author/{author}', [RecommendedAuthorsController::class, 'followAuthor'])->name('follow-author');
-Route::delete('/unfollow-author/{author}', [RecommendedAuthorsController::class, 'unfollowAuthor'])->name('unfollow-author');
 
 #おすすめ記事
 Route::get('/recommended-articles', [App\Http\Controllers\RecommendedArticlesController::class, 'index'])->name('recommended-articles');
-//いいね
-Route::post('/like-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'like'])->name('like-article');
-Route::delete('/unlike-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unlike'])->name('unlike-article');
-//ブックマーク
-Route::post('/bookmark-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'bookmark'])->name('bookmark-article');
-Route::delete('/unbookmark-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unbookmark'])->name('unbookmark-article');
-//アーカイブ
-Route::post('/archive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'archive'])->name('archive-article');
-Route::delete('/unarchive-article/{article}', [App\Http\Controllers\RecommendedArticlesController::class, 'unarchive'])->name('unarchive-article');
 
 #コメント
 Route::get('/comments', [App\Http\Controllers\CommentsController::class, 'index'])->name('comments');
-#追加、削除、編集
-Route::post('/comments/add', [App\Http\Controllers\CommentsController::class, 'add'])->name('comments.add');
-Route::patch('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'update'])->name('comments.update');
-Route::delete('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'destroy'])->name('comments.destroy');
-Route::post('/comments/report/{comment}', [App\Http\Controllers\CommentsController::class, 'report'])->name('comments.report');
-#いいね
-Route::post('/like-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'like'])->name('like-comment');
-Route::delete('/unlike-comment/{comment}', [App\Http\Controllers\CommentsController::class, 'unlike'])->name('unlike-comment');
 
 #ユーザ一覧
-Route::get('/users-list', [App\Http\Controllers\UsersListController::class, 'index'])->name('users-list');
+Route::get('/users', [App\Http\Controllers\UsersListController::class, 'index'])->name('users');
 
 #マイページ
 Route::prefix('my-page')->group(function () {
@@ -88,23 +68,23 @@ Route::prefix('my-page')->group(function () {
     //最近の記事
     Route::get('/{user}/recent-articles/days/{days}', 'App\Http\Controllers\MyPage\RecentArticlesController@index')->name('my-page.recent-articles');
     //いいねした記事
-    Route::get('/{user}/likes', 'App\Http\Controllers\MyPage\LikesController@index')->name('my-page.likes');
+    Route::get('/{user}/liked-articles', 'App\Http\Controllers\MyPage\LikesController@index')->name('my-page.liked-articles');
     //ブックマークした記事
-    Route::get('/{user}/bookmarks', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarks');
+    Route::get('/{user}/bookmarked-articles', 'App\Http\Controllers\MyPage\BookmarksController@index')->name('my-page.bookmarked-articles');
     //アーカイブした記事
-    Route::get('/{user}/archives', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archives');
+    Route::get('/{user}/archived-articles', 'App\Http\Controllers\MyPage\ArchivesController@index')->name('my-page.archived-articles');
     //trashした記事
-    Route::get('/{user}/trashes', 'App\Http\Controllers\MyPage\TrashesController@index')->name('my-page.trashes');
+    Route::get('/{user}/trashed-articles', 'App\Http\Controllers\MyPage\TrashesController@index')->name('my-page.trashed-articles');
 });
 
 #設定
 Route::prefix('settings')->middleware('auth')->group(function () {
     //アカウント設定
     Route::get('/{user}/account', 'App\Http\Controllers\Settings\AccountController@index')->name('settings.account');
-    Route::patch('/{user}/account', 'App\Http\Controllers\Settings\AccountController@update')->name('settings.account');
+    Route::patch('/{user}/account', 'App\Http\Controllers\Settings\AccountController@update')->name('settings.account.update');
     //公開プロフィール設定
     Route::get('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@index')->name('settings.public-profile');
-    Route::patch('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile');
+    Route::patch('/{user}/public-profile', 'App\Http\Controllers\Settings\PublicProfileController@update')->name('settings.public-profile.update');
 });
 
 #APIトークンを取得するためのページ(すぐにリダイレクトされるから一瞬のみしか表示されない。)

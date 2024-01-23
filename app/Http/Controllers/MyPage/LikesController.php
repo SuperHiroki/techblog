@@ -31,6 +31,6 @@ class LikesController extends Controller
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.likes', compact('user', 'articles'));
+        return view('my-page.liked-articles', compact('user', 'articles'));
     }
 }

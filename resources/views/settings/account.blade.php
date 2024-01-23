@@ -8,7 +8,7 @@
 @section('content')
 <div class="mb-5">
     <!-- enctype属性を追加してファイルアップロードを可能にする -->
-    <form method="POST" action="{{ route('settings.account', $user->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('settings.account.update', $user->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
 

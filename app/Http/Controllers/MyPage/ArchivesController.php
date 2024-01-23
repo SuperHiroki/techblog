@@ -31,6 +31,6 @@ class ArchivesController extends Controller
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.archives', compact('user', 'articles'));
+        return view('my-page.archived-articles', compact('user', 'articles'));
     }
 }

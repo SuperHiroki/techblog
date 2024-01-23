@@ -44,15 +44,14 @@
                 </div>
                 {{-- 返信フォーム --}}
                 <div class="collapse" id="replyForm{{ $comment->id }}">
-                    <form action="{{ route('comments.add') }}" method="POST" class="mt-2">
-                        @csrf
+                    <div>
                         <input type="hidden" name="parent_id" value="{{ $comment->id }}">
                         <div class="form-group">
                             <textarea id="textarea-reply-{{$comment->id}}" name="body" class="form-control" rows="3" required></textarea>
                         </div>
                         <button type="button" id="button-to-add-reply-to-parent-{{$comment->id}}" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}" onclick="onclickAddReply({{ $comment->id }})">返信を追加</button>
                         <button type="button" class="btn btn-secondary m-2" onclick="toggleReplyForm({{ $comment->id }})">キャンセル</button>
-                    </form>
+                    </div>
                 </div>
             </div>
 

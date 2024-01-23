@@ -31,6 +31,6 @@ class BookmarksController extends Controller
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.bookmarks', compact('user', 'articles'));
+        return view('my-page.bookmarked-articles', compact('user', 'articles'));
     }
 }

@@ -7,7 +7,7 @@
 
 @section('content')
 <div class="mb-5">
-    <form method="POST" action="{{ route('settings.public-profile', $user->id) }}">
+    <form method="POST" action="{{ route('settings.public-profile.update', $user->id) }}">
         @csrf
         @method('PATCH')
 

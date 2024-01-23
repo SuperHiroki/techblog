@@ -15,15 +15,14 @@
             <a onclick="toggleAddCommentForm()" class="btn btn-link text-info custom-link" data-bs-toggle="collapse" href="#addCommentForm" role="button" aria-expanded="false" aria-controls="addCommentForm">コメントを追加</a>
         </div>
         <div id="addCommentForm" class="collapse">
-            <form action="{{ route('comments.add') }}" method="POST">
-                @csrf
+            <div>
                 <div class="form-group">
                     <label for="commentBodyInput" class="mb-2">Your Comment :</label>
                     <textarea name="body" id="commentBodyInput" class="form-control" rows="3" required></textarea>
                 </div>
                 <button type="button" class="btn btn-primary m-2" id="button-to-add-comment" onclick="onclickAddComment()">コメント追加</button>
                 <button type="button" class="btn btn-secondary m-2" onclick="toggleAddCommentForm()">キャンセル</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>

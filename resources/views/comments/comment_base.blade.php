@@ -15,7 +15,7 @@
                     @endif
                     <div class="">&#64;{{ $item->user->name }}</div>
                 </a>
-                <div class="small" style="margin-left: 15px;">   {{ $item->created_at->diffForHumans() }}</div>
+                <div class="small" style="margin-left: 15px;">{{ $item->created_at->diffForHumans() }}</div>
             </div>
             <div style="margin-left: 42px;" class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</div>
         </div>
@@ -59,13 +59,11 @@
 
     @if (Auth::id() === $item->user_id)
         <div id="editForm{{ $item->id }}" style="display:none">
-            <form action="{{ route('comments.update', $item) }}" method="post">
-                @csrf
-                @method('PATCH')
+            <div>
                 <textarea name="body" class="form-control" rows="3" id="update-textarea-item-{{$item->id}}">{{ $item->body }}</textarea>
                 <button type="button" id="button-to-update-item-{{ $item->id }}" class="btn btn-primary mt-2 add-func-to-update-comment" data-item-id="{{$item->id}}" onclick="onclickUpdateItem({{ $item->id }})">更新</button>
                 <button type="button" onclick="showEditForm({{ $item->id }})" class="btn btn-secondary mt-2">キャンセル</button>
-            </form>
+            </div>
         </div>
     @endif
 </div>

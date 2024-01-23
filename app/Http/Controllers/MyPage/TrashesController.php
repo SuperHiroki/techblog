@@ -31,6 +31,6 @@ class TrashesController extends Controller
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.trashes', compact('user', 'articles'));
+        return view('my-page.trashed-articles', compact('user', 'articles'));
     }
 }
