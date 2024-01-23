@@ -1,5 +1,8 @@
 {{-- comments/comment_form.blade.php --}}
 
+<!--itemIdを埋め込んで検索できるようにする-->
+<input type="hidden" id="getItemId" name="getItemId" value="{{$item->id}}" />
+
 <div id="area-item-{{$item->id}}">
     <div class="row">
         <div class="col-9 col-md-10">
@@ -52,13 +55,13 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
                         <li><a class="dropdown-item" href="#" onclick="showEditForm({{ $item->id }}); return false;">編集</a></li>
                         <li>
-                            <button class="dropdown-item add-func-to-delete-item" data-item-id="{{ $item->id }}" data-parent-id="{{ $item->parent_id }}">{{ $item->parent_id }}削除</button>
+                            <button id="button-to-delete-item-{{ $item->id }}" class="dropdown-item add-func-to-delete-item" data-item-id="{{ $item->id }}" data-parent-id="{{ $item->parent_id }}">削除</button>
                         </li>
                     </ul>
                 @else
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
                         <li>
-                            <button type="submit" class="dropdown-item add-func-to-report-item" data-item-id="{{ $item->id }}">報告</button>
+                            <button type="submit" id="report-button-to-item-{{ $item->id }}" class="dropdown-item add-func-to-report-item" data-item-id="{{ $item->id }}">報告</button>
                         </li>
                     </ul>
                 @endif
@@ -72,7 +75,7 @@
                 @csrf
                 @method('PATCH')
                 <textarea name="body" class="form-control" rows="3" id="update-textarea-item-{{$item->id}}">{{ $item->body }}</textarea>
-                <button type="submit" class="btn btn-primary mt-2 add-func-to-update-comment" data-item-id="{{$item->id}}">更新</button>
+                <button type="submit" id="button-to-update-item-{{ $item->id }}" class="btn btn-primary mt-2 add-func-to-update-comment" data-item-id="{{$item->id}}">更新</button>
                 <button type="button" onclick="showEditForm({{ $item->id }})" class="btn btn-secondary mt-2">キャンセル</button>
             </form>
         </div>

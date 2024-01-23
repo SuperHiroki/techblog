@@ -147,6 +147,32 @@ function setEventToIcons() {
 }
 
 /////////////////////////////////////////////////////////////
+//アイテム追加の時にそれに対してイベントを埋め込んであげる（HTMLの中にOnclickイベントを作った方がよかったな）。
+setEventsToOneItem(itemId, parentId = null){
+    //いいねをつけるイベント
+    const likeButton = document.getElementById(`like-icon-of-item-${itemId}`);
+    handleLikeFunction(likeButton);
+    //報告をするイベント
+    const reportButton = document.getElementById(`report-button-to-item-${itemId}`);
+    handleReportComment(reportButton);
+    //削除するイベント
+    const deleteButton = document.getElementById(`button-to-delete-item-${itemId}`);
+    handleDeleteComment(deleteButton);
+    //更新するイベント
+    const updateButton = document.getElementById(`button-to-update-item-${itemId}`);
+    handleUpdateItem(updateButton)
+    if( parentId === null || parentId === ''){
+        //返信一覧を取得するイベント
+        const buttonShowMoreReplies = document.getElementById(`show-replies-to-comment-${itemId}`);
+        setAllEventsToShowReplies(buttonShowMoreReplies);
+        //返信追加ボタンを制御するイベント
+        const addReplyButton = document.getElementById(` button-to-add-reply-to-parent-${itemId}`);
+        handleAddReply(addReplyButton);
+    }
+
+}
+
+/////////////////////////////////////////////////////////////
 //コメント追加
 function handleAddComment(buttonElement) {
     buttonElement.addEventListener('click', async function(event) {
@@ -157,12 +183,38 @@ function handleAddComment(buttonElement) {
             const url = `${baseUrl}/api/comments`;
             const body = {"body": document.getElementById("commentBodyInput").value};
             //fetch
-            console.log(body);
             const jsonData = await fetchApi(url, method, body); 
             //追加されたコメントを埋め込む
             document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
             toggleAddCommentForm();
             //フラッシュメッセージ
+            showFlush("success", jsonData.message);
+        } catch (error) {
+            showFlush("error", error);
+            console.error('Error:', error);
+        }
+    });
+}
+
+/////////////////////////////////////////////////////////////
+//返信追加
+function handleAddReply(item) {
+    item.addEventListener('click', async function(event) {
+        event.preventDefault();
+        try {
+            // コメントIdの取得
+            const parentId = item.getAttribute('data-comment-id');
+            console.log(parentId);
+            // URLなど
+            const method = "POST";
+            const url = `${baseUrl}/api/comments`;
+            const body = {"body": document.getElementById(`textarea-reply-${parentId}`).value, "parent_id": parentId};
+            // fetch
+            const jsonData = await fetchApi(url, method, body);
+            console.log(jsonData.html);
+            // 追加されたコメントを埋め込む
+            document.getElementById(`my-reply-added-field-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
+            // フラッシュメッセージ
             showFlush("success", jsonData.message);
         } catch (error) {
             showFlush("error", error);
@@ -202,33 +254,6 @@ function updateItemByReplacing(jsonData, commentId){
     const htmlDocument = parser.parseFromString(jsonData.html, "text/html");
     const content = htmlDocument.getElementById(`area-item-${commentId}`).innerHTML;
     document.getElementById(`area-item-${commentId}`).innerHTML = content;
-}
-
-/////////////////////////////////////////////////////////////
-//返信追加
-function handleAddReply(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            // コメントIdの取得
-            const parentId = item.getAttribute('data-comment-id');
-            // URLなど
-            const method = "POST";
-            const url = `${baseUrl}/api/comments`;
-            const body = {"body": document.getElementById(`textarea-reply-${parentId}`).value, "parent_id": parentId};
-            console.log(body);
-            // fetch
-            const jsonData = await fetchApi(url, method, body);
-            console.log(jsonData.html);
-            // 追加されたコメントを埋め込む
-            document.getElementById(`my-reply-added-field-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
-            // フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
 }
 
 /////////////////////////////////////////////////////////////
@@ -421,7 +446,7 @@ function appendHtml(htmlAddedArea, jsonData) {
     const parser = new DOMParser();
     const htmlDocument = parser.parseFromString(jsonData.html, "text/html");
     const newArticles = htmlDocument.documentElement.innerHTML;
-    htmlAddedArea.innerHTML += newArticles; 
+    htmlAddedArea.innerHTML += newArticles;
 }
 </script>
 @endsection
