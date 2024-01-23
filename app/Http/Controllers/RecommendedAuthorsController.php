@@ -35,28 +35,6 @@ class RecommendedAuthorsController extends Controller
 
         return view('recommended-authors', compact('authors'));
     }
-
-    //フォロー
-    public function followAuthor(Author $author)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-        $user = Auth::user();
-        $user->followedAuthors()->attach($author);
-        return back()->with('success', "{$author->name}をフォローしました。");
-    }
-
-    //フォロー解除
-    public function unfollowAuthor(Author $author)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-        $user = Auth::user();
-        $user->followedAuthors()->detach($author);
-        return back()->with('success', "{$author->name}のフォローを外しました。");
-    }
 }
 
 

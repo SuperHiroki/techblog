@@ -92,5 +92,4 @@ class AuthorController extends Controller
             return back()->withErrors($e->getMessage());
         }
     }
-    
 }
