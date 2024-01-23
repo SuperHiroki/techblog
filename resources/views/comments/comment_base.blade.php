@@ -13,8 +13,9 @@
                     @else
                         <img src="{{ asset('images/default-icons/avatar.png')}}" alt="No Image" style="max-width: 30px; max-height: 30px; border-radius: 50%; margin-right: 5px;">
                     @endif
-                    <div class="small rounded">&#64;{{ $item->user->name }}</div>
+                    <div class="">&#64;{{ $item->user->name }}</div>
                 </a>
+                <div class="small" style="margin-left: 15px;">   {{ $item->created_at->diffForHumans() }}</div>
             </div>
             <div style="margin-left: 42px;" class="" id="commentBodyText{{ $item->id }}" style="white-space: pre-wrap;">{{ $item->body }}</div>
         </div>
