@@ -31,7 +31,7 @@
             </div>
             <!-- いいね数 -->
             <div class="px-1" id="like-count-of-item-{{$item->id}}">
-                {{$item->likesCount}}
+                {{$item->likesCount ?: 0}}
             </div>
             <!-- 三点リーダーメニュー -->
             <div>

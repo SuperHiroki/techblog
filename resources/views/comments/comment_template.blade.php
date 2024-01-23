@@ -6,10 +6,10 @@
             @include('comments.comment_base', ['item' => $comment])
 
             {{-- 返信一覧 --}}
-            @if ($comment->replies->count() > 0)
-                <div style="margin-left: 40px;">
-                    <div class="row">
-                        <div class="col-md-12">
+            <div style="margin-left: 40px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @if ($comment->replies->count() > 0)
                             {{-- 返信表示ボタン --}}
                             <div>
                                 <a onclick="onclickShowReplies(this)" id="show-replies-to-comment-{{$comment->id}}" class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">
@@ -21,21 +21,21 @@
                                     </div>
                                 </a>
                             </div>
-                            {{-- 返信一覧 --}}
-                            <div class="collapse" id="replies{{ $comment->id }}">
-                                <!--ここの部分は非同期で取得することで、ここの部分でもページネーションを実装する。-->
-                                <div id="replies-container-to-comment-{{ $comment->id }}" class="replies-to-comment" data-comment-id="{{ $comment->id }}"></div>
-                                <!--さらに返信を表示するためのボタン-->
-                                <div class="d-flex align-items-center justify-content-left m-1 p-1" style="cursor:pointer">
-                                    <div class="rounded custom-link" id="show-more-replies-to-comment-{{ $comment->id }}">さらに返信を表示</div>
-                                </div>
+                        @endif
+                        {{-- 返信一覧 --}}
+                        <div class="collapse" id="replies{{ $comment->id }}">
+                            <!--ここの部分は非同期で取得することで、ここの部分でもページネーションを実装する。-->
+                            <div id="replies-container-to-comment-{{ $comment->id }}" class="replies-to-comment" data-comment-id="{{ $comment->id }}"></div>
+                            <!--さらに返信を表示するためのボタン-->
+                            <div class="d-flex align-items-center justify-content-left m-1 p-1" style="cursor:pointer">
+                                <div class="rounded custom-link" id="show-more-replies-to-comment-{{ $comment->id }}">さらに返信を表示</div>
                             </div>
-                            <!--自分のコメントの追加領域-->
-                            <div id="my-reply-added-field-to-comment-{{ $comment->id }}"></div>
                         </div>
+                        <!--自分のコメントの追加領域-->
+                        <div id="my-reply-added-field-to-comment-{{ $comment->id }}"></div>
                     </div>
                 </div>
-            @endif
+            </div>
 
             {{-- 返信フォームボタン --}}
             <div style="margin-left: 40px;">

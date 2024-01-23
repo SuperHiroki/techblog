@@ -30,14 +30,13 @@
 
 {{-- コメント一覧 --}}
 <div id="comments-container">
+    <!--コメントを非同期的に追加する場所-->
+    <div id="commentAsyncAddedField"></div>
+
      <!--コメント一覧を同期的に表示する-->
     @foreach ($comments as $comment)
         @include('comments.comment_template', ['comment' => $comment])
     @endforeach
-
-    <!--コメントを非同期的に追加する場所-->
-    <div id="commentAsyncAddedField"></div>
-
 </div>
 
 <!----------------------------------------------------------------------------------------------------------------------------->
@@ -98,12 +97,22 @@ async function onclickAddComment() {
         //追加されたコメントを埋め込む
         document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
         toggleAddCommentForm();
+        resetInputTextComment();
         //フラッシュメッセージ
         showFlush("success", jsonData.message);
     } catch (error) {
         showFlush("error", error);
         console.error('Error:', error);
     }
+}
+
+function resetInputTextComment(){
+    const inputField = document.getElementById(`commentBodyInput`);
+    ressetInput(inputField);
+}
+
+function ressetInput(inputField){
+    inputField.value = '';
 }
 
 /////////////////////////////////////////////////////////////
@@ -118,6 +127,8 @@ async function onclickAddReply(parentId) {
         const jsonData = await fetchApi(url, method, body);
         // 追加されたコメントを埋め込む
         document.getElementById(`my-reply-added-field-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
+        toggleReplyForm(parentId);
+        resetInputTextReply(parentId);
         // フラッシュメッセージ
         showFlush("success", jsonData.message);
     } catch (error) {
@@ -126,6 +137,10 @@ async function onclickAddReply(parentId) {
     }
 }
 
+function resetInputTextReply(parentId){
+    const inputField = document.getElementById(`textarea-reply-${parentId}`);
+    ressetInput(inputField);
+}
 
 /////////////////////////////////////////////////////////////
 //コメント更新
@@ -146,7 +161,6 @@ async function onclickUpdateItem(itemId) {
         console.error('Error:', error);
     }
 }
-
 
 //itemの中身を入れ替え
 function updateItemByReplacing(jsonData, commentId){
@@ -261,10 +275,12 @@ async function handleGetReplies(item) {
         const method = "GET";
         const url = `${baseUrl}/api/comments/${parentId}/replies`;
         const jsonData = await fetchApi(url, method); 
-        document.getElementById(`replies-container-to-comment-${parentId}`).innerHTML = jsonData.html;
+        document.getElementById(`replies-container-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
         showFlush("success", jsonData.message);
         // ページネーションの開始
         setPaginationReplies(parentId);
+        //イベントを取り除く
+        item.onclick = null;
     } catch (error) {
         showFlush("error", error);
         console.error('Error:', error);
@@ -290,18 +306,25 @@ function setPaginationReplies(parentId) {
 
     let currentPage = 1;
 
+    hideButtoShowMoreReplies(currentPage, lastPage, parentId);
+
     document.getElementById(`show-more-replies-to-comment-${parentId}`).addEventListener('click', async () => {
         try {
             const jsonData = await loadMoreItems(url, currentPage, lastPage);
             appendHtml(htmlAddedArea, jsonData);
             currentPage++;
-            if (currentPage >= lastPage) {
-                document.getElementById(`show-more-replies-to-comment-${parentId}`).style.display = "none";
-            }
+            hideButtoShowMoreReplies(currentPage, lastPage, parentId);
         } catch (error) {
             console.error('Error:', error);
         }
     });
+}
+
+//さらに返信表示ボタンを隠す。
+function hideButtoShowMoreReplies(currentPage, lastPage, parentId){
+    if (currentPage >= lastPage) {
+        document.getElementById(`show-more-replies-to-comment-${parentId}`).style.display = "none";
+    }
 }
 
 //ロードする。

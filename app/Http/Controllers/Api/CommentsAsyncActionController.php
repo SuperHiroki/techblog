@@ -13,21 +13,29 @@ use App\Http\Controllers\Controller;
 
 class CommentsAsyncActionController extends Controller
 {
-    //返信一覧
+    // 返信一覧
     public function replies(Request $request, Comment $comment)
     {
         if (!Auth::check()) {
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }
-    
-        $replies = $comment->replies()->paginate(4);
-    
+
+        $replies = $comment->replies()->with('likes')->paginate(4);
+
+        foreach ($replies as $reply) {
+            $reply->likedByAuthUser = $reply->likes->contains('user_id', Auth::id());
+            $reply->likesCount = $reply->likes->count();
+        }
+
         $repliesHtml = view('comments.replies_template', compact('replies'))->render();
-    
-        return response()->json(['html' => $repliesHtml, 'message' => "次のコメントに対する返信一覧を取得しました。\n{$comment->user->name}さんのコメント: \n{$comment->body}"]);
+
+        return response()->json([
+            'html' => $repliesHtml, 
+            'message' => "次のコメントに対する返信一覧を取得しました。\n{$comment->user->name}さんのコメント: \n{$comment->body}"
+        ]);
     }
 
-    //コメントを追加する。
+    //コメントや返信を追加する。
     public function add(Request $request)
     {
         if (!Auth::check()) {
@@ -76,8 +84,6 @@ class CommentsAsyncActionController extends Controller
     //コメントを削除する。
     public function destroy(Comment $comment)
     {
-Log::info('DDDDDDDDDDDDD');
-
         if (!Auth::check() || $comment->user_id !== Auth::id()) {
             return response()->json(['message' => 'ログインが必要です。'], 401);
         }

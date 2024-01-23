@@ -13,7 +13,7 @@ class CommentsController extends Controller
     //コメント全てを取得する。
     public function index()
     {
-        $comments = Comment::with('likes')->whereNull('parent_id')->paginate(20);
+        $comments = Comment::with('likes')->whereNull('parent_id')->paginate(6);
     
         // 各コメントに対していいねの詳細を追加
         foreach ($comments as $comment) {
