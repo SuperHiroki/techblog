@@ -48,6 +48,10 @@ async function showFlush(error_or_success="success", msg){
 async function hideFlushAfterSomeSeconds(elements) {
     await new Promise(resolve => setTimeout(resolve, 3000));
 
+    if(!(elements instanceof NodeList || Array.isArray(elements))){
+        elements = [elements];
+    }
+
     elements.forEach(element => {
         element.style.display = "none";
     });
