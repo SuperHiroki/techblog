@@ -180,7 +180,7 @@ function setEventToButtons(){
                 const authorId = this.dataset.authorId;
                 //リクエストの種類（フォロー、アンフォロー）
                 const currentType = this.dataset.currentType;
-                const targetType = revserseType(currentType);
+                const targetType = reverseType(currentType);
                 //メソッド
                 const method = getMethod(targetType);
                 //URL

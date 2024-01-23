@@ -20,26 +20,13 @@
         </div>
         <div class="col-3 col-md-2 d-flex align-items-center justify-content-center">
             <!-- いいねボタン -->
-            <div class="custom-icon rounded">
-                <!--同期通信-->
-                <div style="display:none">
-                    @if ($item->likedByAuthUser)
-                        <form id="unlike-form-{{ $item->id }}" action="{{ route('unlike-comment', $item->id) }}" method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                        <img src="{{ asset('images/like_bookmark_archive/like.png') }}" onclick="document.getElementById('unlike-form-{{ $item->id }}').submit();" alt="like" style="cursor: pointer; width: 15px; height: auto;">
-                    @else
-                        <form id="like-form-{{ $item->id }}" action="{{ route('like-comment', $item->id) }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                        <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" onclick="document.getElementById('like-form-{{ $item->id }}').submit();" alt="unlike" style="cursor: pointer; width: 15px; height: auto;">
-                    @endif
-                </div>
+            <div>
                 <!--非同期通信-->
-                <div>
-                    <img class="icon-to-add-function" id="like-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="like" src="{{ asset('images/like_bookmark_archive/like.png') }}" alt="like" style="cursor: pointer; width: 15px; height: auto; display: {{$item->likedByAuthUser ? 'block' : 'none'}};">
-                    <img class="icon-to-add-function" id="unlike-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="unlike" src="{{ asset('images/like_bookmark_archive/unlike.png') }}" alt="unlike" style="cursor: pointer; width: 15px; height: auto; display: {{$item->likedByAuthUser ? 'none' : 'block'}};">
+                <div onclick="onclickLike(this)" class="icon-to-add-function custom-icon rounded p-2" id="like-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="like" style="cursor: pointer; display: {{$item->likedByAuthUser ? 'block' : 'none'}};">
+                    <img src="{{ asset('images/like_bookmark_archive/like.png') }}" alt="like" style="width: 15px; height: auto;">
+                </div>
+                <div onclick="onclickLike(this)" class="icon-to-add-function custom-icon rounded p-2" id="unlike-icon-of-item-{{ $item->id }}" data-item-id="{{ $item->id }}" data-current-type="unlike" style="cursor: pointer; display: {{$item->likedByAuthUser ? 'none' : 'block'}};">
+                    <img src="{{ asset('images/like_bookmark_archive/unlike.png') }}" alt="unlike" style="width: 15px; height: auto;">
                 </div>
             </div>
             <!-- いいね数 -->
@@ -55,13 +42,13 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
                         <li><a class="dropdown-item" href="#" onclick="showEditForm({{ $item->id }}); return false;">編集</a></li>
                         <li>
-                            <button id="button-to-delete-item-{{ $item->id }}" class="dropdown-item add-func-to-delete-item" data-item-id="{{ $item->id }}" data-parent-id="{{ $item->parent_id }}">削除</button>
+                            <button type="button" id="button-to-delete-item-{{ $item->id }}" class="dropdown-item add-func-to-delete-item" data-item-id="{{ $item->id }}" data-parent-id="{{ $item->parent_id }}" onclick="onclickDeleteComment(this)">削除</button>
                         </li>
                     </ul>
                 @else
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
                         <li>
-                            <button type="submit" id="report-button-to-item-{{ $item->id }}" class="dropdown-item add-func-to-report-item" data-item-id="{{ $item->id }}">報告</button>
+                            <button type="button" id="report-button-to-item-{{ $item->id }}" class="dropdown-item add-func-to-report-item" data-item-id="{{ $item->id }}" onclick="onclickReportComment({{ $item->id }})">報告</button>
                         </li>
                     </ul>
                 @endif
@@ -75,7 +62,7 @@
                 @csrf
                 @method('PATCH')
                 <textarea name="body" class="form-control" rows="3" id="update-textarea-item-{{$item->id}}">{{ $item->body }}</textarea>
-                <button type="submit" id="button-to-update-item-{{ $item->id }}" class="btn btn-primary mt-2 add-func-to-update-comment" data-item-id="{{$item->id}}">更新</button>
+                <button type="button" id="button-to-update-item-{{ $item->id }}" class="btn btn-primary mt-2 add-func-to-update-comment" data-item-id="{{$item->id}}" onclick="onclickUpdateItem({{ $item->id }})">更新</button>
                 <button type="button" onclick="showEditForm({{ $item->id }})" class="btn btn-secondary mt-2">キャンセル</button>
             </form>
         </div>

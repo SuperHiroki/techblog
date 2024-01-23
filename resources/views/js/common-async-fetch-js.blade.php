@@ -81,7 +81,7 @@ async function processFetchResponse(response) {
 }
 
 //タイプを逆転する。
-function revserseType(type) {
+function reverseType(type) {
     let reversedType;
     if (type.startsWith('un')) {
         reversedType = type.substring(2);

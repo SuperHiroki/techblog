@@ -104,7 +104,7 @@
     </div>
 
     <!--ページごとに異なる-->
-    <div class="container" id="containerContent">
+    <div class="container mb-5" id="containerContent">
         <!-- タイトル -->
         @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments") | request()->is("users-list"))
             <div class="row justify-content-center m-4">

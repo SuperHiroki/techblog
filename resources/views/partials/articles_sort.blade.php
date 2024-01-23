@@ -288,7 +288,7 @@ function setEventToIcons(){
                 const articleId = this.dataset.articleId;
                 //いいね（ブックマーク、アーカイブ）などのリクエストの種類
                 const currentType = this.dataset.currentType;
-                const targetType = revserseType(currentType);
+                const targetType = reverseType(currentType);
                 //メソッド
                 const method = getMethod(targetType);
                 //URL

@@ -21,7 +21,7 @@
                     <label for="commentBodyInput" class="mb-2">Your Comment :</label>
                     <textarea name="body" id="commentBodyInput" class="form-control" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary m-2" id="button-to-add-comment">コメント追加</button>
+                <button type="button" class="btn btn-primary m-2" id="button-to-add-comment" onclick="onclickAddComment()">コメント追加</button>
                 <button type="button" class="btn btn-secondary m-2" onclick="toggleAddCommentForm()">キャンセル</button>
             </form>
         </div>
@@ -86,94 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
 @include('js.common-async-fetch-js')
 <script>
 /////////////////////////////////////////////////////////////
-//ページ読み込み時に発火する。
-document.addEventListener('DOMContentLoaded', function () {
-    //コメント追加イベントを設定
-    setEventToAddComment();
-    //コメント更新イベントを設定
-    setEventToUpdateItem();
-    //返信追加イベントを設定
-    setEventToAddReply();
-    //コメント削除イベントを設定
-    setEventToDeleteComment();
-    //コメント報告イベントを設定
-    setEventToReportComment();
-    //返信一覧を取得するイベントを設定
-    setEventToShowReplies();
-    //いいねをつけるためのイベントを設定
-    setEventToIcons();
-});
-
-//初回読み込み時にコメント追加ボタンにイベントを設定する。
-function setEventToAddComment() {
-    const addButton = document.getElementById('button-to-add-comment');
-    if (addButton) {
-        handleAddComment(addButton);
-    }
-}
-
-//初回読み込み時にコメント更新ボタンにイベントを設定する。
-function setEventToUpdateItem() {
-    document.querySelectorAll('.add-func-to-update-item').forEach(item => {
-        handleUpdateItem(item);
-    });
-}
-
-//初回読み込み時に返信作成ボタンにイベントを設定する。
-function setEventToAddReply() {
-    document.querySelectorAll('.button-to-add-reply').forEach(handleAddReply);
-}
-
-//初回読み込み時にコメント削除ボタンにイベントを設定する。
-function setEventToDeleteComment() {
-    document.querySelectorAll('.add-func-to-delete-item').forEach(handleDeleteComment);
-}
-
-//コメント報告ボタンにイベントを設定する。
-function setEventToReportComment() {
-    document.querySelectorAll('.add-func-to-report-item').forEach(handleReportComment);
-}
-
-//返信一覧を取得する。
-function setEventToShowReplies() {
-    document.querySelectorAll('.show-replies-to-comment').forEach(item => {
-        setAllEventsToShowReplies(item);
-    });
-}
-
-//いいねのハートにイベントを設定する
-function setEventToIcons() {
-    document.querySelectorAll('.icon-to-add-function').forEach(handleLikeFunction);
-}
-
-/////////////////////////////////////////////////////////////
-//アイテム追加の時にそれに対してイベントを埋め込んであげる（HTMLの中にOnclickイベントを作った方がよかったな）。
-/*
-setEventsToOneItem(itemId, parentId = null){
-
-    //報告をするイベント
-    const reportButton = document.getElementById(`report-button-to-item-${itemId}`);
-    handleReportComment(reportButton);
-
-
-    if( parentId === null || parentId === ''){
-
-    }
-
-}
-*/
-
-/////////////////////////////////////////////////////////////
 //コメント追加
-function onclickAddComment(){
-    handleAddCommentClick();
-}
-
-function handleAddComment(buttonElement){
-    buttonElement.addEventListener('click', () => handleAddCommentClick());
-}
-
-function handleAddCommentClick() {
+async function onclickAddComment() {
     try {
         //URLなど
         const method = "POST"
@@ -194,22 +108,8 @@ function handleAddCommentClick() {
 
 /////////////////////////////////////////////////////////////
 //返信追加
-//HTMLにonclickイベントとして埋め込む。
-function onclickAddReply(itemId){
-    const addReplyButton = document.getElementById(` button-to-add-reply-to-parent-${itemId}`);
-    handleAddReplyClick(addReplyButton);
-}
-
-//エレメントを受け取ってaddEventListenerを設置する。
-function handleAddReply(item) {
-    item.addEventListener('click', () => handleAddReplyClick(item));
-}
-
-//メインの処理
-async function handleAddReplyClick(item) {
+async function onclickAddReply(parentId) {
     try {
-        // コメントIdの取得
-        const parentId = item.getAttribute('data-comment-id');
         // URLなど
         const method = "POST";
         const url = `${baseUrl}/api/comments`;
@@ -229,27 +129,16 @@ async function handleAddReplyClick(item) {
 
 /////////////////////////////////////////////////////////////
 //コメント更新
-function onclickUpdateItem(itemId){
-    const updateButton = document.getElementById(`button-to-update-item-${itemId}`);        
-    handleUpdateItemClick(updateButton)
-}
-
-function handleUpdateItem(item) {
-    item.addEventListener('click', () => handleUpdateItemClick(item));
-}
-
-async function handleUpdateItemClick(item) {
+async function onclickUpdateItem(itemId) {
     try {
-        // コメントIdの取得
-        const commentId = item.getAttribute('data-item-id');
         // URLなど
         const method = "PATCH";
-        const url = `${baseUrl}/api/comments/${commentId}`;
-        const body = { "body": document.getElementById(`update-textarea-item-${commentId}`).value };
+        const url = `${baseUrl}/api/comments/${itemId}`;
+        const body = { "body": document.getElementById(`update-textarea-item-${itemId}`).value };
         // fetch
         const jsonData = await fetchApi(url, method, body);
         // 追加されたコメントを埋め込む
-        updateItemByReplacing(jsonData, commentId);
+        updateItemByReplacing(jsonData, itemId);
         // フラッシュメッセージ
         showFlush("success", jsonData.message);
     } catch (error) {
@@ -269,16 +158,7 @@ function updateItemByReplacing(jsonData, commentId){
 
 /////////////////////////////////////////////////////////////
 //コメント削除
-function onclickDeleteComment(itemId){
-    const deleteButton = document.getElementById(`button-to-delete-item-${itemId}`);
-    handleDeleteCommentClick(deleteButton);
-}
-
-function handleDeleteComment(item){
-    item.addEventListener('click', () => handleDeleteCommentClick(item));
-}
-
-async function handleDeleteCommentClick(item) {
+async function onclickDeleteComment(item) {
     try {
         // コメントIdの取得
         const commentId = item.getAttribute('data-item-id');
@@ -309,25 +189,13 @@ function deleteCommentHtml(parentId, commentId){
 
 /////////////////////////////////////////////////////////////
 //コメント報告
-function onclickReportItem(itemId){
-    const reportButton = document.getElementById(`report-button-to-item-${itemId}`);
-    handleReportCommentClick(reportButton)
-}
-
-
-function handleReportComment(item){
-    item.addEventListener('click', () => handleReportCommentClick(item) )
-}
-
-async function handleReportCommentClick(item) {
+async function onclickReportComment(itemId) {
     try {
-        // コメントIdの取得
-        const commentId = item.getAttribute('data-item-id');
         // apiトークンの取得
         const apiToken = getApiToken();
         // URLなど
         const method = "POST";
-        const url = `${baseUrl}/api/comments/${commentId}/report`;
+        const url = `${baseUrl}/api/comments/${itemId}/report`;
         // fetch
         const jsonData = await fetchApi(url, method, apiToken);
         // フラッシュメッセージ
@@ -340,22 +208,12 @@ async function handleReportCommentClick(item) {
 
 /////////////////////////////////////////////////////////////
 //いいねをつけるために
-function onclickAddLike(itemId){
-    const likeButton = document.getElementById(`like-icon-of-item-${itemId}`);
-    handleLikeFunctionClick(likeButton);
-}
-
-function handleLikeFunction(item){
-    item.addEventListener('click', () => handleLikeFunctionClick(item));
-}
-
-async function handleLikeFunctionClick(item) {
+async function onclickLike(item) {
     try {
-        //記事ID
         const itemId = item.dataset.itemId;
         //いいね（ブックマーク、アーカイブ）などのリクエストの種類
         const currentType = item.dataset.currentType;
-        const targetType = revserseType(currentType);
+        const targetType = reverseType(currentType);
         //メソッド
         const method = getMethod(targetType);
         //URL
@@ -392,24 +250,9 @@ function changeLikeCountHtml(element, targetType) {
 
 /////////////////////////////////////////////////////////////
 //返信一覧を取得するためのイベントをセットする。
-function onclickShowReplies(itemId){
-    const buttonShowMoreReplies = document.getElementById(`show-replies-to-comment-${itemId}`);
-    handleGetReplies(buttonShowMoreReplies);
-    rotateTriangleClick(buttonShowMoreReplies);
-}
-
-
-function setAllEventsToShowReplies(item){
-    getReplies(item);
-    rotateTriangle(item);
-}
-
-function getReplies(item) {
-    item.addEventListener('click', () => handleGetReplies(item));
-}
-
-function rotateTrianglee(item) {
-    item.addEventListener('click', ()=> rotateTriangleClick(item) )
+function onclickShowReplies(buttonElement){
+    handleGetReplies(buttonElement);
+    rotateTriangleClick(buttonElement);
 }
 
 async function handleGetReplies(item) {

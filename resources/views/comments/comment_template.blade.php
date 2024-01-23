@@ -12,7 +12,7 @@
                         <div class="col-md-12">
                             {{-- 返信表示ボタン --}}
                             <div>
-                                <a id="show-replies-to-comment-{{$comment->id}}" class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">
+                                <a onclick="onclickShowReplies(this)" id="show-replies-to-comment-{{$comment->id}}" class="btn btn-link text-info custom-link show-replies-to-comment" data-comment-id="{{ $comment->id }}" data-bs-toggle="collapse" href="#replies{{ $comment->id }}" role="button" aria-expanded="false" aria-controls="replies{{ $comment->id }}">
                                     <div class="d-flex align-items-center justify-content-left">
                                         <div class="p-2">
                                             <img id="triangle-to-comment-{{ $comment->id }}" src="{{asset('images/icons/triangle.png')}}" style="width: 15px; height: 15px;" />
@@ -50,7 +50,7 @@
                         <div class="form-group">
                             <textarea id="textarea-reply-{{$comment->id}}" name="body" class="form-control" rows="3" required></textarea>
                         </div>
-                        <button type="button" id="button-to-add-reply-to-parent-{{$comment->id}}" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}">返信を追加</button>
+                        <button type="button" id="button-to-add-reply-to-parent-{{$comment->id}}" class="btn btn-primary m-2 button-to-add-reply" data-comment-id="{{ $comment->id }}" onclick="onclickAddReply({{ $comment->id }})">返信を追加</button>
                         <button type="button" class="btn btn-secondary m-2" onclick="toggleReplyForm({{ $comment->id }})">キャンセル</button>
                     </form>
                 </div>
