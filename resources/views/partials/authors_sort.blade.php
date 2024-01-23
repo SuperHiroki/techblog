@@ -84,7 +84,7 @@
                             <!---------------------------------------------------------------------------------------->
                             <!--trash-->
                             <!--非同期処理-->
-                            <div class="custom-icon">
+                            <div class="custom-icon rounded">
                                 <img style="display:{{$author->trashed_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/trash.png"
                                         class="button-to-add-func" 

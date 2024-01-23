@@ -87,7 +87,7 @@
                         <!--同期通信-->
                         <!--非同期通信-->
                         <div>
-                            <div class="custom-icon">
+                            <div class="custom-icon rounded">
                                 <img style="display:{{$article->liked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/like.png"
                                         class="icon-to-add-func" 
@@ -106,7 +106,7 @@
                         <!--ブックマーク-->
                         <!--非同期通信-->
                         <div>
-                            <div class="custom-icon">
+                            <div class="custom-icon rounded">
                                 <img style="display:{{$article->bookmarked_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/bookmark.png"
                                         class="icon-to-add-func" 
@@ -125,7 +125,7 @@
                         <!--アーカイブ-->
                         <!--非同期通信-->
                         <div>
-                            <div class="custom-icon">
+                            <div class="custom-icon rounded">
                                 <img style="display:{{$article->archived_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/archive.png"
                                         class="icon-to-add-func" 
@@ -144,7 +144,7 @@
                         <!--trash-->
                         <!--非同期通信-->
                         <div>
-                            <div class="custom-icon">
+                            <div class="custom-icon rounded">
                                 <img style="display:{{$article->trashed_by_current_user ? 'block' : 'none'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/trash.png"
                                         class="icon-to-add-func" 
