@@ -77,7 +77,7 @@
 
             <!--フラッシュメッセージ-->
             @if ($errors->any())
-                <div class="alert alert-danger flush_msg">
+                <div class="alert alert-danger flush_msg_default">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -86,19 +86,19 @@
                 </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger flush_msg">
+                <div class="alert alert-danger flush_msg_default">
                     {{ session('error') }}
                 </div>
             @endif
             @if (session('success'))
-                <div class="alert alert-success flush_msg">
+                <div class="alert alert-success flush_msg_default">
                     {{ session('success') }}
                 </div>
             @endif
 
             <!--非同期処理で起きるフラッシュメッセージ-->
-            <div id="flush_error" class="alert alert-danger flush_msg" style="display:none"></div>
-            <div id="flush_success" class="alert alert-success flush_msg" style="display:none"></div>
+            <div id="flush_error" class="alert alert-danger" style="display:none"></div>
+            <div id="flush_success" class="alert alert-success" style="display:none"></div>
 
         </div>
     </div>

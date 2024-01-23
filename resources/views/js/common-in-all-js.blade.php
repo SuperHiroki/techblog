@@ -1,6 +1,6 @@
 <script>
 ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////ヘッダーが二つか一つかによってコンテントのトップの位置を調整する。
 //ヘッダーとコンテンツ
 var fixedHeader = document.getElementById('fixed-header');
 var containerContent = document.getElementById('containerContent');
@@ -17,44 +17,15 @@ function adjustPaddingTop(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-// 監視することでフラッシュメッセージの表示と非表示を切り替える。
-const targetNodes = document.getElementsByClassName('flush_msg');
-const config = { characterData: true, childList: true };
-const callback = function(mutationsList, observer) {
-    for(let mutation of mutationsList) {
-        if(mutation.type === 'characterData' || mutation.type === 'childList') {
-            const target = mutation.target;
-            if(target.textContent.length === 0) {
-                target.style.display = 'none';
-            } else {
-                target.style.display = 'block';
-            }
-        }
-    }
-};
-const observer = new MutationObserver(callback);
-Array.from(targetNodes).forEach(node => {
-    observer.observe(node, config);
+////////////////////////////////////////////////////////////////////////////////////////フラッシュメッセージ
+//デフォルトのフラッシュメッセージはページ読み込みしてから数秒後に消す。
+document.addEventListener("DOMContentLoaded", function() {
+    var flushElements = document.querySelectorAll('.flush_msg_default'); 
+    hideFlushAfterSomeSeconds(flushElements);
 });
 
 
-//動的に、コンテンツが固定されたヘッダーに隠れないようにする。
-const config_fixed_header = { attributes: true, characterData: true, childList: true, subtree: true };
-const callback_fixed_header = function(mutationsList, observer) {
-    for(let mutation of mutationsList) {
-        if(mutation.type === 'attributes' || mutation.type === 'characterData'  || mutation.type === 'childList' || mutation.type === 'subtree') {
-            const target = mutation.target;
-            adjustPaddingTop();
-        }
-    }
-};
-const observer_fixed_header = new MutationObserver(callback_fixed_header);
-observer_fixed_header.observe(fixedHeader, config_fixed_header);
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////フラッシュメッセージ
-//idを取得する。
+//カスタムのフラッシュメッセージ
 var flush_success = document.getElementById('flush_success');
 var flush_error = document.getElementById('flush_error');
 
@@ -73,9 +44,13 @@ async function showFlush(error_or_success="success", msg){
     }
 }
 
-async function hideFlushAfterSomeSeconds(element) {
+//数秒後にその要素を消す。
+async function hideFlushAfterSomeSeconds(elements) {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    element.style.display = "none";
+
+    elements.forEach(element => {
+        element.style.display = "none";
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
