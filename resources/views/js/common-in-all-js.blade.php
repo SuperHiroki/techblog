@@ -59,16 +59,23 @@ var flush_success = document.getElementById('flush_success');
 var flush_error = document.getElementById('flush_error');
 
 //フラッシュメッセージでエラーと成功が同時に表示されないようにする。
-function showFlush(error_or_success="success", msg){
+async function showFlush(error_or_success="success", msg){
     if(error_or_success=="success"){
         flush_success.style.display = "block";
         flush_success.innerText = msg
         flush_error.style.display = "none";
+        await hideFlushAfterSomeSeconds(flush_success);
     }else if(error_or_success=="error"){
         flush_success.style.display = "none";
         flush_error.style.display = "block";
         flush_error.innerText = msg;
+        await hideFlushAfterSomeSeconds(flush_error);
     }
+}
+
+async function hideFlushAfterSomeSeconds(element) {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    element.style.display = "none";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
