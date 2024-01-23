@@ -23,7 +23,7 @@ use App\Http\Controllers\MyPage\TrashedArticlesController;
 use App\Http\Controllers\Settings\AccountController;
 use App\Http\Controllers\Settings\PublicProfileController;
 
-use App\Http\Controllers\ApiTokenGetRedirectController;
+use App\Http\Controllers\ApiTokenRedirectController;
 
 #テストページ
 Route::get('/test', function () {
