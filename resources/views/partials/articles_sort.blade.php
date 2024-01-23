@@ -84,7 +84,6 @@
                     <div class="col-md-2 gap-0 d-flex align-items-center justify-content-center mb-2">
                         <!----------------------------------------------------------------------->
                         <!--いいね-->
-                        <!--同期通信-->
                         <!--非同期通信-->
                         <div>
                             <div class="custom-icon rounded">

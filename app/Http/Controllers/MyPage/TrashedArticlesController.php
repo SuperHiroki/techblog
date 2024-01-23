@@ -12,25 +12,25 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\ParameterValidationHelper;
 
-class LikesController extends Controller
+class TrashedArticlesController extends Controller
 {
-    //マイページのユーザがいいねしている記事一覧を取得する。
+    //マイページのユーザがアーカイブしている記事一覧を取得する。
     public function index(Request $request, User $user)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
         if (!$request->has('sort')) {
-            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'likes']);
+            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'newest']);
         }
 
         try {
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'likes', isTrashExcluded: true)->paginate(15);
+            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'trashes')->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.liked-articles', compact('user', 'articles'));
+        return view('my-page.trashed-articles', compact('user', 'articles'));
     }
 }

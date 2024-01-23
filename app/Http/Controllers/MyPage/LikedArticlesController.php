@@ -12,25 +12,25 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\ParameterValidationHelper;
 
-class BookmarksController extends Controller
+class LikedArticlesController extends Controller
 {
-    //マイページのユーザがブックマークしている記事一覧を取得する。
+    //マイページのユーザがいいねしている記事一覧を取得する。
     public function index(Request $request, User $user)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
         if (!$request->has('sort')) {
-            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'bookmarks']);
+            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'likes']);
         }
 
         try {
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'bookmarks', isTrashExcluded: true)->paginate(15);
+            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'likes', isTrashExcluded: true)->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.bookmarked-articles', compact('user', 'articles'));
+        return view('my-page.liked-articles', compact('user', 'articles'));
     }
 }

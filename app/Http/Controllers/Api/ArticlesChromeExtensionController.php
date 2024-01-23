@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\OgImageHelper;
 
-class ArticleActionController extends Controller
+class ArticlesChromeExtensionController extends Controller
 {
     //記事がまだ登録されていない場合、記事を追加する。
     public function getOrAddArticleFromUrl($articleUrl) {

@@ -50,19 +50,19 @@
                     <!-- 左側の要素 -->
                     <ul class="navbar-nav me-auto p-1 pt-2">
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home' , '/') ? 'bg-light border border-secondary rounded' : '' }}" href="/home">ホーム</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('home' , '/') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('home') }}">ホーム</a>
                         </li>
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-authors">おすすめ著者</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-authors') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('recommended-authors') }}">おすすめ著者</a>
                         </li>
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-articles') ? 'bg-light border border-secondary rounded' : '' }}" href="/recommended-articles">おすすめ記事</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('recommended-articles') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('recommended-articles') }}">おすすめ記事</a>
                         </li>
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="/comments">コメント</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('comments') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('comments') }}">コメント</a>
                         </li>
                         <li class="nav-item p-1">
-                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('users') ? 'bg-light border border-secondary rounded' : '' }}" href="/users">ユーザ一覧</a>
+                            <a class="nav-link p-1 custom-header-link rounded {{ request()->is('users') ? 'bg-light border border-secondary rounded' : '' }}" href="{{ route('users') }}">ユーザ一覧</a>
                         </li>
                     </ul>
                     <!-- 右側の認証などの要素 -->
@@ -106,7 +106,7 @@
     <!--ページごとに異なる-->
     <div class="container mb-5" id="containerContent">
         <!-- タイトル -->
-        @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments") | request()->is("users-list"))
+        @if(request()->is('/') | request()->is("home") | request()->is("recommended-authors") | request()->is("recommended-articles") | request()->is("comments") | request()->is("users"))
             <div class="row justify-content-center m-4">
                 <div class="col-lg-8">
                     <div class="card text-white bg-secondary shadow">
@@ -114,13 +114,13 @@
                             <h3 class="card-title text-center m-0">
                                 @if(request()->is('/') || request()->is('home'))
                                     ホーム
-                                @elseif(request()->is("recommended-authors"))
+                                @elseif(request()->is("recommended-authors"))<!--@elseif(request()->is(parse_url(route('recommended-authors'), PHP_URL_PATH)))のような書き方も可能。-->
                                     おすすめ著者
                                 @elseif(request()->is("recommended-articles"))
                                     おすすめ記事
                                 @elseif(request()->is("comments"))
                                     コメント
-                                @elseif(request()->is("users-list"))
+                                @elseif(request()->is("users"))
                                     ユーザ一覧
                                 @endif   
                             </h3>

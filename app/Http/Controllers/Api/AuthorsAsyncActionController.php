@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\OgImageHelper;
 
-class AuthorAsyncActionController extends Controller
+class AuthorsAsyncActionController extends Controller
 {
     ////////////////////////////////////////////////////////////////////////////////
     public function followAuthorFromAuthorId(Author $author){

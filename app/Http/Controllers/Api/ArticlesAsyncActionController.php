@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\OgImageHelper;
 
-class ArticleAsyncActionController extends Controller
+class ArticlesAsyncActionController extends Controller
 {
     ////////////////////////////////////////////////////////////////////////////////
     //記事にいいねを付ける

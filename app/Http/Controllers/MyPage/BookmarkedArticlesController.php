@@ -12,25 +12,25 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\ParameterValidationHelper;
 
-class ArchivesController extends Controller
+class BookmarkedArticlesController extends Controller
 {
-    //マイページのユーザがアーカイブしている記事一覧を取得する。
+    //マイページのユーザがブックマークしている記事一覧を取得する。
     public function index(Request $request, User $user)
     {
         //パラメタがない場合、デフォルトのパラメタにリダイレクト
         if (!$request->has('sort')) {
-            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'archives']);
+            return redirect()->route(Route::currentRouteName(), ['user' => $user->id, 'sort' => 'bookmarks']);
         }
 
         try {
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'archives', isTrashExcluded: true)->paginate(15);
+            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'bookmarks', isTrashExcluded: true)->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
         
-        return view('my-page.archived-articles', compact('user', 'articles'));
+        return view('my-page.bookmarked-articles', compact('user', 'articles'));
     }
 }

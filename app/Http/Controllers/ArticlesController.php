@@ -11,7 +11,7 @@ use App\Models\Author;
 
 use App\Helpers\OgImageHelper;
 
-class ArticleController extends Controller
+class ArticlesController extends Controller
 {
     public function __construct()
     {

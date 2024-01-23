@@ -12,7 +12,7 @@ use App\Models\Author;
 use App\Helpers\OgImageHelper;
 use App\Helpers\ParameterValidationHelper;
 
-class AuthorController extends Controller
+class AuthorsController extends Controller
 {
     public function __construct()
     {
