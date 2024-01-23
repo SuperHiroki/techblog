@@ -148,105 +148,116 @@ function setEventToIcons() {
 
 /////////////////////////////////////////////////////////////
 //アイテム追加の時にそれに対してイベントを埋め込んであげる（HTMLの中にOnclickイベントを作った方がよかったな）。
+/*
 setEventsToOneItem(itemId, parentId = null){
-    //いいねをつけるイベント
-    const likeButton = document.getElementById(`like-icon-of-item-${itemId}`);
-    handleLikeFunction(likeButton);
+
     //報告をするイベント
     const reportButton = document.getElementById(`report-button-to-item-${itemId}`);
     handleReportComment(reportButton);
-    //削除するイベント
-    const deleteButton = document.getElementById(`button-to-delete-item-${itemId}`);
-    handleDeleteComment(deleteButton);
-    //更新するイベント
-    const updateButton = document.getElementById(`button-to-update-item-${itemId}`);
-    handleUpdateItem(updateButton)
+
+
     if( parentId === null || parentId === ''){
-        //返信一覧を取得するイベント
-        const buttonShowMoreReplies = document.getElementById(`show-replies-to-comment-${itemId}`);
-        setAllEventsToShowReplies(buttonShowMoreReplies);
-        //返信追加ボタンを制御するイベント
-        const addReplyButton = document.getElementById(` button-to-add-reply-to-parent-${itemId}`);
-        handleAddReply(addReplyButton);
+
     }
 
 }
+*/
 
 /////////////////////////////////////////////////////////////
 //コメント追加
-function handleAddComment(buttonElement) {
-    buttonElement.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            //URLなど
-            const method = "POST"
-            const url = `${baseUrl}/api/comments`;
-            const body = {"body": document.getElementById("commentBodyInput").value};
-            //fetch
-            const jsonData = await fetchApi(url, method, body); 
-            //追加されたコメントを埋め込む
-            document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
-            toggleAddCommentForm();
-            //フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+function onclickAddComment(){
+    handleAddCommentClick();
+}
+
+function handleAddComment(buttonElement){
+    buttonElement.addEventListener('click', () => handleAddCommentClick());
+}
+
+function handleAddCommentClick() {
+    try {
+        //URLなど
+        const method = "POST"
+        const url = `${baseUrl}/api/comments`;
+        const body = {"body": document.getElementById("commentBodyInput").value};
+        //fetch
+        const jsonData = await fetchApi(url, method, body); 
+        //追加されたコメントを埋め込む
+        document.getElementById('commentAsyncAddedField').insertAdjacentHTML('beforeend', jsonData.html);
+        toggleAddCommentForm();
+        //フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 /////////////////////////////////////////////////////////////
 //返信追加
-function handleAddReply(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            // コメントIdの取得
-            const parentId = item.getAttribute('data-comment-id');
-            console.log(parentId);
-            // URLなど
-            const method = "POST";
-            const url = `${baseUrl}/api/comments`;
-            const body = {"body": document.getElementById(`textarea-reply-${parentId}`).value, "parent_id": parentId};
-            // fetch
-            const jsonData = await fetchApi(url, method, body);
-            console.log(jsonData.html);
-            // 追加されたコメントを埋め込む
-            document.getElementById(`my-reply-added-field-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
-            // フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+//HTMLにonclickイベントとして埋め込む。
+function onclickAddReply(itemId){
+    const addReplyButton = document.getElementById(` button-to-add-reply-to-parent-${itemId}`);
+    handleAddReplyClick(addReplyButton);
 }
 
-/////////////////////////////////////////////////////////////
-//ボタン要素を受け取って、コメント更新のリクエストを送信する。
-function handleUpdateItem(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            // コメントIdの取得
-            const commentId = item.getAttribute('data-item-id');
-            // URLなど
-            const method = "PATCH";
-            const url = `${baseUrl}/api/comments/${commentId}`;
-            const body = { "body": document.getElementById(`update-textarea-item-${commentId}`).value };
-            // fetch
-            const jsonData = await fetchApi(url, method, body);
-            // 追加されたコメントを埋め込む
-            updateItemByReplacing(jsonData, commentId);
-            // フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+//エレメントを受け取ってaddEventListenerを設置する。
+function handleAddReply(item) {
+    item.addEventListener('click', () => handleAddReplyClick(item));
 }
+
+//メインの処理
+async function handleAddReplyClick(item) {
+    try {
+        // コメントIdの取得
+        const parentId = item.getAttribute('data-comment-id');
+        // URLなど
+        const method = "POST";
+        const url = `${baseUrl}/api/comments`;
+        const body = {"body": document.getElementById(`textarea-reply-${parentId}`).value, "parent_id": parentId};
+        // fetch
+        const jsonData = await fetchApi(url, method, body);
+        // 追加されたコメントを埋め込む
+        document.getElementById(`my-reply-added-field-to-comment-${parentId}`).insertAdjacentHTML('beforeend', jsonData.html);
+        // フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
+}
+
+
+/////////////////////////////////////////////////////////////
+//コメント更新
+function onclickUpdateItem(itemId){
+    const updateButton = document.getElementById(`button-to-update-item-${itemId}`);        
+    handleUpdateItemClick(updateButton)
+}
+
+function handleUpdateItem(item) {
+    item.addEventListener('click', () => handleUpdateItemClick(item));
+}
+
+async function handleUpdateItemClick(item) {
+    try {
+        // コメントIdの取得
+        const commentId = item.getAttribute('data-item-id');
+        // URLなど
+        const method = "PATCH";
+        const url = `${baseUrl}/api/comments/${commentId}`;
+        const body = { "body": document.getElementById(`update-textarea-item-${commentId}`).value };
+        // fetch
+        const jsonData = await fetchApi(url, method, body);
+        // 追加されたコメントを埋め込む
+        updateItemByReplacing(jsonData, commentId);
+        // フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
+}
+
 
 //itemの中身を入れ替え
 function updateItemByReplacing(jsonData, commentId){
@@ -258,27 +269,33 @@ function updateItemByReplacing(jsonData, commentId){
 
 /////////////////////////////////////////////////////////////
 //コメント削除
-async function handleDeleteComment(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            // コメントIdの取得
-            const commentId = item.getAttribute('data-item-id');
-            const parentId = item.getAttribute('data-parent-id');
-            // URLなど
-            const method = "DELETE";
-            const url = `${baseUrl}/api/comments/${commentId}`;
-            // fetch
-            const jsonData = await fetchApi(url, method);
-            //コメントを削除する
-            deleteCommentHtml(parentId, commentId);
-            // フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+function onclickDeleteComment(itemId){
+    const deleteButton = document.getElementById(`button-to-delete-item-${itemId}`);
+    handleDeleteCommentClick(deleteButton);
+}
+
+function handleDeleteComment(item){
+    item.addEventListener('click', () => handleDeleteCommentClick(item));
+}
+
+async function handleDeleteCommentClick(item) {
+    try {
+        // コメントIdの取得
+        const commentId = item.getAttribute('data-item-id');
+        const parentId = item.getAttribute('data-parent-id');
+        // URLなど
+        const method = "DELETE";
+        const url = `${baseUrl}/api/comments/${commentId}`;
+        // fetch
+        const jsonData = await fetchApi(url, method);
+        //コメントを削除する
+        deleteCommentHtml(parentId, commentId);
+        // フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 //コメントのHTMLを削除する。
@@ -292,56 +309,69 @@ function deleteCommentHtml(parentId, commentId){
 
 /////////////////////////////////////////////////////////////
 //コメント報告
-async function handleReportComment(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            // コメントIdの取得
-            const commentId = item.getAttribute('data-item-id');
-            // apiトークンの取得
-            const apiToken = getApiToken();
-            // URLなど
-            const method = "POST";
-            const url = `${baseUrl}/api/comments/${commentId}/report`;
-            // fetch
-            const jsonData = await fetchApi(url, method, apiToken);
-            // フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+function onclickReportItem(itemId){
+    const reportButton = document.getElementById(`report-button-to-item-${itemId}`);
+    handleReportCommentClick(reportButton)
+}
+
+
+function handleReportComment(item){
+    item.addEventListener('click', () => handleReportCommentClick(item) )
+}
+
+async function handleReportCommentClick(item) {
+    try {
+        // コメントIdの取得
+        const commentId = item.getAttribute('data-item-id');
+        // apiトークンの取得
+        const apiToken = getApiToken();
+        // URLなど
+        const method = "POST";
+        const url = `${baseUrl}/api/comments/${commentId}/report`;
+        // fetch
+        const jsonData = await fetchApi(url, method, apiToken);
+        // フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 /////////////////////////////////////////////////////////////
 //いいねをつけるために
-async function handleLikeFunction(item) {
-    item.addEventListener('click', async function(event) {
-        event.preventDefault();
-        try {
-            //記事ID
-            const itemId = item.dataset.itemId;
-            //いいね（ブックマーク、アーカイブ）などのリクエストの種類
-            const currentType = item.dataset.currentType;
-            const targetType = revserseType(currentType);
-            //メソッド
-            const method = getMethod(targetType);
-            //URL
-            const url = `${baseUrl}/api/comments/${itemId}/like`;
-            //fetch
-            const jsonData = await fetchApi(url, method); 
-            //UIの切り替え。
-            toggleCheckedItem(itemId, currentType, targetType);
-            const likeElement = document.getElementById(`like-count-of-item-${itemId}`);
-            changeLikeCountHtml(likeElement, targetType);
-            //フラッシュメッセージ
-            showFlush("success", jsonData.message);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    });
+function onclickAddLike(itemId){
+    const likeButton = document.getElementById(`like-icon-of-item-${itemId}`);
+    handleLikeFunctionClick(likeButton);
+}
+
+function handleLikeFunction(item){
+    item.addEventListener('click', () => handleLikeFunctionClick(item));
+}
+
+async function handleLikeFunctionClick(item) {
+    try {
+        //記事ID
+        const itemId = item.dataset.itemId;
+        //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+        const currentType = item.dataset.currentType;
+        const targetType = revserseType(currentType);
+        //メソッド
+        const method = getMethod(targetType);
+        //URL
+        const url = `${baseUrl}/api/comments/${itemId}/like`;
+        //fetch
+        const jsonData = await fetchApi(url, method); 
+        //UIの切り替え。
+        toggleCheckedItem(itemId, currentType, targetType);
+        const likeElement = document.getElementById(`like-count-of-item-${itemId}`);
+        changeLikeCountHtml(likeElement, targetType);
+        //フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 //いいねの表示を変更する。
@@ -362,50 +392,51 @@ function changeLikeCountHtml(element, targetType) {
 
 /////////////////////////////////////////////////////////////
 //返信一覧を取得するためのイベントをセットする。
+function onclickShowReplies(itemId){
+    const buttonShowMoreReplies = document.getElementById(`show-replies-to-comment-${itemId}`);
+    handleGetReplies(buttonShowMoreReplies);
+    rotateTriangleClick(buttonShowMoreReplies);
+}
+
+
 function setAllEventsToShowReplies(item){
     getReplies(item);
     rotateTriangle(item);
 }
 
-//返信一覧を取得する
 function getReplies(item) {
-    // handleGetReplies 関数を先に定義
-    const handleGetReplies = async (event) => {
-        event.preventDefault();
-        try {
-            const parentId = item.getAttribute('data-comment-id');
-            const method = "GET";
-            const url = `${baseUrl}/api/comments/${parentId}/replies`;
-            const jsonData = await fetchApi(url, method); 
-            document.getElementById(`replies-container-to-comment-${parentId}`).innerHTML = jsonData.html;
-            showFlush("success", jsonData.message);
-            // ページネーションの開始
-            setPaginationReplies(parentId);
-
-            // イベントリスナーの削除
-            item.removeEventListener('click', handleGetReplies);
-        } catch (error) {
-            showFlush("error", error);
-            console.error('Error:', error);
-        }
-    };
-
-    // ここでイベントリスナーを設定
-    item.addEventListener('click', handleGetReplies);
+    item.addEventListener('click', () => handleGetReplies(item));
 }
 
+function rotateTrianglee(item) {
+    item.addEventListener('click', ()=> rotateTriangleClick(item) )
+}
+
+async function handleGetReplies(item) {
+    try {
+        const parentId = item.getAttribute('data-comment-id');
+        const method = "GET";
+        const url = `${baseUrl}/api/comments/${parentId}/replies`;
+        const jsonData = await fetchApi(url, method); 
+        document.getElementById(`replies-container-to-comment-${parentId}`).innerHTML = jsonData.html;
+        showFlush("success", jsonData.message);
+        // ページネーションの開始
+        setPaginationReplies(parentId);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
+}
 
 //三角形を回転させる
-function rotateTriangle(item) {
-    item.addEventListener('click', function() {
-        const parentId = item.getAttribute('data-comment-id');
-        var triangleIcon = document.getElementById(`triangle-to-comment-${parentId}`);
-        if(item.getAttribute('aria-expanded') === "false"){
-            triangleIcon.style.transform = "none";
-        } else if(item.getAttribute('aria-expanded') === "true"){
-            triangleIcon.style.transform = "rotate(180deg)";
-        }
-    });
+function rotateTriangleClick(item) {
+    const parentId = item.getAttribute('data-comment-id');
+    var triangleIcon = document.getElementById(`triangle-to-comment-${parentId}`);
+    if(item.getAttribute('aria-expanded') === "false"){
+        triangleIcon.style.transform = "none";
+    } else if(item.getAttribute('aria-expanded') === "true"){
+        triangleIcon.style.transform = "rotate(180deg)";
+    }
 }
 
 // ページネーションのメイン処理
