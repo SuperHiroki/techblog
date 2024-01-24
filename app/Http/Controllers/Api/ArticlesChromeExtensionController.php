@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Article;
+use App\Models\Author;
 
 use App\Http\Controllers\Controller;
 
@@ -34,6 +35,8 @@ class ArticlesChromeExtensionController extends Controller
         try {
             $articleUrl = $request->query('articleUrl');
             Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+
+            //いいねなどをつけているかどうかを取得
             $article = $this->getOrAddArticleFromUrl($articleUrl);
             if ($article->likeUsers()->where('user_id', Auth::id())->exists()) {
                 $result['like'] = true;
@@ -47,6 +50,13 @@ class ArticlesChromeExtensionController extends Controller
             if ($article->trashUsers()->where('user_id', Auth::id())->exists()) {
                 $result['trash'] = true;
             }
+
+            //フォローしているかどうかも取得
+            $author = $article->author; // まずは著者のインスタンスを取得
+            if ($author->followers()->where('user_id', Auth::id())->exists()) {
+                $result['follow'] = true;
+            }
+
             return response()->json(array_merge(['message' => 'Fetched user state successfully.'], $result));
         } catch (\Exception $e) {
             return response()->json(['message' => "{$e->getMessage()}"], 500);
