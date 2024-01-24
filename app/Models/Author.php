@@ -69,6 +69,13 @@ class Author extends Model
                     ->withTimestamps();
     }
 
+    //著者を捨てたユーザ一覧。Userインスタンスのリスト。
+    public function trashedUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_author_trashes')
+                    ->withTimestamps();
+    }
+
     //ソート
     public static function getSortedAuthors($sort, $period = null, $user = null, $isTrashExcluded = false, $action = "followed")
     {

@@ -35,6 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unarchive-article', [ArticlesChromeExtensionController::class, 'unarchive']);
     Route::post('/trash-article', [ArticlesChromeExtensionController::class, 'trash']);
     Route::delete('/untrash-article', [ArticlesChromeExtensionController::class, 'untrash']);
+    //フォローとアンフォロー
+    Route::post('/follow-author', [ArticlesChromeExtensionController::class, 'followAuthor']);
+    Route::delete('/unfollow-author', [ArticlesChromeExtensionController::class, 'unfollowAuthor']);
+    Route::post('/trash-author', [ArticlesChromeExtensionController::class, 'trashAuthor']);
+    Route::delete('/untrash-author', [ArticlesChromeExtensionController::class, 'untrashAuthor']);
     //クロム拡張機能からいいね（ブックマーク、アーカイブ）の状態の取得。
     Route::get('/get-state', [ArticlesChromeExtensionController::class, 'getState']);
 

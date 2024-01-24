@@ -31,7 +31,7 @@ class ArticlesChromeExtensionController extends Controller
     ////////////////////////////////////////////////////////////////////////////////
     //現在の状況を取得する。
     public function getState(Request $request) {
-        $result = ['like' => false, 'bookmark' => false, 'archive' => false, 'trash' => false];
+        $result = ['like' => false, 'bookmark' => false, 'archive' => false, 'trash' => false, 'followAuthor' => false, 'trashAuthor' => false];
         try {
             $articleUrl = $request->query('articleUrl');
             Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
@@ -54,7 +54,10 @@ class ArticlesChromeExtensionController extends Controller
             //フォローしているかどうかも取得
             $author = $article->author; // まずは著者のインスタンスを取得
             if ($author->followers()->where('user_id', Auth::id())->exists()) {
-                $result['follow'] = true;
+                $result['followAuthor'] = true;
+            }
+            if ($author->trashedUsers()->where('user_id', Auth::id())->exists()) {
+                $result['trashAuthor'] = true;
             }
 
             return response()->json(array_merge(['message' => 'Fetched user state successfully.'], $result));
@@ -197,4 +200,75 @@ class ArticlesChromeExtensionController extends Controller
             return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //フォローアンフォロー
+    public function followAuthor(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            $author = $article->author;
+            if ($author->followers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already followed.'], 409);
+            }
+            $author->followers()->attach(Auth::id());
+            return response()->json(['message' => 'Followed successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }    
+
+    public function unfollowAuthor(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            $author = $article->author;
+            if (!$author->followers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already unfollowed.'], 409);
+            }
+            $author->followers()->detach(Auth::id());
+            return response()->json(['message' => 'Unfollowed successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }   
+
+    //著者を捨てる
+    public function trashAuthor(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            $author = $article->author;
+            if ($author->trashedUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'This author was already trashed.'], 409);
+            }
+            $author->trashedUsers()->attach(Auth::id());
+            return response()->json(['message' => 'You trashed this author successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }    
+
+    public function untrashAuthor(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            $author = $article->author;
+            if (!$author->trashedUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'This author was already untrashed.'], 409);
+            }
+            $author->trashedUsers()->detach(Auth::id());
+            return response()->json(['message' => 'You untrashed this author successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }    
 }
