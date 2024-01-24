@@ -21,8 +21,6 @@ function changeStateFromUrl(urlParams){
     const period = urlParams.get('period');
     const keywords = urlParams.get('keywords');
 
-    console.log(keywords);
-
     document.getElementById("sortOption").value = sort;
     if(period){
         document.getElementById("trendingOption").value = period;
