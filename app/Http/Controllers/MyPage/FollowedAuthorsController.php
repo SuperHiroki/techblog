@@ -29,6 +29,7 @@ class FollowedAuthorsController extends Controller
             //ソート
             $authors = Author::getSortedAuthors(sort: $request->input('sort'), 
                                                 period: $request->input('period'), 
+                                                keywords: $request->input('keywords'),
                                                 user: $user, 
                                                 isTrashExcluded: true, 
                                                 action: "followed")->paginate(20);

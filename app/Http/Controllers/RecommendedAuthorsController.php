@@ -28,7 +28,8 @@ class RecommendedAuthorsController extends Controller
 
             //ソート
             $authors = Author::getSortedAuthors(sort: $request->input('sort'), 
-                                                period: $request->input('period'))->paginate(20);
+                                                period: $request->input('period'),
+                                                keywords: $request->input('keywords'))->paginate(20);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }

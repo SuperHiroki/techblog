@@ -29,6 +29,7 @@ class TrashedAuthorsController extends Controller
             //ソート
             $authors = Author::getSortedAuthors(sort: $request->input('sort'), 
                                                 period: $request->input('period'), 
+                                                keywords: $request->input('keywords'),
                                                 user: $user, 
                                                 isTrashExcluded: false,
                                                 action: "trashed")->paginate(20);

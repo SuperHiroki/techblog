@@ -77,7 +77,7 @@ class Author extends Model
     }
 
     //ソート
-    public static function getSortedAuthors($sort, $period = null, $keywords = null, $user = null, $isTrashExcluded = false, $action = "followed")
+    public static function getSortedAuthors($sort, $period = null, $keywords = null, $user = null, $isTrashExcluded = false, $action = null)
     {
         //クエリの生成
         $query = self::query();
@@ -146,6 +146,20 @@ class Author extends Model
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_follows WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as is_followed"));
             //現在ログイン中のユーザが、それぞれの著者に対してtrashしているかどうかのカラムを追加。
             $query->addSelect(DB::raw("EXISTS (SELECT 1 FROM user_author_trashes WHERE author_id = authors.id AND user_id = {$loggedInUserId}) as trashed_by_current_user"));
+        }
+
+        // キーワード検索
+        if (!is_null($keywords)) {
+            $keywordsArray = explode(' ', urldecode($keywords)); // スペースで分割し、URLデコード
+
+            $query->where(function ($q) use ($keywordsArray) {
+                foreach ($keywordsArray as $keyword) {
+                    $q->where(function ($q) use ($keyword) {
+                        $q->where('name', 'LIKE', "%{$keyword}%")
+                        ->orWhere('description', 'LIKE', "%{$keyword}%");
+                    });
+                }
+            });
         }
 
         return $query;
