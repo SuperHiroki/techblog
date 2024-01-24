@@ -129,7 +129,7 @@ class Article extends Model
     }
 
     // 記事の並び替え
-    public function scopeSortBy($query, $sort, $period, $user = null, $action = null, $spanFilter = null, $isTrashExcluded = false)
+    public function scopeSortBy($query, $sort, $period = null, $keywords = null, $user = null, $action = null, $spanFilter = null, $isTrashExcluded = false)
     {
         $query->with([
             //これはなくても機能するが、Lagzy LoadによるN+1問題を防ぐために、ここでEager Loadしておく。
@@ -204,7 +204,7 @@ class Article extends Model
                         $dateFrom = now()->subDays(intval($spanFilter));
     
                         // マイページのユーザーがフォローしている著者の記事のみを取得。フォロー中の著者で絞らないとおすすめ記事一覧と変わらない。
-                        $query->whereHas('author', function ($q) use ($user, $dateFrom) {
+                        $query->whereHas('author', function ($q) use ($user) {
                                 $q->whereHas('followers', function ($q) use ($user) {
                                     $q->where('users.id', $user->id);
                                 });
@@ -214,6 +214,7 @@ class Article extends Model
                     }
                     break;
             }
+
             //ゴミ箱のものを表示しない場合。
             if($isTrashExcluded){
                 $query->whereRaw("NOT EXISTS (SELECT 1 FROM article_user_trash WHERE article_id = articles.id AND user_id = ?)", [$user->id]);

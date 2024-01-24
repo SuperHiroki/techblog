@@ -26,7 +26,12 @@ class TrashedArticlesController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'trashes')->paginate(15);
+            $articles = Article::sortBy(sort: $request->input('sort'), 
+                                        period: $request->input('period'),
+                                        keywords: $request->input('keywords'),
+                                        user: $user, 
+                                        action: 'trashes', 
+                                        isTrashExcluded: false)->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }

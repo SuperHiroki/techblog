@@ -26,7 +26,13 @@ class RecentArticlesController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortArticles($request);
             //ソート
-            $articles = Article::sortBy($request->input('sort'), $request->input('period'), $user, 'recent-articles', $days, isTrashExcluded: true)->paginate(15);
+            $articles = Article::sortBy(sort: $request->input('sort'), 
+                                        period: $request->input('period'),
+                                        keywords: $request->input('keywords'),
+                                        user: $user, 
+                                        action: 'recent-articles', 
+                                        days: $days,
+                                        isTrashExcluded: true)->paginate(15);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
