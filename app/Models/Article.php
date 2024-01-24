@@ -252,6 +252,25 @@ class Article extends Model
                 break;
         }
 
+        // キーワードが指定されている場合、検索を行う
+        if (!is_null($keywords)) {
+            $keywords = urldecode($keywords); // URLデコード
+            $keywordsArray = explode(' ', $keywords); // スペースでキーワードを分割
+
+            $query->where(function ($query) use ($keywordsArray) {
+                foreach ($keywordsArray as $keyword) {
+                    // キーワードを含む記事を検索
+                    $query->where(function ($query) use ($keyword) {
+                        $query->where('title', 'LIKE', "%{$keyword}%")
+                            ->orWhere('description', 'LIKE', "%{$keyword}%")
+                            ->orWhereHas('author', function ($query) use ($keyword) {
+                                $query->where('name', 'LIKE', "%{$keyword}%");
+                            });
+                    });
+                }
+            });
+        }
+
         return $query;
     }
     

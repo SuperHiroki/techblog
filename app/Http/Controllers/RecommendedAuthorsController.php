@@ -27,8 +27,8 @@ class RecommendedAuthorsController extends Controller
             ParameterValidationHelper::validateParametersSortAuthors($request);
 
             //ソート
-            $authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null))->paginate(20);
-            //$authors = Author::getSortedAuthors($request->input('sort'), $request->input('period', null))->get();
+            $authors = Author::getSortedAuthors(sort: $request->input('sort'), 
+                                                period: $request->input('period'))->paginate(20);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }

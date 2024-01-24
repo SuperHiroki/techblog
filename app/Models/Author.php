@@ -77,7 +77,7 @@ class Author extends Model
     }
 
     //ソート
-    public static function getSortedAuthors($sort, $period = null, $user = null, $isTrashExcluded = false, $action = "followed")
+    public static function getSortedAuthors($sort, $period = null, $keywords = null, $user = null, $isTrashExcluded = false, $action = "followed")
     {
         //クエリの生成
         $query = self::query();

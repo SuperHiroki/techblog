@@ -27,7 +27,11 @@ class TrashedAuthorsController extends Controller
             //バリデーションチェック
             ParameterValidationHelper::validateParametersSortAuthors($request);
             //ソート
-            $authors = Author::getSortedAuthors(sort: $request->input('sort'), period: $request->input('period', null), user: $user, isTrashExcluded: false, action: "trashed")->paginate(20);
+            $authors = Author::getSortedAuthors(sort: $request->input('sort'), 
+                                                period: $request->input('period'), 
+                                                user: $user, 
+                                                isTrashExcluded: false,
+                                                action: "trashed")->paginate(20);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }

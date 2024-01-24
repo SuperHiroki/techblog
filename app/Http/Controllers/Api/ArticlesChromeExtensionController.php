@@ -21,7 +21,7 @@ class ArticlesChromeExtensionController extends Controller
         if (!$article) {
             try {
                 $metaData = OgImageHelper::getMetaData($articleUrl);
-                $article = Article::createWithDomainCheck($articleUrl, $metaData);
+                $article = Article::createWithHasAuthorCheck($articleUrl, $metaData);
             } catch (\Exception $e) {
                 throw $e;
             }
