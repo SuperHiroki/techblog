@@ -26,13 +26,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //クロム拡張機能からいいね（ブックマーク、アーカイブ）をつけることができる。bodyにURLを保持させる。
+    //クロム拡張機能からいいね（ブックマーク、アーカイブ）をつけることができる。クエリパラメータにURLを保持させる。
     Route::post('/like-article', [ArticlesChromeExtensionController::class, 'like']);
     Route::delete('/unlike-article', [ArticlesChromeExtensionController::class, 'unlike']);
     Route::post('/bookmark-article', [ArticlesChromeExtensionController::class, 'bookmark']);
     Route::delete('/unbookmark-article', [ArticlesChromeExtensionController::class, 'unbookmark']);
     Route::post('/archive-article', [ArticlesChromeExtensionController::class, 'archive']);
     Route::delete('/unarchive-article', [ArticlesChromeExtensionController::class, 'unarchive']);
+    Route::post('/trash-article', [ArticlesChromeExtensionController::class, 'trash']);
+    Route::delete('/untrash-article', [ArticlesChromeExtensionController::class, 'untrash']);
     //クロム拡張機能からいいね（ブックマーク、アーカイブ）の状態の取得。
     Route::get('/get-state', [ArticlesChromeExtensionController::class, 'getState']);
 

@@ -30,7 +30,7 @@ class ArticlesChromeExtensionController extends Controller
     ////////////////////////////////////////////////////////////////////////////////
     //現在の状況を取得する。
     public function getState(Request $request) {
-        $result = ['like' => false, 'bookmark' => false, 'archive' => false];
+        $result = ['like' => false, 'bookmark' => false, 'archive' => false, 'trash' => false];
         try {
             $articleUrl = $request->query('articleUrl');
             Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
@@ -43,6 +43,9 @@ class ArticlesChromeExtensionController extends Controller
             }
             if ($article->archiveUsers()->where('user_id', Auth::id())->exists()) {
                 $result['archive'] = true;
+            }
+            if ($article->trashUsers()->where('user_id', Auth::id())->exists()) {
+                $result['trash'] = true;
             }
             return response()->json(array_merge(['message' => 'Fetched user state successfully.'], $result));
         } catch (\Exception $e) {
@@ -146,6 +149,40 @@ class ArticlesChromeExtensionController extends Controller
             }
             $article->archiveUsers()->detach(Auth::id());
             return response()->json(['message' => 'Unarchived successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }
+
+    //記事にtrashをつける
+    public function trash(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            if ($article->trashUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already trashed.'], 409);
+            }
+            $article->trashUsers()->attach(Auth::id());
+            return response()->json(['message' => 'Trshed successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => "{$e->getMessage()}"], 500);
+        }
+    }    
+    
+    //記事のtrashを外す
+    public function untrash(Request $request) {
+        try {
+            $articleUrl = $request->query('articleUrl');
+            Log::info('UUUUUUUUUUUUUUUUUUUUU articleUrl: ' . $articleUrl);
+    
+            $article = $this->getOrAddArticleFromUrl($articleUrl);
+            if (!$article->trashUsers()->where('user_id', Auth::id())->exists()) {
+                return response()->json(['message' => 'Already untrashed.'], 409);
+            }
+            $article->trashUsers()->detach(Auth::id());
+            return response()->json(['message' => 'Untrashed successfully.']);
         } catch (\Exception $e) {
             return response()->json(['message' => "{$e->getMessage()}"], 500);
         }
