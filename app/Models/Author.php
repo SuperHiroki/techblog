@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class Author extends Model
 {
-    protected $fillable = ['name', 'link', 'link_common', 'rss_link', 'thumbnail_url', 'favicon_url'];
+    protected $fillable = ['name', 'description', 'link', 'link_common', 'rss_link', 'thumbnail_url', 'favicon_url'];
 
     //著者を作成する。
     public static function createAuthor($link, $link_common, $metaData)
@@ -28,6 +28,7 @@ class Author extends Model
         $author->rss_link = $metaData['rss_link'] ?? null;
         $author->thumbnail_url = $metaData['thumbnail_url'] ?? null;
         $author->favicon_url = $metaData['favicon_url'] ?? null;
+        $author->description = $metaData['description'] ?? null;
 
         $author->save();
 
@@ -50,7 +51,8 @@ class Author extends Model
             'name' => $metaData['title'] ?? $link,//何も取得できなければリンクを使う(Notionはこのようにしていたので真似する)。
             'rss_link' => $metaData['rss_link'] ?? null,
             'thumbnail_url' => $metaData['thumbnail_url'] ?? null,
-            'favicon_url' => $metaData['favicon_url'] ?? null
+            'favicon_url' => $metaData['favicon_url'] ?? null,
+            'description' => $metaData['description'] ?? null,
         ]);
     }
 

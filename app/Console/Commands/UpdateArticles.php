@@ -12,6 +12,7 @@ use App\Helpers\OgImageHelper;
 
 use App\Utilities\RssReader;
 
+//バッチ処理によって、毎日最新の記事を取得する。
 class UpdateArticles extends Command
 {
     protected $signature = 'articles:update';

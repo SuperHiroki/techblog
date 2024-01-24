@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Models\Author;
 
+//link_commonのカラムをAuthorsテーブルに追加したとき。
 class UpdateAuthorDomains extends Command
 {
     // コマンドの名前とシグネチャを設定します。

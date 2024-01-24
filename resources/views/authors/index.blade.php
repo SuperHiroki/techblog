@@ -10,6 +10,10 @@
         <div class="author card shadow m-4 p-4">
             <h2>{{ $author->name }}</h2>
             <p>
+                <strong>Description:</strong> 
+                <p>{{ $author->description }}</p>
+            </p>
+            <p>
                 <strong>Link:</strong> 
                 <a href="{{ $author->link }}" target="_blank">{{ $author->link }}</a>
             </p>
