@@ -83,11 +83,13 @@
                                 <button style="display:{{$author->is_followed ? 'block' : 'none'}}"
                                         data-author-id="{{$author->id}}" 
                                         data-current-type = "follow"
-                                        class="button-to-add-func btn btn-danger btn-sm">フォロー解除</button>
+                                        class="button-to-add-func btn btn-danger btn-sm"
+                                        onclick="onclickRunActionToAuthor(this)">フォロー解除</button>
                                 <button style="display:{{$author->is_followed ? 'none' : 'block'}}"
                                         data-author-id="{{$author->id}}" 
                                         data-current-type = "unfollow"
-                                        class="button-to-add-func btn btn-success btn-sm">フォロー</button>
+                                        class="button-to-add-func btn btn-success btn-sm"
+                                        onclick="onclickRunActionToAuthor(this)">フォロー</button>
                             </div>
                             <!---------------------------------------------------------------------------------------->
                             <!--trash-->
@@ -98,13 +100,15 @@
                                         class="button-to-add-func" 
                                         data-author-id="{{ $author->id }}" 
                                         data-current-type="trash"
-                                        alt="trash">
+                                        alt="trash"
+                                        onclick="onclickRunActionToAuthor(this)">
                                 <img style="display:{{$author->trashed_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/untrash.png"
                                         class="button-to-add-func"
                                         data-author-id="{{ $author->id }}"
                                         data-current-type="untrash"
-                                        alt="untrash">
+                                        alt="untrash"
+                                        onclick="onclickRunActionToAuthor(this)">
                             </div>
                         </div>
                     </div>
@@ -165,37 +169,28 @@ function keywordsSearch(){
 @include('js.common-async-fetch-js')
 <script>
 //非同期でフォロー（アンフォロー）をつけるために設定
-document.addEventListener('DOMContentLoaded', function () {
-    setEventToButtons();
-})
-
-//フォローとアンフォローの関数をボタンにセット
-function setEventToButtons(){
-    document.querySelectorAll('.button-to-add-func').forEach(item => {
-        item.addEventListener('click', async function() {
-            try{
-                //著者ID
-                const authorId = this.dataset.authorId;
-                //リクエストの種類（フォロー、アンフォロー）
-                const currentType = this.dataset.currentType;
-                const targetType = reverseType(currentType);
-                //メソッド
-                const method = getMethod(targetType);
-                //URL
-                const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
-                //fetch
-                const jsonData = await fetchApi(url, method); 
-                //UIの切り替え。
-                toggleCheckedAuthor(authorId, currentType, targetType);
-                toggleTrashOverlayAuthor(authorId, targetType);
-                //フラッシュメッセージ
-                showFlush("success", jsonData.message);
-            }catch (error) {
-                showFlush("error", error);
-                console.error('Error:', error);
-            }
-        });
-    });
+async function onclickRunActionToAuthor(item){
+    try{
+        //著者ID
+        const authorId = item.dataset.authorId;
+        //リクエストの種類（フォロー、アンフォロー）
+        const currentType = item.dataset.currentType;
+        const targetType = reverseType(currentType);
+        //メソッド
+        const method = getMethod(targetType);
+        //URL
+        const url = `${baseUrl}/api/${targetType}-author/${authorId}`;
+        //fetch
+        const jsonData = await fetchApi(url, method); 
+        //UIの切り替え。
+        toggleCheckedAuthor(authorId, currentType, targetType);
+        toggleTrashOverlayAuthor(authorId, targetType);
+        //フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    }catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 //follow, unfollowのボタン表示を変更する。

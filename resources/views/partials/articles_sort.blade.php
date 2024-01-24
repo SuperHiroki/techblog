@@ -100,13 +100,15 @@
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
                                         data-current-type="like"
-                                        alt="like">
+                                        alt="like"
+                                        onclick="onclickRunActionToArticle(this)">
                                 <img style="display:{{$article->liked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unlike.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
                                         data-current-type="unlike"
-                                        alt="unlike">
+                                        alt="unlike"
+                                        onclick="onclickRunActionToArticle(this)">
                             </div>
                         </div>
                         <!----------------------------------------------------------------------->
@@ -119,13 +121,15 @@
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
                                         data-current-type="bookmark"
-                                        alt="bookmark">
+                                        alt="bookmark"
+                                        onclick="onclickRunActionToArticle(this)">
                                 <img style="display:{{$article->bookmarked_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unbookmark.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
                                         data-current-type="unbookmark"
-                                        alt="unbookmark">
+                                        alt="unbookmark"
+                                        onclick="onclickRunActionToArticle(this)">
                             </div>
                         </div>
                         <!----------------------------------------------------------------------->
@@ -138,13 +142,15 @@
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
                                         data-current-type="archive"
-                                        alt="archive">
+                                        alt="archive"
+                                        onclick="onclickRunActionToArticle(this)">
                                 <img style="display:{{$article->archived_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/unarchive.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
                                         data-current-type="unarchive"
-                                        alt="unarchive">
+                                        alt="unarchive"
+                                        onclick="onclickRunActionToArticle(this)">
                             </div>
                         </div>
                         <!----------------------------------------------------------------------->
@@ -157,13 +163,15 @@
                                         class="icon-to-add-func" 
                                         data-article-id="{{ $article->id }}" 
                                         data-current-type="trash"
-                                        alt="trash">
+                                        alt="trash"
+                                        onclick="onclickRunActionToArticle(this)">
                                 <img style="display:{{$article->trashed_by_current_user ? 'none' : 'block'}}; cursor: pointer; width: 30px; height: auto;"
                                         src="/images/like_bookmark_archive/untrash.png"
                                         class="icon-to-add-func"
                                         data-article-id="{{ $article->id }}"
                                         data-current-type="untrash"
-                                        alt="untrash">
+                                        alt="untrash"
+                                        onclick="onclickRunActionToArticle(this)">
                             </div>
                         </div>
                     </div>
@@ -228,40 +236,29 @@ function keywordsSearch(){
 <!--非同期でリクエストを送る-->
 @include('js.common-async-fetch-js')
 <script>
-//ページ読み込み時に発火する。
-document.addEventListener('DOMContentLoaded', function () {
-    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
-    setEventToIcons();
-});
-
-//非同期でいいね（ブックマーク、アーカイブ）をつけるためにイベントを設定
-function setEventToIcons(){
-    //非同期でいいね（ブックマーク、アーカイブ）をつけるために設定
-    document.querySelectorAll('.icon-to-add-func').forEach(item => {
-        item.addEventListener('click', async function () {
-            try {
-                //記事ID
-                const articleId = this.dataset.articleId;
-                //いいね（ブックマーク、アーカイブ）などのリクエストの種類
-                const currentType = this.dataset.currentType;
-                const targetType = reverseType(currentType);
-                //メソッド
-                const method = getMethod(targetType);
-                //URL
-                const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
-                //fetch
-                const jsonData = await fetchApi(url, method); 
-                //UIの切り替え。
-                toggleCheckedArticle(articleId, currentType, targetType);
-                toggleTrashOverlayArticle(articleId, targetType);
-                //フラッシュメッセージ
-                showFlush("success", jsonData.message);
-            } catch (error) {
-                showFlush("error", error);
-                console.error('Error:', error);
-            }
-        });
-    });
+//クリックの時に発火する。
+async function onclickRunActionToArticle(item){
+    try {
+        //記事ID
+        const articleId = item.dataset.articleId;
+        //いいね（ブックマーク、アーカイブ）などのリクエストの種類
+        const currentType = item.dataset.currentType;
+        const targetType = reverseType(currentType);
+        //メソッド
+        const method = getMethod(targetType);
+        //URL
+        const url = `${baseUrl}/api/${targetType}-article/${articleId}`;
+        //fetch
+        const jsonData = await fetchApi(url, method); 
+        //UIの切り替え。
+        toggleCheckedArticle(articleId, currentType, targetType);
+        toggleTrashOverlayArticle(articleId, targetType);
+        //フラッシュメッセージ
+        showFlush("success", jsonData.message);
+    } catch (error) {
+        showFlush("error", error);
+        console.error('Error:', error);
+    }
 }
 
 //いいね（ブックマーク、アーカイブ）の表示を変更する。
