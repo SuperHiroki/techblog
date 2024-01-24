@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
     hideFlushAfterSomeSeconds(flushElements);
 });
 
-
 //カスタムのフラッシュメッセージ
 var flush_success = document.getElementById('flush_success');
 var flush_error = document.getElementById('flush_error');

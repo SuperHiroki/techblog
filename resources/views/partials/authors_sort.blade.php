@@ -1,5 +1,13 @@
 <div class="row justify-content-center">
-    <div class="col-lg-6">
+    
+    <div class="col-12 col-lg-9">
+        <input type="text" id="keywords" class="form-control" placeholder="キーワードを入力" style="border: 2px solid black">
+        <div class="d-flex justify-content-end me-5 mt-2">
+            <button onclick="keywordsSearch()" class="btn btn-primary">検索</button>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
         <label for="sortOption" class="m-1">ソートの方法を選択:</label>
         <select id="sortOption" onchange="updateSort()" class="form-select form-select-lg mb-3 border border-dark">
             <option value="followers">フォロワー数</option>
@@ -143,6 +151,11 @@ function initializeSortOptions() {
 
 //選択肢を切り替えたとき
 function updateSort() {
+    commonUpdateSort(candidates);
+}
+
+//検索をクリック
+function keywordsSearch(){
     commonUpdateSort(candidates);
 }
 </script>
